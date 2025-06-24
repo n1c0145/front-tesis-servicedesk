@@ -1,27 +1,32 @@
-# FrontTesisServicedesk
+# Frontend ServiceDesk
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.20.
+Aplicación web ServiceDesk desarrollada con Angular CLI versión 18. 
 
-## Development server
+## Requisitos Previos
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Tener instalado lo siguiente:
 
-## Code scaffolding
+- [Node.js](https://nodejs.org/) (versión **>=18.0.0**)
+- npm (versión **≥9.0.0**)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 1.Instalación de Angular CLI versión 18
 
-## Build
+Para instalar Angular CLI versión 18 globalmente en tu equipo ejecutar el siguiente comando `npm install -g @angular/cli@18`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 2. Clonar el repositorio
 
-## Running unit tests
+`git clone https://github.com/n1c0145/front-tesis-servicedesk.git`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## 3. Instalación de Dependencias
 
-## Running end-to-end tests
+Dentro del directorio del repositorio ejecutar el comando `npm install`
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## 4. Levantar el Servidor de Desarrollo
 
-## Further help
+Dentro del directorio del repositorio ejecutar el comando `ng serve -o`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+
+
