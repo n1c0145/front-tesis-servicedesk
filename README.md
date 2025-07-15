@@ -41,7 +41,7 @@ Dentro del directorio del repositorio ejecutar el comando `ng serve -o`
 
 El siguiente diagrama muestra cómo se estructura la arquitectura del frontend Angular:
 
-![Diagrama de Arquitectura](./readme-assets/arquitectura-frontend.png)
+![Diagrama de Arquitectura](./readme-asset/arquitectura-frontend.png)
 
 
 
