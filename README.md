@@ -6,7 +6,7 @@ Aplicación web ServiceDesk desarrollada con Angular CLI versión 18.
 
 Tener instalado lo siguiente:
 
-- [Node.js](https://nodejs.org/) (versión **>=18.0.0**)
+- [Node.js](https://nodejs.org/) (versión **>=20.0.0**)
 - npm (versión **≥9.0.0**)
 
 ## 1.Instalación de Angular CLI versión 18
@@ -21,9 +21,30 @@ Para instalar Angular CLI versión 18 globalmente en tu equipo ejecutar el sigui
 
 Dentro del directorio del repositorio ejecutar el comando `npm install`
 
+### Dependencias Utilizadas:
+
+`aws-amplify` Integración con AWS Cognito (autenticación) y S3 (almacenamiento).
+
+`jwt-decode` Para decodificar tokens JWT.
+
+### Librerías de UI utilizadas:
+
+`Angular Material`
+`aws-amplify`
+`Bootstrap`
+
 ## 4. Levantar el Servidor de Desarrollo
 
 Dentro del directorio del repositorio ejecutar el comando `ng serve -o`
+
+## Diagrama de Arquitectura FrontEnd
+
+El siguiente diagrama muestra cómo se estructura la arquitectura del frontend Angular:
+
+![Diagrama de Arquitectura](./readme-assets/arquitectura-frontend.png)
+
+
+
 
 
 
