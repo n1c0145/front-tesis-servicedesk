@@ -30,7 +30,7 @@ Dentro del directorio del repositorio ejecutar el comando `npm install`
 ### Librerías de UI utilizadas:
 
 `Angular Material`
-`aws-amplify`
+`Tailwind css`
 `Bootstrap`
 
 ## 4. Levantar el Servidor de Desarrollo
