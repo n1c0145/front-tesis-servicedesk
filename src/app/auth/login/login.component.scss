@@ -1,0 +1,23 @@
+.login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-card {
+      width: 400px;
+      padding: 20px;
+    }
+    .full-width {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .links {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .links a {
+      cursor: pointer;
+      color: #3f51b5;
+      text-decoration: underline;
+    }

@@ -1,1 +1,81 @@
-<p>register works!</p>
+<div class="register-container">
+    <mat-card class="register-card">
+        <h1>Registrarse</h1>
+        <form [formGroup]="registerForm">
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Correo</mat-label>
+                <input matInput placeholder="usuario&#64;dominio.com" formControlName="email">
+                <mat-error *ngIf="email.invalid && email.touched">
+                    Ingresa un correo válido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Cédula</mat-label>
+                <input matInput placeholder="1234567890" formControlName="cedula">
+                <mat-error *ngIf="cedula.invalid && cedula.touched">
+                    Ingresa una cédula válida de 10 dígitos
+                </mat-error>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="nombre">
+                <mat-error *ngIf="nombre.invalid && nombre.touched">
+                    Ingresa tu nombre
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Apellido</mat-label>
+                <input matInput formControlName="apellido">
+                <mat-error *ngIf="apellido.invalid && apellido.touched">
+                    Ingresa tu apellido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Puesto</mat-label>
+                <input matInput formControlName="puesto">
+                <mat-error *ngIf="puesto.invalid && puesto.touched">
+                    Ingresa tu puesto
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Contraseña</mat-label>
+                <input matInput type="password" formControlName="password">
+                <mat-error *ngIf="password.touched">
+                    <div *ngIf="password.errors?.['required']">Ingresa una contraseña</div>
+                    <div *ngIf="password.errors?.['minlength']">La contraseña debe tener al menos 8 caracteres</div>
+                    <div *ngIf="password.errors?.['uppercase']">La contraseña debe tener al menos una letra mayúscula
+                    </div>
+                    <div *ngIf="password.errors?.['number']">La contraseña debe tener al menos un número</div>
+                    <div *ngIf="password.errors?.['special']">La contraseña debe tener al menos un carácter especial
+                    </div>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Repetir Contraseña</mat-label>
+                <input matInput type="password" formControlName="repetirPassword">
+                <mat-error *ngIf="repetirPassword.errors && repetirPassword.touched">
+                    <div *ngIf="repetirPassword.errors['required']">Repite la contraseña</div>
+                    <div *ngIf="repetirPassword.errors['mismatch']">Las contraseñas no coinciden</div>
+                </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid">
+                Registrarse
+            </button>
+        </form>
+
+        <div class="links">
+            <span>¿Ya tienes cuenta?
+                <a (click)="navigateTo('/login')">Iniciar sesión</a>
+            </span>
+        </div>
+    </mat-card>
+</div>
