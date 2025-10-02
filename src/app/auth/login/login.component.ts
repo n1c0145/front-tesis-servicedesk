@@ -7,6 +7,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ApiService } from '../../services/api.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatDialogModule,
+    HttpClientModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -25,7 +30,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
       password: ['', Validators.required]
@@ -43,5 +48,29 @@ export class LoginComponent {
   navigateTo(path: string) {
     this.router.navigate([path]);
 
+  }
+
+  save(): void {
+    const body = {
+      correo: this.email.value,
+      password: this.password.value
+    };
+
+    this.apiService.post('login', body).subscribe({
+      next: (res: any) => {
+
+        const expiresAt = new Date().getTime() + 59 * 60 * 1000;
+        localStorage.setItem('accessToken', res.tokens.AuthenticationResult.AccessToken);
+        localStorage.setItem('id', res.user.id.toString());
+        localStorage.setItem('roleId', res.user.role_id.toString());
+        localStorage.setItem('tokenExpiresAt', expiresAt.toString());
+
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        alert('Usuario o contraseña incorrectos');
+
+      }
+    });
   }
 }

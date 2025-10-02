@@ -4,11 +4,12 @@ import { HeaderComponent } from './layout/header/header.component';
 import { HomeComponent } from "./main/home/home.component";
 import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -28,7 +29,7 @@ export const routes: Routes = [
     path: '',
     component: HeaderComponent,
     children: [
-      { path: 'home', component: HomeComponent },
+      { path: 'home', component: HomeComponent,  canActivate: [authGuard] },
     ]
   }
 ];

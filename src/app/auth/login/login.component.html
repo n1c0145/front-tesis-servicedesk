@@ -15,7 +15,8 @@
                 <input matInput type="password" placeholder="Contraseña" formControlName="password">
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="loginForm.invalid">
+            <button mat-raised-button color="primary" class="full-width" [disabled]="loginForm.invalid"
+                (click)="save()">
                 Iniciar Sesión
             </button>
         </form>
