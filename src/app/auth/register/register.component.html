@@ -67,7 +67,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid">
+            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid" (click)="save()">
                 Registrarse
             </button>
         </form>

@@ -7,6 +7,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { ApiService } from '../../services/api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class RegisterComponent {
   registerForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
       cedula: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
@@ -80,5 +82,31 @@ export class RegisterComponent {
 
   navigateTo(path: string) {
     this.router.navigate([path]);
+  }
+
+
+  save(): void {
+    const body = {
+      correo: this.email.value,
+      nombre: this.nombre.value,
+      apellido: this.apellido.value,
+      cedula: this.cedula.value,
+      password: this.password.value,
+      puesto: this.puesto.value
+    };
+
+    this.apiService.post<any>('register', body).subscribe({
+      next: (res) => {
+        alert('Usuario registrado correctamente, Por favor Inicia Sesión');
+        this.router.navigate(['/login']);
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 422) {
+          alert('El usuario ya se encuentra registrado');
+        } else {
+          alert('Ha ocurrido un error, por favor inténtalo más tarde');
+        }
+      }
+    });
   }
 }

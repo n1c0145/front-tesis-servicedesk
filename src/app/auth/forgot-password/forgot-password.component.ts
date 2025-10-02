@@ -7,11 +7,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatStepperModule } from '@angular/material/stepper';
+import { ApiService } from '../../services/api.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [  CommonModule,
+  imports: [CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -25,7 +28,7 @@ export class ForgotPasswordComponent {
   emailForm: FormGroup;
   resetForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
     // Paso 1: correo
     this.emailForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]]
@@ -65,5 +68,52 @@ export class ForgotPasswordComponent {
       }
       return null;
     }
+  }
+
+  save(stepper: any): void {
+    const body = { correo: this.emailForm.get('email')?.value };
+
+    this.apiService.post<any>('forgot-password-code', body).subscribe({
+      next: (res) => {
+
+        localStorage.setItem('forgotPasswordId', res.user.id.toString());
+        alert(res.message || 'Código enviado al correo.');
+        stepper.next();
+      },
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 422) {
+          alert('El usuario no se encuentra registrado');
+        } else {
+          alert('Ha ocurrido un error, por favor inténtalo más tarde');
+        }
+      }
+    });
+  }
+  save2(): void {
+    const userId = localStorage.getItem('forgotPasswordId');
+    if (!userId) {
+      alert('Ha ocurrido un problema, por favor inténtalo nuevamente.');
+      return;
+    }
+    const body = {
+      user_id: Number(userId),
+      code: this.resetForm.get('codigo')?.value,
+      new_password: this.resetForm.get('password')?.value
+    };
+
+    this.apiService.post<any>('reset-password', body).subscribe({
+      next: (res) => {
+        alert('Contraseña actualizada correctamente. Por favor inicia sesión.');
+        localStorage.removeItem('forgotPasswordId');
+        this.router.navigate(['/login']);
+      },
+      error: (err:any) => {
+        if (err.status === 400) {
+          alert('Código inválido, ingresa nuevamente');
+        } else {
+          alert('Ha ocurrido un problema, por favor inténtalo nuevamente.');
+        }
+      }
+    });
   }
 }
