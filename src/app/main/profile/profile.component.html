@@ -5,12 +5,12 @@
         <form [formGroup]="profileForm">
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Correo</mat-label>
-                <input matInput formControlName="correo"  />
+                <input matInput formControlName="correo" />
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Cédula</mat-label>
-                <input matInput formControlName="cedula"  />
+                <input matInput formControlName="cedula" />
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
@@ -42,7 +42,8 @@
                 </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit" [disabled]="profileForm.invalid">
+            <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit"
+                [disabled]="profileForm.invalid">
                 Actualizar perfil
             </button>
 
@@ -52,3 +53,4 @@
         </form>
     </mat-card>
 </div>
+<app-loading [loading]="isLoading"></app-loading>

@@ -9,22 +9,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingComponent } from '../../layout/loading/loading.component';
 
 @Component({
   selector: 'app-update-password',
   standalone: true,
-  imports: [ CommonModule,
+  imports: [CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule],
+    MatButtonModule, LoadingComponent],
   templateUrl: './update-password.component.html',
   styleUrl: './update-password.component.scss'
 })
 export class UpdatePasswordComponent {
-passwordForm: FormGroup;
-
+  passwordForm: FormGroup;
+  isLoading = false;
   constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
     this.passwordForm = this.fb.group({
       old_password: ['', Validators.required],
@@ -62,6 +63,7 @@ passwordForm: FormGroup;
   }
 
   updatePassword(): void {
+    this.isLoading = true;
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       return;
@@ -76,10 +78,12 @@ passwordForm: FormGroup;
 
     this.apiService.post<any>('change-password', body, token).subscribe({
       next: () => {
+        this.isLoading = false;
         alert('Contraseña actualizada con éxito');
-        this.router.navigate(['/profile']); 
+        this.router.navigate(['/profile']);
       },
       error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
         if (err.status === 500) {
           alert('La contraseña antigua es incorrecta');
         } else {

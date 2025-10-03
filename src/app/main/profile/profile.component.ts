@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { LoadingComponent } from '../../layout/loading/loading.component';
 
 @Component({
   selector: 'app-profile',
@@ -17,11 +18,12 @@ import { MatButtonModule } from '@angular/material/button';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,],
+    MatButtonModule, LoadingComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
+  isLoading = false;
   profileForm!: FormGroup;
   roleName: string = '';
   constructor(
@@ -31,6 +33,7 @@ export class ProfileComponent {
   ) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.profileForm = this.fb.group({
       correo: [{ value: '', disabled: true }],
       cedula: [{ value: '', disabled: true }],
@@ -44,16 +47,11 @@ export class ProfileComponent {
 
   loadProfile(): void {
     const id = localStorage.getItem('id');
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken') || undefined;
 
-    if (!id || !token) {
-      console.error('ID o token no encontrados en localStorage');
-      return;
-    }
 
     this.apiService.get<any>(`get-profile/${id}`, token).subscribe({
       next: (res) => {
-        console.log('Perfil cargado:', res);
         this.roleName = res.role?.nombre || '';
 
         this.profileForm.patchValue({
@@ -63,6 +61,7 @@ export class ProfileComponent {
           apellido: res.apellido,
           puesto: res.puesto,
         });
+        this.isLoading = false;
       },
       error: (err) => {
         alert("Ha ocurrido un error, por favor intentalo mas tarde");
@@ -71,6 +70,7 @@ export class ProfileComponent {
   }
 
   save(): void {
+    this.isLoading = true;
     const id = localStorage.getItem('id');
     const token = localStorage.getItem('accessToken') || undefined;
 
@@ -82,10 +82,12 @@ export class ProfileComponent {
 
     this.apiService.patch<any>(`update-profile/${id}`, body, token).subscribe({
       next: () => {
+        this.isLoading = false;
         alert('Perfil actualizado con éxito');
-        window.location.reload(); 
+        window.location.reload();
       },
       error: () => {
+        this.isLoading = false;
         alert('Ha ocurrido un error, por favor intentalo más tarde');
       }
     });

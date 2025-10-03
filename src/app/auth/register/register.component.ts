@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingComponent } from '../../layout/loading/loading.component';
 
 @Component({
   selector: 'app-register',
@@ -20,13 +21,14 @@ import { HttpErrorResponse } from '@angular/common/http';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    LoadingComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-
+  isLoading = false;
   constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
@@ -86,6 +88,7 @@ export class RegisterComponent {
 
 
   save(): void {
+    this.isLoading = true;
     const body = {
       correo: this.email.value,
       nombre: this.nombre.value,
@@ -97,10 +100,12 @@ export class RegisterComponent {
 
     this.apiService.post<any>('register', body).subscribe({
       next: (res) => {
+        this.isLoading = false;
         alert('Usuario registrado correctamente, Por favor Inicia Sesión');
         this.router.navigate(['/login']);
       },
       error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
         if (err.status === 422) {
           alert('El usuario ya se encuentra registrado');
         } else {

@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ApiService } from '../../services/api.service';
 import { HttpClientModule } from '@angular/common/http';
+import { LoadingComponent } from '../../layout/loading/loading.component';
 
 @Component({
   selector: 'app-login',
@@ -23,13 +24,14 @@ import { HttpClientModule } from '@angular/common/http';
     MatButtonModule,
     MatDialogModule,
     HttpClientModule,
+    LoadingComponent
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
   loginForm: FormGroup;
-
+  isLoading = false;
   constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
@@ -51,6 +53,7 @@ export class LoginComponent {
   }
 
   save(): void {
+    this.isLoading = true;
     const body = {
       correo: this.email.value,
       password: this.password.value
@@ -66,8 +69,10 @@ export class LoginComponent {
         localStorage.setItem('tokenExpiresAt', expiresAt.toString());
 
         this.router.navigate(['/home']);
+        this.isLoading = false;
       },
       error: (err) => {
+        this.isLoading = false;
         alert('Usuario o contraseña incorrectos');
 
       }

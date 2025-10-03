@@ -10,6 +10,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { LoadingComponent } from '../../layout/loading/loading.component';
 
 @Component({
   selector: 'app-forgot-password',
@@ -20,14 +21,14 @@ import { Router } from '@angular/router';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatStepperModule],
+    MatStepperModule, LoadingComponent],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
 })
 export class ForgotPasswordComponent {
   emailForm: FormGroup;
   resetForm: FormGroup;
-
+  isLoading = false;
   constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
     // Paso 1: correo
     this.emailForm = this.fb.group({
@@ -71,16 +72,19 @@ export class ForgotPasswordComponent {
   }
 
   save(stepper: any): void {
+    this.isLoading = true;
     const body = { correo: this.emailForm.get('email')?.value };
 
     this.apiService.post<any>('forgot-password-code', body).subscribe({
       next: (res) => {
 
         localStorage.setItem('forgotPasswordId', res.user.id.toString());
+        this.isLoading = false;
         alert(res.message || 'Código enviado al correo.');
         stepper.next();
       },
       error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
         if (err.status === 422) {
           alert('El usuario no se encuentra registrado');
         } else {
@@ -90,6 +94,7 @@ export class ForgotPasswordComponent {
     });
   }
   save2(): void {
+    this.isLoading = true;
     const userId = localStorage.getItem('forgotPasswordId');
     if (!userId) {
       alert('Ha ocurrido un problema, por favor inténtalo nuevamente.');
@@ -103,11 +108,13 @@ export class ForgotPasswordComponent {
 
     this.apiService.post<any>('reset-password', body).subscribe({
       next: (res) => {
+        this.isLoading = false;
         alert('Contraseña actualizada correctamente. Por favor inicia sesión.');
         localStorage.removeItem('forgotPasswordId');
         this.router.navigate(['/login']);
       },
-      error: (err:any) => {
+      error: (err: any) => {
+        this.isLoading = false;
         if (err.status === 400) {
           alert('Código inválido, ingresa nuevamente');
         } else {
