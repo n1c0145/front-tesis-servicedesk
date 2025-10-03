@@ -21,17 +21,10 @@ Para instalar Angular CLI versión 18 globalmente en tu equipo ejecutar el sigui
 
 Dentro del directorio del repositorio ejecutar el comando `npm install`
 
-### Dependencias Utilizadas:
-
-`aws-amplify` Integración con AWS Cognito (autenticación) y S3 (almacenamiento).
-
-`jwt-decode` Para decodificar tokens JWT.
-
 ### Librerías de UI utilizadas:
 
 `Angular Material`
 `Tailwind css`
-`Bootstrap`
 
 ## 4. Levantar el Servidor de Desarrollo
 
