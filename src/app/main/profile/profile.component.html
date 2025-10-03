@@ -1,0 +1,54 @@
+<div class="profile-container">
+    <mat-card class="profile-card">
+        <h1>Mi Perfil</h1>
+
+        <form [formGroup]="profileForm">
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Correo</mat-label>
+                <input matInput formControlName="correo"  />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Cédula</mat-label>
+                <input matInput formControlName="cedula"  />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Rol</mat-label>
+                <input matInput [value]="roleName" disabled />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="nombre" />
+                <mat-error *ngIf="profileForm.get('nombre')?.invalid && profileForm.get('nombre')?.touched">
+                    Ingresa tu nombre
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Apellido</mat-label>
+                <input matInput formControlName="apellido" />
+                <mat-error *ngIf="profileForm.get('apellido')?.invalid && profileForm.get('apellido')?.touched">
+                    Ingresa tu apellido
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="full-width">
+                <mat-label>Puesto</mat-label>
+                <input matInput formControlName="puesto" />
+                <mat-error *ngIf="profileForm.get('puesto')?.invalid && profileForm.get('puesto')?.touched">
+                    Ingresa tu puesto
+                </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit" [disabled]="profileForm.invalid">
+                Actualizar perfil
+            </button>
+
+            <button mat-raised-button color="accent" class="full-width" (click)="navigateTo('/update-password')">
+                Actualizar contraseña
+            </button>
+        </form>
+    </mat-card>
+</div>

@@ -5,6 +5,8 @@ import { HomeComponent } from "./main/home/home.component";
 import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { authGuard } from './guards/auth.guard';
+import { ProfileComponent } from './main/profile/profile.component';
+import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
 
 export const routes: Routes = [
   {
@@ -16,12 +18,12 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-    {
+  {
     path: 'register',
     component: RegisterComponent
   },
 
-    {
+  {
     path: 'forgot-password',
     component: ForgotPasswordComponent
   },
@@ -29,7 +31,9 @@ export const routes: Routes = [
     path: '',
     component: HeaderComponent,
     children: [
-      { path: 'home', component: HomeComponent,  canActivate: [authGuard] },
+      { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+      { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+        { path: 'update-password', component: UpdatePasswordComponent, canActivate: [authGuard] },
     ]
   }
 ];
