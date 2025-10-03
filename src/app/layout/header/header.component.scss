@@ -1,31 +1,42 @@
 .sidenav-container {
-    height: 100vh;
+  height: 100vh;
 }
-
 
 .sidenav-menu {
-    width: 25%;
-    height: 100%;
-    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
-        0 6px 10px 0 rgba(0, 0, 0, 0.14),
-        0 1px 18px 0 rgba(0, 0, 0, 0.12);
+  width: 25%;
+  height: 100%;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
+              0 6px 10px 0 rgba(0, 0, 0, 0.14),
+              0 1px 18px 0 rgba(0, 0, 0, 0.12);
 }
 
-
-
 .mat-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-        0 4px 5px 0 rgba(0, 0, 0, 0.14),
-        0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
+              0 4px 5px 0 rgba(0, 0, 0, 0.14),
+              0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
 }
 
 .toolbar-spacer {
-    flex: 1 1 auto;
+  flex: 1 1 auto; 
+}
+
+button[mat-button] {
+  text-transform: none;  
+  border: none;         
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;    
+}
+
+button[mat-button] mat-icon {
+  margin-right: 4px;     
 }
 
 .main-content {
-    padding: 20px;
+  padding: 20px;
 }
