@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +31,7 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 export class RegisterComponent {
   registerForm: FormGroup;
   isLoading = false;
-  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private dialog: MatDialog) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
       cedula: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
@@ -101,15 +103,36 @@ export class RegisterComponent {
     this.apiService.post<any>('register', body).subscribe({
       next: (res) => {
         this.isLoading = false;
-        alert('Usuario registrado correctamente, Por favor Inicia Sesión');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: 'Usuario registrado correctamente. Por favor Inicia Sesión',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
         this.router.navigate(['/login']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         if (err.status === 422) {
-          alert('El usuario ya se encuentra registrado');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'El usuario ya se encuentra registrado',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         } else {
-          alert('Ha ocurrido un error, por favor inténtalo más tarde');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Ha ocurrido un error, por favor inténtalo más tarde',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         }
       }
     });

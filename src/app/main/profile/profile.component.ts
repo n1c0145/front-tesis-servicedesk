@@ -9,6 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { LoadingComponent } from '../../layout/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-profile',
@@ -29,7 +31,8 @@ export class ProfileComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +67,14 @@ export class ProfileComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        alert("Ha ocurrido un error, por favor intentalo mas tarde");
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error, por favor inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
       }
     });
   }
@@ -83,12 +93,25 @@ export class ProfileComponent {
     this.apiService.patch<any>(`update-profile/${id}`, body, token).subscribe({
       next: () => {
         this.isLoading = false;
-        alert('Perfil actualizado con éxito');
-        window.location.reload();
+         this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: 'Perfil actualizado con éxito',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
       },
       error: () => {
         this.isLoading = false;
-        alert('Ha ocurrido un error, por favor intentalo más tarde');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error, por favor inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
       }
     });
   }

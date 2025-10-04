@@ -12,7 +12,7 @@ import { ApiService } from '../../services/api.service';
 import { HttpClientModule } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent, AlertDialogData } from '../../layout/alert-dialog/alert-dialog.component';
+import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 
 
 @Component({
@@ -70,9 +70,9 @@ export class LoginComponent {
         localStorage.setItem('id', res.user.id.toString());
         localStorage.setItem('roleId', res.user.role_id.toString());
         localStorage.setItem('tokenExpiresAt', expiresAt.toString());
-
-        this.router.navigate(['/home']);
         this.isLoading = false;
+        this.router.navigate(['/home']);
+
       },
       error: (err) => {
         this.isLoading = false;

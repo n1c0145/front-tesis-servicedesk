@@ -10,6 +10,8 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-update-password',
@@ -26,7 +28,7 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 export class UpdatePasswordComponent {
   passwordForm: FormGroup;
   isLoading = false;
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router, private dialog: MatDialog) {
     this.passwordForm = this.fb.group({
       old_password: ['', Validators.required],
       new_password: ['', [Validators.required, this.passwordValidator]],
@@ -79,15 +81,36 @@ export class UpdatePasswordComponent {
     this.apiService.post<any>('change-password', body, token).subscribe({
       next: () => {
         this.isLoading = false;
-        alert('Contraseña actualizada con éxito');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: 'Contraseña actualizada con éxito',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
         this.router.navigate(['/profile']);
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         if (err.status === 500) {
-          alert('La contraseña antigua es incorrecta');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'La contraseña antigua es incorrecta',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         } else {
-          alert('Ha ocurrido un error, por favor intentalo más tarde');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Ha ocurrido un error, por favor intentalo más tarde',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         }
       }
     });

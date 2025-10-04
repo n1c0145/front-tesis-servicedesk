@@ -11,6 +11,8 @@ import { ApiService } from '../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoadingComponent } from '../../layout/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-forgot-password',
@@ -29,7 +31,7 @@ export class ForgotPasswordComponent {
   emailForm: FormGroup;
   resetForm: FormGroup;
   isLoading = false;
-  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private apiService: ApiService, private router: Router, private dialog: MatDialog) {
     // Paso 1: correo
     this.emailForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]]
@@ -80,15 +82,36 @@ export class ForgotPasswordComponent {
 
         localStorage.setItem('forgotPasswordId', res.user.id.toString());
         this.isLoading = false;
-        alert(res.message || 'Código enviado al correo.');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: res.message || 'Código enviado al correo.',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
         stepper.next();
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         if (err.status === 422) {
-          alert('El usuario no se encuentra registrado');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'El usuario no se encuentra registrado',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         } else {
-          alert('Ha ocurrido un error, por favor inténtalo más tarde');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Ha ocurrido un error, por favor inténtalo más tarde',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         }
       }
     });
@@ -109,16 +132,37 @@ export class ForgotPasswordComponent {
     this.apiService.post<any>('reset-password', body).subscribe({
       next: (res) => {
         this.isLoading = false;
-        alert('Contraseña actualizada correctamente. Por favor inicia sesión.');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: 'Contraseña actualizada correctamente. Por favor inicia sesión.',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
         localStorage.removeItem('forgotPasswordId');
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
         this.isLoading = false;
         if (err.status === 400) {
-          alert('Código inválido, ingresa nuevamente');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Código inválido, ingresa nuevamente.',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         } else {
-          alert('Ha ocurrido un problema, por favor inténtalo nuevamente.');
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Ha ocurrido un problema, por favor inténtalo nuevamente.',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
         }
       }
     });
