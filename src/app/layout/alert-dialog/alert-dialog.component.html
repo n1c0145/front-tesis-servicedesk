@@ -1,0 +1,14 @@
+<div class="dialog-container">
+  <mat-icon *ngIf="data.icon === 'success'" class="dialog-icon" style="color:#4caf50;">check_circle</mat-icon>
+
+  <mat-icon *ngIf="data.icon === 'error'" class="dialog-icon" style="color:#f44336;">error</mat-icon>
+
+  <mat-icon *ngIf="data.icon === 'info'" class="dialog-icon" style="color:#2196f3;">info</mat-icon>
+
+  <div class="dialog-message">{{ data.message }}</div>
+
+  <div class="dialog-buttons">
+    <button mat-raised-button color="primary" (click)="accept()">{{ data.acceptText || 'Aceptar' }}</button>
+    <button *ngIf="data.showCancel" mat-button (click)="cancel()">{{ data.cancelText || 'Cancelar' }}</button>
+  </div>
+</div>

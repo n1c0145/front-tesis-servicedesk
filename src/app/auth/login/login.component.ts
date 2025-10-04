@@ -11,6 +11,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ApiService } from '../../services/api.service';
 import { HttpClientModule } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent, AlertDialogData } from '../../layout/alert-dialog/alert-dialog.component';
+
 
 @Component({
   selector: 'app-login',
@@ -32,7 +35,7 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 export class LoginComponent {
   loginForm: FormGroup;
   isLoading = false;
-  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private dialog: MatDialog) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
       password: ['', Validators.required]
@@ -73,7 +76,14 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading = false;
-        alert('Usuario o contraseña incorrectos');
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Usuario o contraseña incorrectos',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
 
       }
     });
