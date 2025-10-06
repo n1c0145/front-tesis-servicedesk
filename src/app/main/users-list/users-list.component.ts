@@ -37,23 +37,23 @@ export class UsersListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-      
-          this.dialog.open(AlertDialogComponent, {
-        data: {
-          icon: 'error',
-          message: 'Ha ocurrido un error, por favor inténtalo más tarde',
-          showCancel: false,
-          acceptText: 'Aceptar'
-        }
-      });
 
-      this.isLoading = false;
-    }
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error, por favor inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+
+        this.isLoading = false;
+      }
     });
-}
+  }
 
-editUser(userId: number): void {
-  console.log('Editar usuario con ID:', userId);
+  editUser(userId: number): void {
+    this.router.navigate(['/manage-profile', userId]);
 
-}
+  }
 }

@@ -8,6 +8,7 @@ import { authGuard } from './guards/auth.guard';
 import { ProfileComponent } from './main/profile/profile.component';
 import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
 import { UsersListComponent } from './main/users-list/users-list.component';
+import { ManageProfileComponent } from './main/manage-profile/manage-profile.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
       { path: 'update-password', component: UpdatePasswordComponent, canActivate: [authGuard] },
       { path: 'users-list', component: UsersListComponent, canActivate: [authGuard] },
+      { path: 'manage-profile/:id', component: ManageProfileComponent, canActivate: [authGuard] },
     ]
   }
 ];
