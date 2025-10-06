@@ -36,7 +36,7 @@ export class ProfileComponent {
   ) { }
 
   ngOnInit(): void {
-    this.isLoading = true;
+
     this.profileForm = this.fb.group({
       correo: [{ value: '', disabled: true }],
       cedula: [{ value: '', disabled: true }],
@@ -49,6 +49,7 @@ export class ProfileComponent {
   }
 
   loadProfile(): void {
+    this.isLoading = true;
     const id = localStorage.getItem('id');
     const token = localStorage.getItem('accessToken') || undefined;
 
@@ -93,7 +94,7 @@ export class ProfileComponent {
     this.apiService.patch<any>(`update-profile/${id}`, body, token).subscribe({
       next: () => {
         this.isLoading = false;
-         this.dialog.open(AlertDialogComponent, {
+        this.dialog.open(AlertDialogComponent, {
           data: {
             icon: 'success',
             message: 'Perfil actualizado con éxito',

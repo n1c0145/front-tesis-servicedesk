@@ -7,6 +7,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
 import { authGuard } from './guards/auth.guard';
 import { ProfileComponent } from './main/profile/profile.component';
 import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
+import { UsersListComponent } from './main/users-list/users-list.component';
 
 export const routes: Routes = [
   {
@@ -33,7 +34,8 @@ export const routes: Routes = [
     children: [
       { path: 'home', component: HomeComponent, canActivate: [authGuard] },
       { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-        { path: 'update-password', component: UpdatePasswordComponent, canActivate: [authGuard] },
+      { path: 'update-password', component: UpdatePasswordComponent, canActivate: [authGuard] },
+      { path: 'users-list', component: UsersListComponent, canActivate: [authGuard] },
     ]
   }
 ];
