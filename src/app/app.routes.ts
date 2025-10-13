@@ -5,10 +5,10 @@ import { HomeComponent } from "./main/home/home.component";
 import { RegisterComponent } from './auth/register/register.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import { authGuard } from './guards/auth.guard';
-import { ProfileComponent } from './main/profile/profile.component';
+import { ProfileComponent } from './main/profiles/profile/profile.component';
 import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
-import { UsersListComponent } from './main/users-list/users-list.component';
-import { ManageProfileComponent } from './main/manage-profile/manage-profile.component';
+import { UsersListComponent } from './main/profiles/users-list/users-list.component';
+import { ManageProfileComponent } from './main/profiles/manage-profile/manage-profile.component';
 
 export const routes: Routes = [
   {

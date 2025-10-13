@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,9 +8,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { LoadingComponent } from '../../layout/loading/loading.component';
+import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-profile',

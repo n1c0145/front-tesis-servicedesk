@@ -7,11 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
-import { LoadingComponent } from '../../layout/loading/loading.component';
+import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-users-list',
