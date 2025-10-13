@@ -1,1 +1,55 @@
-<p>new-project works!</p>
+<div class="create-container">
+  <mat-card class="create-card">
+    <h1>Crear Proyecto</h1>
+
+    <form [formGroup]="form">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" placeholder="Ej: Cooperativa 23 de Julio">
+        <mat-error *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+          Ingresa un nombre válido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="descripcion" placeholder="Describe el proyecto"></textarea>
+        <mat-error *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+          Ingresa una descripción
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Agregar Usuarios*</mat-label>
+        <input
+          matInput
+          formControlName="userSearch"
+          placeholder="Buscar usuario..."
+          [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addUser($event.option.value)">
+          <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+            {{ user.nombre }} {{ user.apellido }} - {{ user.puesto }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-chip-listbox class="chip-list" *ngIf="selectedUsers.length > 0">
+        <mat-chip *ngFor="let user of selectedUsers" (removed)="removeUser(user)">
+          {{ user.nombre }} {{ user.apellido }} - {{ user.puesto }}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </mat-chip-listbox>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        [disabled]="form.invalid || selectedUsers.length === 0"
+        (click)="save()">
+        Crear Proyecto
+      </button>
+    </form>
+  </mat-card>
+</div>
+
+<app-loading [loading]="isLoading"></app-loading>

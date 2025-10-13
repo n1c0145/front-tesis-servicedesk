@@ -9,6 +9,9 @@ import { ProfileComponent } from './main/profiles/profile/profile.component';
 import { UpdatePasswordComponent } from './auth/update-password/update-password.component';
 import { UsersListComponent } from './main/profiles/users-list/users-list.component';
 import { ManageProfileComponent } from './main/profiles/manage-profile/manage-profile.component';
+import { ProjectsListComponent } from './main/projects/projects-list/projects-list.component';
+import { NewProjectComponent } from './main/projects/new-project/new-project.component';
+import { UpdateProjectComponent } from './main/projects/update-project/update-project.component';
 
 export const routes: Routes = [
   {
@@ -38,6 +41,9 @@ export const routes: Routes = [
       { path: 'update-password', component: UpdatePasswordComponent, canActivate: [authGuard] },
       { path: 'users-list', component: UsersListComponent, canActivate: [authGuard] },
       { path: 'manage-profile/:id', component: ManageProfileComponent, canActivate: [authGuard] },
+      { path: 'projects-list', component: ProjectsListComponent, canActivate: [authGuard] },
+      { path: 'new-project', component: NewProjectComponent, canActivate: [authGuard] },
+      { path: 'update-project/:id', component: UpdateProjectComponent, canActivate: [authGuard] },
     ]
   }
 ];
