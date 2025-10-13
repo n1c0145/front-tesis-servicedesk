@@ -2,55 +2,24 @@
   padding: 20px;
 }
 
-h2 {
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #333;
+mat-form-field {
+  margin-bottom: 15px;
 }
 
-/* Asegura que la tabla Material se muestre correctamente */
-table {
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  border-collapse: collapse;
-}
-
-/* Cabeceras visibles y con buen contraste */
-th.mat-header-cell {
-  background-color: #1976d2;
-  color: white;
-  text-transform: uppercase;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* Filas alternadas (sin romper Material) */
-tr.mat-row:nth-child(even) {
-  background-color: #f8f8f8;
-}
-
-/* Celdas */
-td.mat-cell {
-  font-size: 14px;
-  color: #333;
-}
-
-/* Estados con color */
 .activo {
-  color: #2e7d32;
-  font-weight: bold;
+  color: #388e3c;
+  font-weight: 600;
 }
 
 .bloqueado {
   color: #d32f2f;
-  font-weight: bold;
+  font-weight: 600;
 }
 
-/* Texto de carga */
-.loading {
-  text-align: center;
-  font-size: 16px;
-  color: #555;
-  margin-top: 40px;
+table {
+  width: 100%;
+}
+
+mat-paginator {
+  margin-top: 15px;
 }
