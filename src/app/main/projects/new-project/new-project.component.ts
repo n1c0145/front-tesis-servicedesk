@@ -122,13 +122,15 @@ export class NewProjectComponent {
   }
 
   save(): void {
-    if (this.form.invalid || this.selectedUsers.length === 0) return;
 
     this.isLoading = true;
+
+    const userId = localStorage.getItem('id');
     const body = {
       nombre: this.form.get('nombre')!.value,
       descripcion: this.form.get('descripcion')!.value,
-      user_ids: this.selectedUsers.map(u => u.id)
+      user_ids: this.selectedUsers.map(u => u.id),
+      created_by: userId
     };
     const token = localStorage.getItem('accessToken') || undefined;
     this.apiService.post<any>('create-projects', body, token).subscribe({

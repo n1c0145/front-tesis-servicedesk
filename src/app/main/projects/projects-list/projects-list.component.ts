@@ -32,7 +32,7 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
 })
 export class ProjectsListComponent {
 
-  displayedColumns: string[] = ['nombre', 'descripcion', 'fechaCreacion', 'numUsuarios', 'acciones'];
+  displayedColumns: string[] = ['nombre', 'descripcion', 'creadoPor', 'numUsuarios', 'acciones'];
   dataSource = new MatTableDataSource<any>([]);
   isLoading = false;
 
@@ -75,6 +75,8 @@ export class ProjectsListComponent {
                 return new Date(item.created_at);
               case 'numUsuarios':
                 return item.numUsuarios;
+              case 'creadoPor':
+                return `${item.creator?.nombre ?? ''} ${item.creator?.apellido ?? ''}`.toLowerCase();
               default:
                 return (item[property] ?? '').toString().toLowerCase();
             }
@@ -88,12 +90,14 @@ export class ProjectsListComponent {
             const descripcion = data.descripcion?.toLowerCase() || '';
             const fecha = data.created_at?.toLowerCase() || '';
             const numUsuarios = data.numUsuarios?.toString() || '';
+            const creador = `${data.creator?.nombre ?? ''} ${data.creator?.apellido ?? ''}`.toLowerCase();
 
             return (
               nombre.includes(normalizedFilter) ||
               descripcion.includes(normalizedFilter) ||
               fecha.includes(normalizedFilter) ||
-              numUsuarios.includes(normalizedFilter)
+              numUsuarios.includes(normalizedFilter) ||
+              creador.includes(normalizedFilter)
             );
           };
         });

@@ -5,7 +5,7 @@
     <form [formGroup]="form">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre" placeholder="Ej: Cooperativa 23 de Julio">
+        <input matInput formControlName="nombre" placeholder="Escribe un nombre">
         <mat-error *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
           Ingresa un nombre válido
         </mat-error>
