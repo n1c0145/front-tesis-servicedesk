@@ -12,6 +12,8 @@ import { ManageProfileComponent } from './main/profiles/manage-profile/manage-pr
 import { ProjectsListComponent } from './main/projects/projects-list/projects-list.component';
 import { NewProjectComponent } from './main/projects/new-project/new-project.component';
 import { UpdateProjectComponent } from './main/projects/update-project/update-project.component';
+import { TicketListComponent } from './main/tickets/ticket-list/ticket-list.component';
+import { NewTicketComponent } from './main/tickets/new-ticket/new-ticket.component';
 
 export const routes: Routes = [
   {
@@ -44,6 +46,8 @@ export const routes: Routes = [
       { path: 'projects-list', component: ProjectsListComponent, canActivate: [authGuard] },
       { path: 'new-project', component: NewProjectComponent, canActivate: [authGuard] },
       { path: 'update-project/:id', component: UpdateProjectComponent, canActivate: [authGuard] },
+      { path: 'ticket-list', component: TicketListComponent, canActivate: [authGuard] },
+      { path: 'new-ticket', component: NewTicketComponent, canActivate: [authGuard] },
     ]
   }
 ];

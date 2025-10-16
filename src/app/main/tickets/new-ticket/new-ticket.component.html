@@ -1,0 +1,49 @@
+<mat-card>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Proyecto</mat-label>
+      <mat-select formControlName="project_id">
+        <mat-option *ngFor="let p of proyectos" [value]="p.project_id">
+          {{ p.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="titulo">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="descripcion"></textarea>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="sla">¿Aplica SLA?</mat-checkbox>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Mensaje inicial</mat-label>
+      <textarea matInput formControlName="mensaje_inicial"></textarea>
+    </mat-form-field>
+
+    <ngx-file-drop (onFileDrop)="onFileDrop($event)">
+      <ng-template ngx-file-drop-content-tmp>
+        <mat-icon>cloud_upload</mat-icon>
+        <p>Arrastra archivos aquí o</p>
+<button mat-button type="button" (click)="fileInput.click()">Examinar</button>
+        <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)">
+      </ng-template>
+    </ngx-file-drop>
+
+    <mat-list>
+      <mat-list-item *ngFor="let file of archivos">
+        {{ file.name }}
+        <button mat-icon-button (click)="eliminarArchivo(file.name)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+    <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
+  </form>
+</mat-card>

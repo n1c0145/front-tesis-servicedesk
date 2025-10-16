@@ -12,7 +12,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-   // GET
+  // GET
   get<T>(endpoint: string, token?: string): Observable<T> {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}`, {
       headers: this.getHeaders(token)
@@ -21,9 +21,16 @@ export class ApiService {
 
   // POST
   post<T>(endpoint: string, body: any, token?: string): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, {
-      headers: this.getHeaders(token)
-    });
+    const isFormData = body instanceof FormData;
+
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    if (!isFormData) {
+      headers = headers.set('Content-Type', 'application/json');
+    }
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers });
   }
 
   // PATCH
