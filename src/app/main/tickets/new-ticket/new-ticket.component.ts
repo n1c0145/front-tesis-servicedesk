@@ -112,10 +112,22 @@ export class NewTicketComponent implements OnInit {
   }
 
   cargarUsuariosProyecto(): void {
-    this.isLoading = true;
     const projectId = this.form.get('project_id')?.value;
-    if (!projectId) return;
 
+    if (!projectId) {
+      this.isLoading = false;
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          icon: 'info',
+          message: 'Debes seleccionar un proyecto antes de asignar un usuario',
+          showCancel: false,
+          acceptText: 'Aceptar'
+        }
+      });
+      return;
+    }
+
+    this.isLoading = true;
     const token = localStorage.getItem('accessToken') || undefined;
 
     this.apiService.post<any>('users-byproject', { project_id: projectId }, token).subscribe({
@@ -154,37 +166,37 @@ export class NewTicketComponent implements OnInit {
     input.value = '';
   }
 
-validarYAgregarArchivo(file: File): void {
-  const ext = file.name.split('.').pop()?.toLowerCase();
-  const validExt = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
-  const maxSize = 10 * 1024 * 1024; 
+  validarYAgregarArchivo(file: File): void {
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    const validExt = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
+    const maxSize = 10 * 1024 * 1024;
 
-  if (!validExt.includes(ext || '') || file.size > maxSize) {
-    this.dialog.open(AlertDialogComponent, {
-      data: {
-        icon: 'error',
-        message: 'Solo se permiten archivos jpg, jpeg, png, pdf, doc, docx y máximo 10 MB',
-        showCancel: false,
-        acceptText: 'Aceptar'
-      }
-    });
-    return;
+    if (!validExt.includes(ext || '') || file.size > maxSize) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          icon: 'error',
+          message: 'Solo se permiten archivos jpg, jpeg, png, pdf, doc, docx y máximo 10 MB',
+          showCancel: false,
+          acceptText: 'Aceptar'
+        }
+      });
+      return;
+    }
+
+    if (this.archivos.some(f => f.name === file.name)) {
+      this.dialog.open(AlertDialogComponent, {
+        data: {
+          icon: 'error',
+          message: 'El archivo ya ha sido agregado',
+          showCancel: false,
+          acceptText: 'Aceptar'
+        }
+      });
+      return;
+    }
+
+    this.archivos.push(file);
   }
-
-  if (this.archivos.some(f => f.name === file.name)) {
-    this.dialog.open(AlertDialogComponent, {
-      data: {
-        icon: 'error',
-        message: 'El archivo ya ha sido agregado',
-        showCancel: false,
-        acceptText: 'Aceptar'
-      }
-    });
-    return;
-  }
-
-  this.archivos.push(file);
-}
 
   eliminarArchivo(nombre: string): void {
     this.archivos = this.archivos.filter(f => f.name !== nombre);
