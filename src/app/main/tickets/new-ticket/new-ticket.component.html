@@ -1,49 +1,106 @@
-<mat-card>
-  <form [formGroup]="form">
-    <mat-form-field appearance="fill">
-      <mat-label>Proyecto</mat-label>
-      <mat-select formControlName="project_id">
-        <mat-option *ngFor="let p of proyectos" [value]="p.project_id">
-          {{ p.nombre }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<div class="create-container">
+  <mat-card class="create-card">
+    <h1>Crear Ticket</h1>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Título</mat-label>
-      <input matInput formControlName="titulo">
-    </mat-form-field>
+    <form [formGroup]="form" (ngSubmit)="guardar()">
 
-    <mat-form-field appearance="fill">
-      <mat-label>Descripción</mat-label>
-      <textarea matInput formControlName="descripcion"></textarea>
-    </mat-form-field>
+      <!-- Proyecto -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Proyecto</mat-label>
+        <mat-select formControlName="project_id" (selectionChange)="onProjectChange()">
+          <mat-option *ngFor="let p of proyectos" [value]="p.project_id">
+            {{ p.nombre }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('project_id')?.invalid && form.get('project_id')?.touched">
+          Selecciona un proyecto
+        </mat-error>
+      </mat-form-field>
 
-    <mat-checkbox formControlName="sla">¿Aplica SLA?</mat-checkbox>
+      <!-- Título -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="titulo" placeholder="Escribe un título">
+        <mat-error *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+          Ingresa un título
+        </mat-error>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Mensaje inicial</mat-label>
-      <textarea matInput formControlName="mensaje_inicial"></textarea>
-    </mat-form-field>
+      <!-- Descripción -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="descripcion" placeholder="Describe el ticket"></textarea>
+      </mat-form-field>
 
-    <ngx-file-drop (onFileDrop)="onFileDrop($event)">
-      <ng-template ngx-file-drop-content-tmp>
-        <mat-icon>cloud_upload</mat-icon>
-        <p>Arrastra archivos aquí o</p>
-<button mat-button type="button" (click)="fileInput.click()">Examinar</button>
-        <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)">
-      </ng-template>
-    </ngx-file-drop>
+      <!-- SLA -->
+      <mat-checkbox formControlName="sla">¿Aplica SLA?</mat-checkbox>
 
-    <mat-list>
-      <mat-list-item *ngFor="let file of archivos">
-        {{ file.name }}
-        <button mat-icon-button (click)="eliminarArchivo(file.name)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
+      <!-- Mensaje inicial -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Mensaje inicial</mat-label>
+        <textarea matInput formControlName="mensaje_inicial" placeholder="Escribe un mensaje"></textarea>
+        <mat-error *ngIf="form.get('mensaje_inicial')?.invalid && form.get('mensaje_inicial')?.touched">
+          Ingresa un mensaje inicial
+        </mat-error>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
-  </form>
-</mat-card>
+      <!-- Archivos -->
+      <ngx-file-drop (onFileDrop)="onFileDrop($event)">
+        <ng-template ngx-file-drop-content-tmp>
+          <mat-icon>cloud_upload</mat-icon>
+          <p>Arrastra archivos aquí o</p>
+          <button mat-button type="button" (click)="fileInput.click()">Examinar</button>
+          <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)">
+        </ng-template>
+      </ngx-file-drop>
+
+      <mat-list *ngIf="archivos.length > 0">
+        <mat-list-item *ngFor="let file of archivos">
+          {{ file.name }}
+          <button mat-icon-button (click)="eliminarArchivo(file.name)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+
+    <!-- Opciones avanzadas -->
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Opciones avanzadas
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-checkbox formControlName="asignarBandeja" (change)="onCheckBandeja()">
+    Asignar a bandeja general
+  </mat-checkbox>
+
+  <mat-checkbox formControlName="asignarUsuario" (change)="onCheckUsuario()">
+    Asignar a un usuario específico
+  </mat-checkbox>
+
+  <mat-form-field *ngIf="form.get('asignarUsuario')?.value" appearance="fill" class="full-width">
+    <mat-label>Usuario</mat-label>
+    <mat-select formControlName="usuarioAsignado">
+      <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
+        {{ u.user_name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('usuarioAsignado')?.invalid && form.get('usuarioAsignado')?.touched">
+      Selecciona un usuario
+    </mat-error>
+  </mat-form-field>
+</mat-expansion-panel>
+
+
+      <!-- Botón guardar -->
+      <button mat-raised-button color="primary" class="full-width" type="submit"
+        [disabled]="form.invalid || isLoading">
+        {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
+      </button>
+
+    </form>
+  </mat-card>
+
+  <app-loading [loading]="isLoading"></app-loading>
+</div>

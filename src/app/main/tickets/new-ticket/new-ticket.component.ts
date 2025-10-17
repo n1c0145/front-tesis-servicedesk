@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,13 +11,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { NgxFileDropEntry, FileSystemFileEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { ApiService } from '../../../services/api.service';
+import { LoadingComponent } from '../../../layout/loading/loading.component';
+import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-new-ticket',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
@@ -26,7 +29,10 @@ import { ApiService } from '../../../services/api.service';
     MatIconModule,
     MatCardModule,
     MatListModule,
-    NgxFileDropModule
+    NgxFileDropModule,
+    LoadingComponent,
+    ReactiveFormsModule,
+    MatExpansionModule
   ],
   templateUrl: './new-ticket.component.html',
   styleUrl: './new-ticket.component.scss'
@@ -34,34 +40,104 @@ import { ApiService } from '../../../services/api.service';
 export class NewTicketComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-
+  form!: FormGroup;
   proyectos: any[] = [];
   archivos: File[] = [];
-  form!: FormGroup;
+  usuariosProyecto: any[] = [];
+  isLoading = false;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {}
+  constructor(private fb: FormBuilder, private apiService: ApiService, private dialog: MatDialog,) { }
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      titulo: [''],
+      titulo: ['', Validators.required],
       descripcion: [''],
-      project_id: [''],
+      project_id: ['', Validators.required],
       sla: [false],
-      mensaje_inicial: ['']
+      mensaje_inicial: ['', Validators.required],
+      asignarBandeja: [true],
+      asignarUsuario: [false],
+      usuarioAsignado: ['']
     });
 
     this.cargarProyectos();
   }
 
   cargarProyectos(): void {
+    this.isLoading = true;
     const token = localStorage.getItem('accessToken') || undefined;
     const user_id = localStorage.getItem('id');
 
-    this.apiService.post<any>('projects-byuser', { user_id }, token).subscribe(res => {
-      this.proyectos = res;
+    this.apiService.post<any>('projects-byuser', { user_id }, token).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.proyectos = res;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error, inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+      }
     });
   }
 
+  onProjectChange(): void {
+    if (this.form.get('asignarUsuario')?.value) {
+      this.cargarUsuariosProyecto();
+    }
+  }
+
+  onCheckBandeja(): void {
+    if (this.form.get('asignarBandeja')?.value) {
+      this.form.get('asignarUsuario')?.setValue(false);
+      this.usuariosProyecto = [];
+      this.form.get('usuarioAsignado')?.setValue('');
+    }
+  }
+
+  onCheckUsuario(): void {
+    if (this.form.get('asignarUsuario')?.value) {
+      this.form.get('asignarBandeja')?.setValue(false);
+      this.cargarUsuariosProyecto();
+    } else {
+      this.usuariosProyecto = [];
+      this.form.get('usuarioAsignado')?.setValue('');
+    }
+  }
+
+  cargarUsuariosProyecto(): void {
+    this.isLoading = true;
+    const projectId = this.form.get('project_id')?.value;
+    if (!projectId) return;
+
+    const token = localStorage.getItem('accessToken') || undefined;
+
+    this.apiService.post<any>('users-byproject', { project_id: projectId }, token).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.usuariosProyecto = res;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error al cargar los usuarios del proyecto, inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+      }
+    });
+  }
+
+  // Archivos
   onFileDrop(files: NgxFileDropEntry[]): void {
     for (const droppedFile of files) {
       if (droppedFile.fileEntry.isFile) {
@@ -74,30 +150,51 @@ export class NewTicketComponent implements OnInit {
   onFileBrowse(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
-
     Array.from(input.files).forEach(file => this.validarYAgregarArchivo(file));
-    input.value = ''; // permite volver a seleccionar el mismo archivo si se elimina
+    input.value = '';
   }
 
-  validarYAgregarArchivo(file: File): void {
-    const ext = file.name.split('.').pop()?.toLowerCase();
-    const validExt = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
-    const maxSize = 10 * 1024 * 1024;
+validarYAgregarArchivo(file: File): void {
+  const ext = file.name.split('.').pop()?.toLowerCase();
+  const validExt = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
+  const maxSize = 10 * 1024 * 1024; 
 
-    if (
-      !validExt.includes(ext || '') ||
-      file.size > maxSize ||
-      this.archivos.some(f => f.name === file.name)
-    ) return;
-
-    this.archivos.push(file);
+  if (!validExt.includes(ext || '') || file.size > maxSize) {
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        icon: 'error',
+        message: 'Solo se permiten archivos jpg, jpeg, png, pdf, doc, docx y máximo 10 MB',
+        showCancel: false,
+        acceptText: 'Aceptar'
+      }
+    });
+    return;
   }
+
+  if (this.archivos.some(f => f.name === file.name)) {
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        icon: 'error',
+        message: 'El archivo ya ha sido agregado',
+        showCancel: false,
+        acceptText: 'Aceptar'
+      }
+    });
+    return;
+  }
+
+  this.archivos.push(file);
+}
 
   eliminarArchivo(nombre: string): void {
     this.archivos = this.archivos.filter(f => f.name !== nombre);
   }
 
+  // Guardar ticket
   guardar(): void {
+    if (this.form.invalid) return;
+
+    this.isLoading = true;
     const token = localStorage.getItem('accessToken') || undefined;
     const created_by = localStorage.getItem('id');
 
@@ -109,14 +206,42 @@ export class NewTicketComponent implements OnInit {
     formData.append('sla', this.form.value.sla ? '1' : '0');
     formData.append('mensaje_inicial', this.form.value.mensaje_inicial);
 
-    this.archivos.forEach(file => {
-      formData.append('archivos[]', file, file.name);
-    });
+    if (this.form.get('asignarUsuario')?.value) {
+      formData.append('assigned_to', this.form.get('usuarioAsignado')?.value);
+    }
 
-    this.apiService.post<any>('create-ticket', formData, token).subscribe(res => {
-      console.log('Ticket creado:', res);
-      this.form.reset();
-      this.archivos = [];
+    this.archivos.forEach(file => formData.append('archivos[]', file, file.name));
+
+    this.apiService.post<any>('create-ticket', formData, token).subscribe({
+      next: res => {
+        console.log('Ticket creado:', res);
+        this.form.reset({ asignarBandeja: true, asignarUsuario: false });
+        this.archivos = [];
+        this.usuariosProyecto = [];
+        this.isLoading = false;
+
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'success',
+            message: 'Ticket creado correctamente',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+      },
+      error: err => {
+        console.error(err);
+        this.isLoading = false;
+
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Ha ocurrido un error, inténtalo más tarde',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+      }
     });
   }
 }

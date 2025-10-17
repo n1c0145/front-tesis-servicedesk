@@ -1,0 +1,37 @@
+.create-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.create-card {
+  width: 600px;
+  padding: 25px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.advanced-options {
+  border-top: 1px solid #ccc;
+  margin-top: 15px;
+  padding-top: 10px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+mat-checkbox {
+  display: block;
+  margin-bottom: 10px;
+}
