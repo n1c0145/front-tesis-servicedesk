@@ -32,8 +32,19 @@
         <textarea matInput formControlName="descripcion" placeholder="Describe el ticket"></textarea>
       </mat-form-field>
 
-      <!-- SLA -->
-      <mat-checkbox formControlName="sla">¿Aplica SLA?</mat-checkbox>
+      <!-- SLA (solo clientes) -->
+      <mat-checkbox *ngIf="roleId === 4" formControlName="sla">¿Aplica SLA?</mat-checkbox>
+
+      <!-- Prioridad (solo internos) -->
+      <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="prioridad">
+          <mat-option *ngFor="let p of prioridades" [value]="p.id">{{ p.nombre }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
+          Selecciona una prioridad
+        </mat-error>
+      </mat-form-field>
 
       <!-- Mensaje inicial -->
       <mat-form-field appearance="fill" class="full-width">
@@ -63,38 +74,39 @@
         </mat-list-item>
       </mat-list>
 
-    <!-- Opciones avanzadas -->
-<mat-expansion-panel>
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      Opciones avanzadas
-    </mat-panel-title>
-  </mat-expansion-panel-header>
+      <!-- Opciones avanzadas -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Opciones avanzadas</mat-panel-title>
+        </mat-expansion-panel-header>
 
-  <mat-checkbox formControlName="asignarBandeja" (change)="onCheckBandeja()">
-    Asignar a bandeja general
-  </mat-checkbox>
+        <mat-checkbox formControlName="asignarBandeja" (change)="onCheckBandeja()">
+          Asignar a bandeja general
+        </mat-checkbox>
 
-  <mat-checkbox formControlName="asignarUsuario" (change)="onCheckUsuario()">
-    Asignar a un usuario específico
-  </mat-checkbox>
+        <mat-checkbox formControlName="asignarUsuario" (change)="onCheckUsuario()">
+          Asignar a un usuario específico
+        </mat-checkbox>
 
-  <mat-form-field *ngIf="form.get('asignarUsuario')?.value" appearance="fill" class="full-width">
-    <mat-label>Usuario</mat-label>
-    <mat-select formControlName="usuarioAsignado">
-      <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
-        {{ u.user_name }}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="form.get('usuarioAsignado')?.invalid && form.get('usuarioAsignado')?.touched">
-      Selecciona un usuario
-    </mat-error>
-  </mat-form-field>
-</mat-expansion-panel>
-
+        <mat-form-field *ngIf="form.get('asignarUsuario')?.value" appearance="fill" class="full-width">
+          <mat-label>Usuario</mat-label>
+          <mat-select formControlName="usuarioAsignado">
+            <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
+              {{ u.user_name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('usuarioAsignado')?.invalid && form.get('usuarioAsignado')?.touched">
+            Selecciona un usuario
+          </mat-error>
+        </mat-form-field>
+      </mat-expansion-panel>
 
       <!-- Botón guardar -->
-      <button mat-raised-button color="primary" class="full-width" type="submit"
+      <button
+        mat-raised-button
+        color="primary"
+        class="full-width"
+        type="submit"
         [disabled]="form.invalid || isLoading">
         {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
       </button>

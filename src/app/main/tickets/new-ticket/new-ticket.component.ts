@@ -45,15 +45,25 @@ export class NewTicketComponent implements OnInit {
   archivos: File[] = [];
   usuariosProyecto: any[] = [];
   isLoading = false;
+  roleId!: number;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private dialog: MatDialog,) { }
+  prioridades = [
+    { id: 1, nombre: 'Baja' },
+    { id: 2, nombre: 'Media' },
+    { id: 3, nombre: 'Alta' }
+  ];
+
+  constructor(private fb: FormBuilder, private apiService: ApiService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
+    this.roleId = Number(localStorage.getItem('roleId'));
+
     this.form = this.fb.group({
       titulo: ['', Validators.required],
       descripcion: [''],
       project_id: ['', Validators.required],
       sla: [false],
+      prioridad: [this.roleId !== 4 ? '' : null, this.roleId !== 4 ? Validators.required : []],
       mensaje_inicial: ['', Validators.required],
       asignarBandeja: [true],
       asignarUsuario: [false],
@@ -113,9 +123,7 @@ export class NewTicketComponent implements OnInit {
 
   cargarUsuariosProyecto(): void {
     const projectId = this.form.get('project_id')?.value;
-
     if (!projectId) {
-      this.isLoading = false;
       this.dialog.open(AlertDialogComponent, {
         data: {
           icon: 'info',
@@ -140,7 +148,7 @@ export class NewTicketComponent implements OnInit {
         this.dialog.open(AlertDialogComponent, {
           data: {
             icon: 'error',
-            message: 'Ha ocurrido un error al cargar los usuarios del proyecto, inténtalo más tarde',
+            message: 'Ha ocurrido un error al cargar los usuarios del proyecto',
             showCancel: false,
             acceptText: 'Aceptar'
           }
@@ -149,7 +157,7 @@ export class NewTicketComponent implements OnInit {
     });
   }
 
-  // Archivos
+  // Manejo de archivos
   onFileDrop(files: NgxFileDropEntry[]): void {
     for (const droppedFile of files) {
       if (droppedFile.fileEntry.isFile) {
@@ -215,8 +223,16 @@ export class NewTicketComponent implements OnInit {
     formData.append('descripcion', this.form.value.descripcion);
     formData.append('project_id', this.form.value.project_id);
     formData.append('created_by', created_by || '');
-    formData.append('sla', this.form.value.sla ? '1' : '0');
     formData.append('mensaje_inicial', this.form.value.mensaje_inicial);
+
+    // Control de prioridad y SLA según el rol
+    if (this.roleId === 4) {
+      formData.append('sla', this.form.value.sla ? '1' : '0');
+      formData.append('priority_id', '4');
+    } else {
+      formData.append('priority_id', this.form.value.prioridad);
+      formData.append('sla', '0');
+    }
 
     if (this.form.get('asignarUsuario')?.value) {
       formData.append('assigned_to', this.form.get('usuarioAsignado')?.value);
@@ -226,32 +242,19 @@ export class NewTicketComponent implements OnInit {
 
     this.apiService.post<any>('create-ticket', formData, token).subscribe({
       next: res => {
-        console.log('Ticket creado:', res);
+        this.isLoading = false;
         this.form.reset({ asignarBandeja: true, asignarUsuario: false });
         this.archivos = [];
         this.usuariosProyecto = [];
-        this.isLoading = false;
 
         this.dialog.open(AlertDialogComponent, {
-          data: {
-            icon: 'success',
-            message: 'Ticket creado correctamente',
-            showCancel: false,
-            acceptText: 'Aceptar'
-          }
+          data: { icon: 'success', message: 'Ticket creado correctamente', showCancel: false, acceptText: 'Aceptar' }
         });
       },
       error: err => {
-        console.error(err);
         this.isLoading = false;
-
         this.dialog.open(AlertDialogComponent, {
-          data: {
-            icon: 'error',
-            message: 'Ha ocurrido un error, inténtalo más tarde',
-            showCancel: false,
-            acceptText: 'Aceptar'
-          }
+          data: { icon: 'error', message: 'Ha ocurrido un error, inténtalo más tarde', showCancel: false, acceptText: 'Aceptar' }
         });
       }
     });
