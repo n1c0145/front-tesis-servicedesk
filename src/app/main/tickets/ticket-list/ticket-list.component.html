@@ -6,36 +6,49 @@
     </button>
   </div>
 
+  <!-- 🔍 Búsqueda general -->
   <mat-form-field appearance="outline" class="w-100">
     <mat-label>Buscar</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filtra por número, título, estado, prioridad, etc.">
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Filtra por número, título, estado, prioridad, etc."
+    />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 
+  <!-- 🎯 Filtros -->
   <mat-accordion>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>Filtros</mat-panel-title>
       </mat-expansion-panel-header>
 
-      <div style="display:flex; gap: 15px; flex-wrap: wrap;">
+      <div style="display:flex; gap:15px; flex-wrap:wrap;">
         <mat-form-field appearance="outline">
           <mat-label>Proyecto</mat-label>
-          <mat-select [(ngModel)]="selectedProjectId" (focus)="loadProjects()">
-            <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.nombre }}</mat-option>
-          </mat-select> </mat-form-field>
+          <mat-select [(ngModel)]="selectedProjectId">
+            <mat-option *ngFor="let project of projects" [value]="project.id">
+              {{ project.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Usuario</mat-label>
-          <mat-select  [(ngModel)]="selectedUserId" (focus)="loadUsers()">
-            <mat-option *ngFor="let user of users" [value]="user.id">{{ user.user }}</mat-option>
-          </mat-select> </mat-form-field>
+          <mat-select [(ngModel)]="selectedUserId">
+            <mat-option *ngFor="let user of users" [value]="user.id">
+              {{ user.user }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="applyDropdownFilters()">Aplicar filtro</button>
+        <button mat-raised-button color="primary" (click)="applyFilters()">Aplicar filtro</button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
 
+  <!-- 🧾 Tabla -->
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z3">
     <ng-container matColumnDef="ticket_number">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Número de Ticket</th>
@@ -50,15 +63,18 @@
     <ng-container matColumnDef="prioridad">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Prioridad</th>
       <td mat-cell *matCellDef="let ticket">
-        <span class="priority-badge" [class]="'priority-' + ticket.prioridad?.toLowerCase()">{{ ticket.prioridad
-          }}</span>
+        <span class="priority-badge" [class]="'priority-' + ticket.prioridad?.toLowerCase()">
+          {{ ticket.prioridad }}
+        </span>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="estado">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
       <td mat-cell *matCellDef="let ticket">
-        <span class="status-badge" [class]="'status-' + ticket.estado?.toLowerCase()">{{ ticket.estado }}</span>
+        <span class="status-badge" [class]="'status-' + ticket.estado?.toLowerCase()">
+          {{ ticket.estado }}
+        </span>
       </td>
     </ng-container>
 
@@ -69,14 +85,14 @@
 
     <ng-container matColumnDef="created_at">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de Apertura</th>
-      <td mat-cell *matCellDef="let ticket">{{ ticket.created_at | date:'short' }}</td>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.created_at | date: 'short' }}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[25,50,100]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>
 
 <app-loading [loading]="isLoading"></app-loading>
