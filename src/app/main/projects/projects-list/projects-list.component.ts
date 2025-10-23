@@ -128,4 +128,13 @@ export class ProjectsListComponent {
   editProject(projectId: number): void {
     this.router.navigate(['/update-project', projectId]);
   }
+
+  goToTickets(project: any): void {
+  this.router.navigate(['/ticket-list'], {
+    queryParams: {
+      projectId: project.id,
+      projectName: project.nombre
+    }
+  });
+}
 }

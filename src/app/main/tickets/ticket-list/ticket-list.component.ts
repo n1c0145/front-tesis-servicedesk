@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-list',
@@ -52,6 +54,7 @@ export class TicketListComponent implements OnInit {
   users: any[] = [];
   selectedProjectId: number | null = null;
   selectedUserId: number | null = null;
+  filterText: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -59,14 +62,43 @@ export class TicketListComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private route: ActivatedRoute
+  ) { }
 
-  ngOnInit(): void {
-    this.loadAllData();
+  async ngOnInit(): Promise<void> {
+
+    await this.loadAllData();
+
+    this.route.queryParams.subscribe(params => {
+      const projectId = params['projectId'];
+      const assignedTo = params['assigned_to'];
+      const projectName = params['projectName'];
+      const assignedName = params['assignedName'];
+
+      if (projectId) {
+        this.selectedProjectId = +projectId;
+        this.getTickets({ project_id: this.selectedProjectId });
+        const project = this.projects.find(p => p.id === this.selectedProjectId);
+        if (project) this.filterText = project.nombre || projectName;
+      }
+      else if (assignedTo) {
+        this.selectedUserId = +assignedTo;
+        this.getTickets({ assigned_to: this.selectedUserId });
+        const user = this.users.find(u => u.id === this.selectedUserId);
+        if (user) this.filterText = user.user || assignedName;
+      }
+      else {
+        this.getTickets();
+        this.filterText = '';
+        this.selectedProjectId = null;
+        this.selectedUserId = null;
+      }
+    });
   }
 
-  loadAllData(): void {
+
+  loadAllData() {
     this.isLoading = true;
     const token = localStorage.getItem('accessToken') || undefined;
 
@@ -76,7 +108,7 @@ export class TicketListComponent implements OnInit {
       this.apiService.get<any>('tickets-listusers', token).toPromise()
     ])
       .then(([tickets, projects, users]) => {
-  
+
         this.dataSource.data = tickets || [];
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
@@ -96,7 +128,6 @@ export class TicketListComponent implements OnInit {
           };
         });
 
-        // Cargar filtros
         this.projects = projects || [];
         this.users = users || [];
       })
@@ -123,12 +154,13 @@ export class TicketListComponent implements OnInit {
   applyFilters(): void {
     const filters: any = {};
     if (this.selectedProjectId) filters.project_id = this.selectedProjectId;
-    if (this.selectedUserId) filters.created_by = this.selectedUserId;
+    if (this.selectedUserId) filters.assigned_to = this.selectedUserId;
     this.getTickets(filters);
   }
 
   getTickets(filters: any = {}): void {
     this.isLoading = true;
+    this.dataSource.data = [];
     const token = localStorage.getItem('accessToken') || undefined;
 
     this.apiService.post<any>('tickets', filters, token).subscribe({
@@ -153,4 +185,14 @@ export class TicketListComponent implements OnInit {
   navigateTo(path: string): void {
     this.router.navigate([path]);
   }
+
+  filterByAssigned(userId: number, userName: string): void {
+    this.router.navigate(['/ticket-list'], {
+      queryParams: {
+        assigned_to: userId,
+        assignedName: userName
+      }
+    });
+  }
+
 }
