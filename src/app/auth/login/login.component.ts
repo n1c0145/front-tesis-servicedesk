@@ -70,6 +70,8 @@ export class LoginComponent {
         localStorage.setItem('id', res.user.id.toString());
         localStorage.setItem('roleId', res.user.role_id.toString());
         localStorage.setItem('tokenExpiresAt', expiresAt.toString());
+        localStorage.setItem('nombre', res.user.nombre);
+        localStorage.setItem('apellido', res.user.apellido);
         this.isLoading = false;
         this.router.navigate(['/home']);
 

@@ -31,4 +31,19 @@ export class HeaderComponent {
     localStorage.clear();
     this.router.navigate(['/login']);
   }
+
+  irAMiBandeja(): void {
+    const id = localStorage.getItem('id');
+    const nombre = localStorage.getItem('nombre');
+    const apellido = localStorage.getItem('apellido');
+
+
+    this.router.navigate(['/ticket-list'], {
+      queryParams: {
+        assigned_to: id,
+        assignedName: `${nombre} ${apellido}`
+      }
+    });
+  }
 }
+
