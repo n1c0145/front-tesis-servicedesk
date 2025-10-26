@@ -15,6 +15,7 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-ticket',
@@ -53,7 +54,7 @@ export class NewTicketComponent implements OnInit {
     { id: 3, nombre: 'Alta' }
   ];
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private dialog: MatDialog) {}
+  constructor(private fb: FormBuilder, private apiService: ApiService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.roleId = Number(localStorage.getItem('roleId'));
@@ -194,7 +195,7 @@ export class NewTicketComponent implements OnInit {
     if (this.archivos.some(f => f.name === file.name)) {
       this.dialog.open(AlertDialogComponent, {
         data: {
-          icon: 'error',
+          icon: 'info',
           message: 'El archivo ya ha sido agregado',
           showCancel: false,
           acceptText: 'Aceptar'
@@ -247,8 +248,11 @@ export class NewTicketComponent implements OnInit {
         this.archivos = [];
         this.usuariosProyecto = [];
 
-        this.dialog.open(AlertDialogComponent, {
+        const dialogRef = this.dialog.open(AlertDialogComponent, {
           data: { icon: 'success', message: 'Ticket creado correctamente', showCancel: false, acceptText: 'Aceptar' }
+        });
+        dialogRef.afterClosed().subscribe(() => {
+          this.router.navigate(['/ticket-list']);  
         });
       },
       error: err => {
