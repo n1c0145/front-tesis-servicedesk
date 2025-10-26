@@ -15,36 +15,67 @@
   <mat-accordion>
     <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Filtros</mat-panel-title>
+        <mat-panel-title>Filtros Avanzados</mat-panel-title>
       </mat-expansion-panel-header>
 
       <div style="display:flex; gap:15px; flex-wrap:wrap;">
         <mat-form-field appearance="outline">
           <mat-label>Proyecto</mat-label>
           <mat-select [(ngModel)]="selectedProjectId">
-            <mat-option *ngFor="let project of projects" [value]="project.id">
-              {{ project.nombre }}
-            </mat-option>
+            <mat-option *ngFor="let project of projects" [value]="project.id">{{ project.nombre }}</mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Asignado a</mat-label>
           <mat-select [(ngModel)]="selectedUserId">
-            <mat-option *ngFor="let user of users" [value]="user.id">
-              {{ user.user }}
-            </mat-option>
+            <mat-option *ngFor="let user of users" [value]="user.id">{{ user.user }}</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" (click)="applyFilters()">Aplicar filtro</button>
+        <mat-form-field appearance="outline">
+          <mat-label>Creado por</mat-label>
+          <mat-select [(ngModel)]="selectedCreatedById">
+            <mat-option *ngFor="let user of users" [value]="user.id">{{ user.user }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="selectedStatusId">
+            <mat-option *ngFor="let s of statuses" [value]="s.id">{{ s.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Prioridad</mat-label>
+          <mat-select [(ngModel)]="selectedPriorityId">
+            <mat-option *ngFor="let p of priorities" [value]="p.id">{{ p.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Rango de fechas</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start" name="startDate" />
+            <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end" name="endDate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button mat-raised-button color="primary" (click)="applyFilters()">Aplicar filtros</button>
+          <button mat-stroked-button color="warn" (click)="clearFilters()">Borrar filtros</button>
+        </div>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
 
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z3">
     <ng-container matColumnDef="ticket_number">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Número de Ticket</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Número</th>
       <td mat-cell *matCellDef="let ticket">{{ ticket.ticket_number }}</td>
     </ng-container>
 
@@ -55,32 +86,21 @@
 
     <ng-container matColumnDef="prioridad">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Prioridad</th>
-      <td mat-cell *matCellDef="let ticket">
-        <span class="priority-badge" [class]="'priority-' + ticket.prioridad?.toLowerCase()">
-          {{ ticket.prioridad }}
-        </span>
-      </td>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.prioridad }}</td>
     </ng-container>
 
     <ng-container matColumnDef="estado">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
-      <td mat-cell *matCellDef="let ticket">
-        <span class="status-badge" [class]="'status-' + ticket.estado?.toLowerCase()">
-          {{ ticket.estado }}
-        </span>
-      </td>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.estado }}</td>
     </ng-container>
 
     <ng-container matColumnDef="created_by">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Abierto por</th>
-      <td mat-cell *matCellDef="let ticket">
-        <a class="user-link" (click)="filterByAssigned(ticket.created_by_id, ticket.created_by)">
-          {{ ticket.created_by }}
-        </a>
-      </td>
+      <td mat-cell *matCellDef="let ticket">{{ ticket.created_by }}</td>
     </ng-container>
+
     <ng-container matColumnDef="created_at">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de Apertura</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
       <td mat-cell *matCellDef="let ticket">{{ ticket.created_at | date: 'short' }}</td>
     </ng-container>
 
