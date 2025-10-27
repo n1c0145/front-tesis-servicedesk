@@ -84,9 +84,11 @@ export class TicketListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.loadAllData();
+
     this.route.queryParams.subscribe(params => {
       const projectId = params['projectId'];
       const assignedTo = params['assigned_to'];
+
       if (projectId) {
         this.selectedProjectId = +projectId;
         this.getTickets({ project_id: this.selectedProjectId });
@@ -99,39 +101,40 @@ export class TicketListComponent implements OnInit {
     });
   }
 
-  loadAllData() {
+  async loadAllData(): Promise<void> {
     this.isLoading = true;
     const token = localStorage.getItem('accessToken') || undefined;
-    Promise.all([
-      this.apiService.post<any>('tickets', {}, token).toPromise(),
-      this.apiService.get<any>('tickets-listprojects', token).toPromise(),
-      this.apiService.get<any>('tickets-listusers', token).toPromise()
-    ])
-      .then(([tickets, projects, users]) => {
-        this.dataSource.data = tickets || [];
-        setTimeout(() => {
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-          this.dataSource.filterPredicate = (data, filter: string) => {
-            const normalized = filter.trim().toLowerCase();
-            return (
-              data.ticket_number?.toString().toLowerCase().includes(normalized) ||
-              data.titulo?.toLowerCase().includes(normalized) ||
-              data.prioridad?.toLowerCase().includes(normalized) ||
-              data.estado?.toLowerCase().includes(normalized) ||
-              data.created_by?.toLowerCase().includes(normalized)
-            );
-          };
-        });
-        this.projects = projects || [];
-        this.users = users || [];
-      })
-      .catch(() => {
-        this.dialog.open(AlertDialogComponent, {
-          data: { icon: 'error', message: 'Error al cargar los datos.', showCancel: false, acceptText: 'Aceptar' }
-        });
-      })
-      .finally(() => (this.isLoading = false));
+
+    try {
+      const [projects, users] = await Promise.all([
+        this.apiService.get<any>('tickets-listprojects', token).toPromise(),
+        this.apiService.get<any>('tickets-listusers', token).toPromise()
+      ]);
+
+      this.projects = projects || [];
+      this.users = users || [];
+
+      setTimeout(() => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.dataSource.filterPredicate = (data, filter: string) => {
+          const normalized = filter.trim().toLowerCase();
+          return (
+            data.ticket_number?.toString().toLowerCase().includes(normalized) ||
+            data.titulo?.toLowerCase().includes(normalized) ||
+            data.prioridad?.toLowerCase().includes(normalized) ||
+            data.estado?.toLowerCase().includes(normalized) ||
+            data.created_by?.toLowerCase().includes(normalized)
+          );
+        };
+      });
+    } catch {
+      this.dialog.open(AlertDialogComponent, {
+        data: { icon: 'error', message: 'Error al cargar los datos iniciales.', showCancel: false, acceptText: 'Aceptar' }
+      });
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   applyFilter(event: Event): void {
@@ -149,7 +152,7 @@ export class TicketListComponent implements OnInit {
           acceptText: 'Aceptar'
         }
       });
-      return; 
+      return;
     }
 
     const filters: any = {};
@@ -172,6 +175,11 @@ export class TicketListComponent implements OnInit {
     this.selectedStatusId = null;
     this.selectedPriorityId = null;
     this.dateRange = { start: null, end: null };
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {},
+      replaceUrl: true,
+    });
     this.getTickets();
   }
 
@@ -200,4 +208,7 @@ export class TicketListComponent implements OnInit {
   filterByAssigned(userId: number, userName: string): void {
     this.router.navigate(['/ticket-list'], { queryParams: { assigned_to: userId, assignedName: userName } });
   }
+  openTicket(ticketId: number): void {
+  this.router.navigate(['/tickets', ticketId]);
+}
 }
