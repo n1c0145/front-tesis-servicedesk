@@ -1,1 +1,110 @@
-<p>ticket-view works!</p>
+<ng-container *ngIf="isLoading; else content">
+    <app-loading></app-loading>
+</ng-container>
+
+<ng-template #content>
+    <mat-card class="ticket-header mat-elevation-z3">
+        <div class="header-row">
+            <div class="header-left">
+                <h2 class="ticket-title">{{ ticket.titulo }}</h2>
+                <h3 class="ticket-number">#{{ ticket.ticket_number }}</h3>
+                <p class="ticket-desc" *ngIf="ticket.descripcion">{{ ticket.descripcion }}</p>
+            </div>
+
+            <div class="header-right">
+                <button mat-flat-button color="primary" (click)="onActualizar()">Modificar</button>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <strong>Estado:</strong>
+                    <span>{{ ticket.status_name ?? '-' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Prioridad:</strong>
+                    <span>{{ ticket.priority_name ?? '-' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Proyecto:</strong>
+                    <span>{{ ticket.project_name ?? '-' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Abierto por:</strong>
+                    <span>{{ ticket.created_by_nombre ?? '-' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Asignado a:</strong>
+                    <span *ngIf="ticket.assigned_to; else bandeja">
+                        {{ ticket.assigned_to_nombre }}
+                    </span>
+                    <ng-template #bandeja>Bandeja general de {{ ticket.project_name }}</ng-template>
+                </div>
+
+                <div class="meta-item" *ngIf="ticket.closed_by_nombre">
+                    <strong>Cerrado por:</strong>
+                    <span>{{ ticket.closed_by_nombre }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Creación:</strong>
+                    <span>{{ ticket.fecha_creacion | date: 'medium' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Última actualización:</strong>
+                    <span>{{ ticket.fecha_actualizacion | date: 'medium' }}</span>
+                </div>
+
+                <div class="meta-item">
+                    <strong>Tiempo ocupado:</strong>
+                    <span>{{ ticket.time ?? '-' }} min</span>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="threads-header">
+        <h3>Hilos del Ticket</h3>
+        <button mat-stroked-button (click)="toggleAllPanels()">
+            {{ isExpandedAll ? 'Contraer todo' : 'Expandir todo' }}
+        </button>
+    </div>
+
+    <mat-accordion class="threads-accordion" multi>
+        <mat-expansion-panel *ngFor="let thread of ticket.threads" class="thread-panel" #panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="thread-header">
+                        <div class="user">{{ thread.user?.nombre_completo ?? 'Usuario' }}</div>
+                        <div class="created-at">{{ thread.created_at | date: 'medium' }}</div>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="thread-body">
+                <p class="mensaje">{{ thread.mensaje }}</p>
+
+                <div *ngIf="thread.attachments?.length" class="attachments">
+                    <strong>Adjuntos:</strong>
+                    <mat-list>
+                        <mat-list-item *ngFor="let a of thread.attachments">
+                            <a (click)="openAttachment(a.url)" href="javascript:void(0)" rel="noopener">
+                                <mat-icon mat-list-icon>attach_file</mat-icon>
+                                <span class="attachment-name">{{ a.nombre_archivo }}</span>
+                            </a>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-template>
+<app-loading [loading]="isLoading"></app-loading>

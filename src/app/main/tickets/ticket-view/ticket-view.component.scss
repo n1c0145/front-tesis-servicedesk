@@ -1,0 +1,175 @@
+.ticket-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 24px;
+}
+
+.ticket-header {
+  background-color: #fafafa;
+  border-radius: 12px;
+  padding: 16px 24px;
+
+  mat-card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+
+    .left {
+      flex: 1;
+    }
+
+    .ticket-number {
+      margin: 0;
+      color: #1976d2;
+      font-weight: 600;
+    }
+
+    .ticket-title {
+      margin: 4px 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .ticket-desc {
+      margin: 4px 0 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+
+      button {
+        color: #1976d2;
+        border-color: #1976d2;
+        font-weight: 500;
+      }
+
+      button:hover {
+        background-color: rgba(25, 118, 210, 0.08);
+      }
+    }
+  }
+
+  mat-card-content {
+    margin-top: 12px;
+  }
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 24px;
+  margin-top: 16px;
+}
+
+.meta-item {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+
+  strong {
+    color: #444;
+    font-weight: 600;
+  }
+
+  div {
+    margin-top: 2px;
+    color: #555;
+  }
+}
+
+.threads-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.thread-panel {
+  background-color: #f8f9fa;
+  border-radius: 10px !important;
+
+  ::ng-deep .mat-expansion-panel-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f5f5f5;
+  }
+
+  .thread-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.9rem;
+
+    .user {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .created-at {
+      color: #777;
+      font-size: 0.85rem;
+    }
+  }
+
+  .thread-body {
+    padding: 12px 16px;
+    background: #fff;
+
+    .mensaje {
+      margin-bottom: 8px;
+      color: #444;
+      font-size: 0.95rem;
+    }
+
+    .attachments {
+      margin-top: 8px;
+
+      strong {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      mat-list {
+        padding: 0;
+
+        mat-list-item {
+          height: 36px;
+          font-size: 0.9rem;
+          color: #1976d2;
+          cursor: pointer;
+
+          a {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+          }
+
+          a:hover {
+            text-decoration: underline;
+          }
+
+          mat-icon {
+            font-size: 18px;
+            color: #1976d2;
+          }
+        }
+      }
+    }
+  }
+}
