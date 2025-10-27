@@ -59,13 +59,13 @@ export class RegisterComponent {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/\D/g, '');
   }
- hasNonAscii(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (value && /[^\x20-\x7F]/.test(value)) {
-    return { nonAscii: true }; 
+  hasNonAscii(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (value && /[^\x20-\x7F]/.test(value)) {
+      return { nonAscii: true };
+    }
+    return null;
   }
-  return null; 
-}
 
   // Validación de contraseña
   passwordValidator(control: AbstractControl): ValidationErrors | null {
