@@ -5,12 +5,16 @@
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Correo</mat-label>
-                <input matInput placeholder="usuario&#64;dominio.com" formControlName="email">
+                <input matInput placeholder="usuario@dominio.com" formControlName="email">
                 <mat-error *ngIf="email.invalid && email.touched">
-                    Ingresa un correo válido
+                    <div *ngIf="email.errors?.['pattern'] && !email.errors?.['nonAscii']">
+                        Ingresa un correo válido
+                    </div>
+                    <div *ngIf="email.errors?.['nonAscii']">
+                        No se permiten caracteres especiales en el correo
+                    </div>
                 </mat-error>
             </mat-form-field>
-
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Cédula</mat-label>
                 <input matInput placeholder="1234567890" formControlName="cedula">
@@ -67,7 +71,8 @@
                 </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid" (click)="save()">
+            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid"
+                (click)="save()">
                 Registrarse
             </button>
         </form>

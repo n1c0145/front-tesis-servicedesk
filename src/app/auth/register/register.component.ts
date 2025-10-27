@@ -33,7 +33,11 @@ export class RegisterComponent {
   isLoading = false;
   constructor(private fb: FormBuilder, private router: Router, private apiService: ApiService, private dialog: MatDialog) {
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)]],
+      email: ['', [
+        Validators.required,
+        Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+        this.hasNonAscii
+      ]],
       cedula: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -55,6 +59,13 @@ export class RegisterComponent {
     const input = event.target as HTMLInputElement;
     input.value = input.value.replace(/\D/g, '');
   }
+ hasNonAscii(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (value && /[^\x20-\x7F]/.test(value)) {
+    return { nonAscii: true }; 
+  }
+  return null; 
+}
 
   // Validación de contraseña
   passwordValidator(control: AbstractControl): ValidationErrors | null {
