@@ -67,6 +67,23 @@
   }
 }
 
+.private-thread {
+  border: 2px solid #2196f3;
+  border-radius: 6px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.private-header {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-left: 4px solid #1976d2;
+  margin-bottom: 5px;
+  border-radius: 4px 0 0 4px;
+}
+
 .meta-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

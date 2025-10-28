@@ -45,7 +45,9 @@
                     <span *ngIf="ticket.assigned_to; else bandeja">
                         {{ ticket.assigned_to_nombre }}
                     </span>
-                    <ng-template #bandeja>Bandeja general de {{ ticket.project_name }}</ng-template>
+                    <ng-template #bandeja>
+                        Bandeja general de {{ ticket.project_name }}
+                    </ng-template>
                 </div>
 
                 <div class="meta-item" *ngIf="ticket.closed_by_nombre">
@@ -79,32 +81,77 @@
     </div>
 
     <mat-accordion class="threads-accordion" multi>
-        <mat-expansion-panel *ngFor="let thread of ticket.threads" class="thread-panel" #panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <div class="thread-header">
-                        <div class="user">{{ thread.user?.nombre_completo ?? 'Usuario' }}</div>
-                        <div class="created-at">{{ thread.created_at | date: 'medium' }}</div>
+        <ng-container *ngFor="let thread of ticket.threads">
+            <ng-container *ngIf="roleId !== 4 || thread.private === 0">
+                <mat-expansion-panel class="thread-panel" [ngClass]="{'private-thread': thread.private === 1}" #panel>
+
+                    <div *ngIf="thread.private === 1" class="private-header">
+                        Hilo Interno
                     </div>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
 
-            <div class="thread-body">
-                <p class="mensaje">{{ thread.mensaje }}</p>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <div class="thread-header">
+                                <div class="user">{{ thread.user?.nombre_completo ?? 'Usuario' }}</div>
+                                <div class="created-at">{{ thread.created_at | date: 'medium' }}</div>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
 
-                <div *ngIf="thread.attachments?.length" class="attachments">
-                    <strong>Adjuntos:</strong>
-                    <mat-list>
-                        <mat-list-item *ngFor="let a of thread.attachments">
-                            <a (click)="openAttachment(a.url)" href="javascript:void(0)" rel="noopener">
-                                <mat-icon mat-list-icon>attach_file</mat-icon>
-                                <span class="attachment-name">{{ a.nombre_archivo }}</span>
-                            </a>
-                        </mat-list-item>
-                    </mat-list>
-                </div>
-            </div>
-        </mat-expansion-panel>
+                    <div class="thread-body">
+                        <p class="mensaje">{{ thread.mensaje }}</p>
+
+                        <div *ngIf="thread.attachments?.length" class="attachments">
+                            <strong>Adjuntos:</strong>
+                            <mat-list>
+                                <mat-list-item *ngFor="let a of thread.attachments">
+                                    <a (click)="openAttachment(a.url)" href="javascript:void(0)" rel="noopener">
+                                        <mat-icon mat-list-icon>attach_file</mat-icon>
+                                        <span class="attachment-name">{{ a.nombre_archivo }}</span>
+                                    </a>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+
+                        <div *ngIf="thread.histories?.length" class="histories">
+                            <strong>Historial de cambios:</strong>
+                            <ul>
+                                <ng-container *ngFor="let h of thread.histories">
+                                    <li *ngIf="h.changes.status">
+                                        Se actualizó el estado de <strong>{{ h.changes.status.from }}</strong> a
+                                        <strong>{{ h.changes.status.to }}</strong>.
+                                    </li>
+                                    <li *ngIf="h.changes.priority">
+                                        Se actualizó la prioridad de <strong>{{ h.changes.priority.from }}</strong> a
+                                        <strong>{{ h.changes.priority.to }}</strong>.
+                                    </li>
+                                    <li *ngIf="h.changes.assigned">
+                                        Se cambió la asignación de
+                                        <ng-container *ngIf="h.changes.assigned.from.id; else fromText">
+                                            <a href="javascript:void(0)"
+                                                (click)="onAssignedClick(h.changes.assigned.from)">{{
+                                                h.changes.assigned.from.name }}</a>
+                                        </ng-container>
+                                        <ng-template #fromText><strong>{{ h.changes.assigned.from.name
+                                                }}</strong></ng-template>
+                                        a
+                                        <ng-container *ngIf="h.changes.assigned.to.id; else toText">
+                                            <a href="javascript:void(0)"
+                                                (click)="onAssignedClick(h.changes.assigned.to)">{{
+                                                h.changes.assigned.to.name }}</a>
+                                        </ng-container>
+                                        <ng-template #toText><strong>{{ h.changes.assigned.to.name
+                                                }}</strong></ng-template>.
+                                    </li>
+                                </ng-container>
+                            </ul>
+                        </div>
+
+                    </div>
+                </mat-expansion-panel>
+            </ng-container>
+        </ng-container>
     </mat-accordion>
 </ng-template>
+
 <app-loading [loading]="isLoading"></app-loading>

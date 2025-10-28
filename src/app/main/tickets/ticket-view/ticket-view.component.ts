@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
@@ -41,8 +41,9 @@ export class TicketViewComponent implements OnInit {
   isLoading = false;
   isExpandedAll = false;
   ticketId: string | number | null = null;
+  roleId!: number;
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService, private dialog: MatDialog) { }
+  constructor(private route: ActivatedRoute, private apiService: ApiService, private dialog: MatDialog, private router: Router,) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -52,7 +53,9 @@ export class TicketViewComponent implements OnInit {
         this.loadTicket(id);
       }
     });
+    this.roleId = parseInt(localStorage.getItem('roleId')!);
   }
+
 
   loadTicket(id: string | number): void {
     this.isLoading = true;
@@ -92,5 +95,9 @@ export class TicketViewComponent implements OnInit {
         panel.close();
       }
     });
+  }
+  onAssignedClick(user: { id: string | null, name: string }): void {
+    this.router.navigate(['/ticket-list'], { queryParams: { assigned_to: user.id, assignedName: user.name } });
+
   }
 }
