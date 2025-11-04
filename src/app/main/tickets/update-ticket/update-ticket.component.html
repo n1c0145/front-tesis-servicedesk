@@ -1,1 +1,12 @@
-<p>update-ticket works!</p>
+<h2 mat-dialog-title>Nuevo Hilo</h2>
+
+<mat-dialog-content>
+    <p>update-ticket works!</p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+</mat-dialog-actions>
+<app-loading [loading]="isLoading"></app-loading>

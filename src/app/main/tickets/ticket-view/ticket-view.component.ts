@@ -12,6 +12,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
+import { UpdateTicketComponent } from "../update-ticket/update-ticket.component";
 
 
 @Component({
@@ -77,8 +78,10 @@ export class TicketViewComponent implements OnInit {
   }
 
   onActualizar(): void {
-    this.dialog.open(AlertDialogComponent, {
-      data: { icon: 'info', message: 'Acción para modificar el ticket.', showCancel: false, acceptText: 'Aceptar' }
+    const dialogRef = this.dialog.open(UpdateTicketComponent, {
+      data: {
+        ticket: this.ticket
+      }
     });
   }
 

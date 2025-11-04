@@ -11,8 +11,8 @@
                 <p class="ticket-desc" *ngIf="ticket.descripcion">{{ ticket.descripcion }}</p>
             </div>
 
-            <div class="header-right">
-                <button mat-flat-button color="primary" (click)="onActualizar()">Modificar</button>
+            <div class="header-right" *ngIf="ticket.closed_by === null || ticket.status_id !== 4">
+                <button mat-flat-button color="primary" (click)="onActualizar()">Nuevo Hilo</button>
             </div>
         </div>
 
