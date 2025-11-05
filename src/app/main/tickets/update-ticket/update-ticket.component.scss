@@ -1,0 +1,77 @@
+.update-dialog-content {
+  min-width: 500px;
+  max-width: 600px;
+  padding: 0 24px;
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 0;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Espaciado entre elementos del formulario
+mat-form-field {
+  margin-bottom: 8px;
+}
+
+mat-checkbox {
+  margin: 12px 0;
+}
+
+// Área de archivos con buen espaciado
+ngx-file-drop {
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  padding: 24px 16px;
+  text-align: center;
+  margin: 16px 0;
+  background-color: #fafafa;
+}
+
+// Lista de archivos
+mat-list {
+  margin: 16px 0;
+  
+  mat-list-item {
+    height: 48px;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// Acciones del diálogo
+mat-dialog-actions {
+  padding: 16px 24px;
+  margin-bottom: 0;
+  gap: 12px;
+  
+  button {
+    min-width: 100px;
+  }
+}
+
+// Título del diálogo
+mat-dialog-title {
+  margin: 0;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
+}
+
+// Contenido del diálogo
+mat-dialog-content {
+  margin: 0;
+  padding: 20px 0;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+

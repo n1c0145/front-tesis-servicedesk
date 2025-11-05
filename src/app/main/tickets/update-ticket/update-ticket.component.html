@@ -1,12 +1,102 @@
-<h2 mat-dialog-title>Nuevo Hilo</h2>
+<h2 mat-dialog-title>Nuevo Hilo - {{ ticket?.titulo }}</h2>
 
-<mat-dialog-content>
-    <p>update-ticket works!</p>
+<mat-dialog-content class="update-dialog-content">
+    <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
+        <!-- Mensaje del hilo -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Mensaje</mat-label>
+            <textarea matInput formControlName="mensaje" placeholder="Escribe el mensaje inicial"></textarea>
+            <mat-error *ngIf="form.get('mensaje')?.invalid && form.get('mensaje')?.touched">
+                Ingresa un mensaje
+            </mat-error>
+        </mat-form-field>
 
+        <!-- Privado -->
+        <mat-checkbox *ngIf="roleId !== 4" formControlName="private">
+            ¿El hilo será privado?
+        </mat-checkbox>
+
+        <!-- Tiempo -->
+        <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
+            <mat-label>Tiempo (minutos)</mat-label>
+            <input matInput type="number" formControlName="time" min="0" placeholder="Ej: 15" />
+            <mat-error *ngIf="form.get('time')?.invalid && form.get('time')?.touched">
+                Ingresa un número entero válido
+            </mat-error>
+        </mat-form-field>
+
+        <!-- Prioridad  -->
+        <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
+            <mat-label>Prioridad</mat-label>
+            <mat-select formControlName="priority_id">
+                <mat-option [value]="ticket?.priority_id">
+                    {{ getPrioridadNombre(ticket?.priority_id) || 'Actual' }}
+                </mat-option>
+                <mat-option *ngFor="let prioridad of getPrioridadesFiltradas()" [value]="prioridad.id">
+                    {{ prioridad.nombre }}
+                </mat-option>
+            </mat-select>
+            <mat-hint>Actual: {{ getPrioridadNombre(ticket?.priority_id) || 'Sin asignar' }}</mat-hint>
+        </mat-form-field>
+
+        <!-- Estado -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="status_id">
+                <mat-option [value]="ticket?.status_id">
+                    {{ getEstadoNombre(ticket?.status_id) }}
+                </mat-option>
+                <mat-option *ngFor="let estado of getEstadosFiltrados()" [value]="estado.id">
+                    {{ estado.nombre }}
+                </mat-option>
+            </mat-select>
+            <mat-hint>Estado actual: {{ getEstadoNombre(ticket?.status_id) }}</mat-hint>
+        </mat-form-field>
+
+        <!-- Asignado a -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Asignado a</mat-label>
+            <mat-select formControlName="assigned_to">
+                <mat-option [value]="0">Bandeja general del proyecto</mat-option>
+                <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
+                    {{ u.user_name }}
+                </mat-option>
+            </mat-select>
+            <mat-hint>
+                Asignado actual: {{
+                (ticket?.assigned_to === 0 || !ticket?.assigned_to)
+                ? 'Bandeja general'
+                : ticket?.assigned_to_nombre
+                }}
+            </mat-hint>
+        </mat-form-field>
+
+        <!-- Archivos -->
+        <ngx-file-drop (onFileDrop)="onFileDrop($event)">
+            <ng-template ngx-file-drop-content-tmp>
+                <mat-icon>cloud_upload</mat-icon>
+                <p>Arrastra archivos aquí o</p>
+                <button mat-button type="button" (click)="fileInput.click()">Examinar</button>
+                <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)" />
+            </ng-template>
+        </ngx-file-drop>
+
+        <mat-list *ngIf="archivos.length > 0">
+            <mat-list-item *ngFor="let file of archivos">
+                {{ file.name }}
+                <button mat-icon-button type="button" (click)="eliminarArchivo(file.name)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </form>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="onSave()">Guardar</button>
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="button" (click)="onSave()" [disabled]="form.invalid || isLoading">
+        Guardar
+    </button>
 </mat-dialog-actions>
+
 <app-loading [loading]="isLoading"></app-loading>
