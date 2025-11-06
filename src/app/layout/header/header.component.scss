@@ -19,22 +19,40 @@
               0 1px 10px 0 rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
+  padding: 0 16px;
 }
 
 .toolbar-spacer {
-  flex: 1 1 auto; 
+  flex: 1 1 auto;
 }
 
-button[mat-button] {
-  text-transform: none;  
-  border: none;         
-  color: rgb(0, 0, 0);
+/* Avatar simple */
+.user-menu-container {
   display: flex;
-  align-items: center;    
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
 }
 
-button[mat-button] mat-icon {
-  margin-right: 4px;     
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #3f51b5;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
 }
 
 .main-content {

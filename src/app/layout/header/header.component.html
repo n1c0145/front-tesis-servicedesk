@@ -2,12 +2,12 @@
 
   <mat-sidenav #sidenav mode="side" opened="true" position="start" class="sidenav-menu">
     <mat-nav-list>
-      <a mat-list-item href="#">Inicio</a>
-      <a mat-list-item href="/profile">Perfil</a>
-      <a mat-list-item href="/users-list">Usuarios</a>
-      <a mat-list-item href="/projects-list">Proyectos</a>
-      <a mat-list-item href="/ticket-list">Tickets</a>
-      <a mat-list-item (click)="irAMiBandeja()">Mi Bandeja</a> </mat-nav-list>
+      <a mat-list-item routerLink="/">Inicio</a>
+      <a mat-list-item routerLink="/users-list">Usuarios</a>
+      <a mat-list-item routerLink="/projects-list">Proyectos</a>
+      <a mat-list-item routerLink="/ticket-list">Tickets</a>
+      <a mat-list-item (click)="irAMiBandeja()">Mi Bandeja</a>
+    </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
@@ -20,10 +20,25 @@
       <span>{{ title }}</span>
       <span class="toolbar-spacer"></span>
 
-      <button mat-button (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Cerrar sesión
-      </button>
+      <!-- Avatar  -->
+      <div class="user-menu-container" [matMenuTriggerFor]="userMenu">
+        <div class="user-avatar">
+          {{ userInitial }}
+        </div>
+        <mat-icon>expand_more</mat-icon>
+      </div>
+
+      <!-- Mini menu -->
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="goToProfile()">
+          <mat-icon>person</mat-icon>
+          <span>Perfil</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
 
     </mat-toolbar>
 
