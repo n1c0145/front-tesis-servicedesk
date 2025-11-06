@@ -1,1 +1,30 @@
-<p>notifications works!</p>
+<div class="notifications-container">
+  <h2>Notificaciones</h2>
+
+  <div class="notifications-list">
+    <mat-card
+      *ngFor="let noti of paginatedData"
+      [ngClass]="{ 'unread': !noti.read_at }"
+      class="notification-item"
+    >
+      <mat-card-content>
+        <div class="notification-header">
+          <mat-icon class="icon" color="primary">notifications</mat-icon>
+          <h3>{{ noti.data.title }}</h3>
+        </div>
+        <p class="message">{{ noti.data.message }}</p>
+        <small class="date">{{ noti.created_at | date: 'short' }}</small>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-paginator
+    [length]="dataSource.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  ></mat-paginator>
+</div>
+
+<app-loading [loading]="isLoading"></app-loading>

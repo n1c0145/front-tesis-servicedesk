@@ -1,0 +1,58 @@
+.notifications-container {
+  padding: 16px;
+
+  h2 {
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .notification-item {
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    cursor: default;
+
+    &.unread {
+      border-left: 4px solid #1976d2; /* azul Material */
+      background-color: #e3f2fd;
+    }
+
+    &:hover {
+      transform: scale(1.01);
+    }
+
+    .notification-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .icon {
+        font-size: 22px;
+      }
+    }
+
+    .message {
+      margin: 4px 0;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .date {
+      color: #777;
+      font-size: 0.8rem;
+    }
+  }
+}
