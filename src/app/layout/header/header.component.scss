@@ -4,21 +4,16 @@
 
 .sidenav-menu {
   width: 25%;
-  height: 100%;
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2),
-              0 6px 10px 0 rgba(0, 0, 0, 0.14),
-              0 1px 18px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
-.mat-toolbar {
+.main-toolbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
-              0 4px 5px 0 rgba(0, 0, 0, 0.14),
-              0 1px 10px 0 rgba(0, 0, 0, 0.12);
   display: flex;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 0 16px;
 }
 
@@ -26,7 +21,96 @@
   flex: 1 1 auto;
 }
 
-/* Avatar simple */
+.notification-container {
+  position: relative;
+  margin-right: 16px;
+}
+
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: #f44336;
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  padding: 2px 5px;
+  line-height: 1;
+}
+
+.notifications-menu {
+  margin-top: 8px !important;
+  transform: translateY(8px);
+}
+
+.notifications-dropdown {
+  background: white;
+  border-radius: 10px;
+  width: 300px;
+  max-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 8px 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.notification-item {
+  display: flex;
+  flex-direction: row;         
+  align-items: flex-start;     
+  justify-content: space-between;
+  padding: 12px 12px;          
+  border-bottom: 1px solid #eee;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.notification-content {
+  flex: 1;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.notification-item strong {
+  display: block;
+  color: #3f51b5;
+  font-size: 13px;
+}
+
+.notification-item p {
+  margin: 0;
+  color: #555;
+  font-size: 12px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.no-notifications {
+  text-align: center;
+  padding: 16px;
+  color: #777;
+}
+
+.view-all {
+  border-top: 1px solid #eee;
+  text-align: center;
+  padding: 8px;
+  color: #1976d2;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+}
+
 .user-menu-container {
   display: flex;
   align-items: center;
@@ -46,15 +130,5 @@
   font-weight: 600;
   font-size: 16px;
   text-transform: uppercase;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.user-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-}
-
-.main-content {
-  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }

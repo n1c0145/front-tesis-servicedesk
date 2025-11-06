@@ -7,12 +7,13 @@
       <a mat-list-item routerLink="/projects-list">Proyectos</a>
       <a mat-list-item routerLink="/ticket-list">Tickets</a>
       <a mat-list-item (click)="irAMiBandeja()">Mi Bandeja</a>
+      <a mat-list-item routerLink="/notifications">Notificaciones</a>
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content class="sidenav-content">
 
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" class="main-toolbar">
       <button mat-icon-button (click)="toggleSidenav()" aria-label="Toggle menu">
         <mat-icon>menu</mat-icon>
       </button>
@@ -20,7 +21,39 @@
       <span>{{ title }}</span>
       <span class="toolbar-spacer"></span>
 
-      <!-- Avatar  -->
+      <!-- Notificaciones -->
+      <div class="notification-container" [matMenuTriggerFor]="notificationsMenu">
+        <button mat-icon-button>
+          <mat-icon>notifications</mat-icon>
+          <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        </button>
+      </div>
+
+      <mat-menu #notificationsMenu="matMenu" class="notifications-menu">
+        <div class="notifications-dropdown">
+          <ng-container *ngIf="unreadNotifications.length > 0; else noNotifications">
+            <div *ngFor="let n of unreadNotifications" class="notification-item">
+              <div class="notification-content">
+                <strong>{{ n.data.title }}</strong>
+                <p>{{ n.data.message }}</p>
+              </div>
+              <button mat-icon-button color="warn" (click)="markAsRead(n.id, $event)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+
+            <div class="view-all">
+              <button mat-button color="primary" routerLink="/notifications">Ver todas</button>
+            </div>
+          </ng-container>
+
+          <ng-template #noNotifications>
+            <div class="no-notifications">No tienes notificaciones nuevas</div>
+          </ng-template>
+        </div>
+      </mat-menu>
+
+      <!--Avatar -->
       <div class="user-menu-container" [matMenuTriggerFor]="userMenu">
         <div class="user-avatar">
           {{ userInitial }}
@@ -28,9 +61,8 @@
         <mat-icon>expand_more</mat-icon>
       </div>
 
-      <!-- Mini menu -->
       <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="goToProfile()">
+        <button mat-menu-item routerLink="/profile">
           <mat-icon>person</mat-icon>
           <span>Perfil</span>
         </button>

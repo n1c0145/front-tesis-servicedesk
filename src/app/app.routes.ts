@@ -15,6 +15,7 @@ import { UpdateProjectComponent } from './main/projects/update-project/update-pr
 import { TicketListComponent } from './main/tickets/ticket-list/ticket-list.component';
 import { NewTicketComponent } from './main/tickets/new-ticket/new-ticket.component';
 import { TicketViewComponent } from './main/tickets/ticket-view/ticket-view.component';
+import { NotificationsComponent } from './main/notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -50,6 +51,7 @@ export const routes: Routes = [
       { path: 'ticket-list', component: TicketListComponent, canActivate: [authGuard] },
       { path: 'new-ticket', component: NewTicketComponent, canActivate: [authGuard] },
       { path: 'tickets/:id', component: TicketViewComponent, canActivate: [authGuard] },
+      { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
     ]
   }
 ];
