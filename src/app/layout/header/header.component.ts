@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -23,19 +24,21 @@ import { MatDialog } from '@angular/material/dialog';
     MatListModule,
     MatMenuModule,
     RouterModule,
+    MatSnackBarModule,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   title = 'Service Desk';
   userName = '';
   userInitial = '';
   unreadCount = 0;
   unreadNotifications: any[] = [];
   @ViewChild('sidenav') sidenav!: MatSidenav;
+  private pollInterval: any;
 
-  constructor(private router: Router, private apiService: ApiService, private dialog: MatDialog) { }
+  constructor(private router: Router, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     const storedName = localStorage.getItem('nombre') || 'Usuario';
@@ -43,6 +46,12 @@ export class HeaderComponent implements OnInit {
     this.userInitial = storedName.charAt(0).toUpperCase();
 
     this.loadNotifications();
+    this.startPolling();
+  }
+  ngOnDestroy(): void {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
   }
 
   loadNotifications(): void {
@@ -52,7 +61,6 @@ export class HeaderComponent implements OnInit {
 
     this.apiService.get<any>(`notifications-unread/${id}`, token).subscribe({
       next: (res) => {
-        console.log('Notificaciones:', res);
         this.unreadCount = res.unread_count || 0;
         this.unreadNotifications = res.unread_notifications || [];
       },
@@ -67,6 +75,41 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  startPolling(): void {
+    const id = localStorage.getItem('id');
+    if (!id) return;
+
+    this.pollInterval = setInterval(() => {
+      this.apiService.get<any>(`notifications-poll/${id}`).subscribe({
+        next: (res) => {
+          const newCount = res.unread_count || 0;
+          if (newCount > this.unreadCount) {
+            this.loadNotifications();
+            this.showSnackBar();
+          }
+          this.unreadCount = newCount;
+        },
+        error: (err) => {
+          this.dialog.open(AlertDialogComponent, {
+        data: {
+          icon: 'error',
+          message: 'Ha ocurrido un error con las nitificaciones. Inténtalo más tarde.',
+          showCancel: false,
+          acceptText: 'Aceptar'
+        }
+      })
+        }
+      });
+    }, 20000); 
+  }
+  private showSnackBar(): void {
+    this.snackBar.open('Tienes notificaciones nuevas', '', {
+      duration: 5000,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+      panelClass: ['snackbar-notification']
+    })
+  }
   markAsRead(notificationId: string, event?: Event): void {
     event?.stopPropagation();
 
