@@ -29,9 +29,39 @@
       <!-- Descripción -->
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Descripción</mat-label>
-        <textarea matInput formControlName="descripcion" placeholder="Describe el ticket"></textarea>
+        <textarea matInput formControlName="descripcion" placeholder="Describe el ticket"
+          (blur)="buscarSugerencias()"></textarea>
+        <mat-error *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">Ingresa la descripción
+        </mat-error>
       </mat-form-field>
 
+      <!-- Sugerencias de tickets -->
+      <div *ngIf="mostrarSugerencias">
+
+        <div>
+          <h3>Sugerencias de tickets:</h3>
+
+          <mat-slide-toggle [checked]="activarSugerencias" (change)="onToggleChange($event)">
+            {{ activarSugerencias ? 'Desactivar sugerencias' : 'Activar sugerencias' }}
+          </mat-slide-toggle>
+        </div>
+
+        <div *ngIf="activarSugerencias">
+
+          <div *ngIf="sugerencias.length === 0">
+            No existen tickets sugeridos
+          </div>
+
+          <ul *ngIf="sugerencias.length > 0" class="sugerencias-box">
+            <li *ngFor="let s of sugerencias">
+              <a (click)="abrirTicketSugerido(s.ticket_id)">
+                #{{ s.ticket_number }} - {{ s.titulo }}
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
       <!-- SLA (solo clientes) -->
       <mat-checkbox *ngIf="roleId === 4" formControlName="sla">¿Aplica SLA?</mat-checkbox>
 
@@ -102,12 +132,7 @@
       </mat-expansion-panel>
 
       <!-- Botón guardar -->
-      <button
-        mat-raised-button
-        color="primary"
-        class="full-width"
-        type="submit"
-        [disabled]="form.invalid || isLoading">
+      <button mat-raised-button color="primary" class="full-width" type="submit" [disabled]="form.invalid || isLoading">
         {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
       </button>
 

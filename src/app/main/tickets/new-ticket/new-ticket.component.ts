@@ -16,6 +16,7 @@ import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Router } from '@angular/router';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-new-ticket',
@@ -33,7 +34,8 @@ import { Router } from '@angular/router';
     NgxFileDropModule,
     LoadingComponent,
     ReactiveFormsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatSlideToggleModule
   ],
   templateUrl: './new-ticket.component.html',
   styleUrl: './new-ticket.component.scss'
@@ -47,6 +49,10 @@ export class NewTicketComponent implements OnInit {
   usuariosProyecto: any[] = [];
   isLoading = false;
   roleId!: number;
+  sugerencias: any[] = [];
+  mostrarSugerencias = false;
+  mostrarToggle = true;
+  activarSugerencias = true;
 
   prioridades = [
     { id: 1, nombre: 'Baja' },
@@ -61,7 +67,7 @@ export class NewTicketComponent implements OnInit {
 
     this.form = this.fb.group({
       titulo: ['', Validators.required],
-      descripcion: [''],
+      descripcion: ['', Validators.required],
       project_id: ['', Validators.required],
       sla: [false],
       prioridad: [this.roleId !== 4 ? '' : null, this.roleId !== 4 ? Validators.required : []],
@@ -70,7 +76,9 @@ export class NewTicketComponent implements OnInit {
       asignarUsuario: [false],
       usuarioAsignado: ['']
     });
+    this.form.get('descripcion')?.valueChanges.subscribe(() => {
 
+    });
     this.cargarProyectos();
   }
 
@@ -252,7 +260,7 @@ export class NewTicketComponent implements OnInit {
           data: { icon: 'success', message: 'Ticket creado correctamente', showCancel: false, acceptText: 'Aceptar' }
         });
         dialogRef.afterClosed().subscribe(() => {
-          this.router.navigate(['/ticket-list']);  
+          this.router.navigate(['/ticket-list']);
         });
       },
       error: err => {
@@ -260,6 +268,41 @@ export class NewTicketComponent implements OnInit {
         this.dialog.open(AlertDialogComponent, {
           data: { icon: 'error', message: 'Ha ocurrido un error, inténtalo más tarde', showCancel: false, acceptText: 'Aceptar' }
         });
+      }
+    });
+  }
+  buscarSugerencias(): void {
+    const titulo = this.form.value.titulo;
+    const descripcion = this.form.value.descripcion;
+
+    if (!titulo || !descripcion) return;
+
+    const token = localStorage.getItem('accessToken') || undefined;
+
+    this.apiService.post<any>('similar-tickets', { titulo, descripcion }, token)
+      .subscribe({
+        next: (res) => {
+          this.sugerencias = res.matches || [];
+          this.mostrarSugerencias = true;
+        },
+        error: () => {
+          this.sugerencias = [];
+          this.mostrarSugerencias = true;
+        }
+      });
+  }
+  onToggleChange(event: any) {
+    this.activarSugerencias = event.checked;
+  }
+  abrirTicketSugerido(ticketId: number): void {
+    window.open(`/tickets/${ticketId}`, '_blank');
+
+    this.dialog.open(AlertDialogComponent, {
+      data: {
+        icon: 'info',
+        message: 'La sugerencia del ticket fue abierta en una nueva pestaña',
+        showCancel: false,
+        acceptText: 'Aceptar'
       }
     });
   }
