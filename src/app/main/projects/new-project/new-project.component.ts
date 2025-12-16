@@ -73,9 +73,8 @@ export class NewProjectComponent {
 
   // cargar usuarios
   loadUsers(): void {
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<User[]>('profiles', token).subscribe({
+    this.apiService.get<User[]>('profiles').subscribe({
       next: (users) => {
         this.allUsers = users.filter(u => u.estado === 1);
       },
@@ -132,8 +131,8 @@ export class NewProjectComponent {
       user_ids: this.selectedUsers.map(u => u.id),
       created_by: userId
     };
-    const token = localStorage.getItem('accessToken') || undefined;
-    this.apiService.post<any>('create-projects', body, token).subscribe({
+
+    this.apiService.post<any>('create-projects', body).subscribe({
       next: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {

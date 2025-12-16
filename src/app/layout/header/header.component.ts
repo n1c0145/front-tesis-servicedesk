@@ -56,10 +56,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   loadNotifications(): void {
     const id = localStorage.getItem('id');
-    const token = localStorage.getItem('accessToken');
-    if (!id || !token) return;
+    if (!id) return;
 
-    this.apiService.get<any>(`notifications-unread/${id}`, token).subscribe({
+    this.apiService.get<any>(`notifications-unread/${id}`).subscribe({
       next: (res) => {
         this.unreadCount = res.unread_count || 0;
         this.unreadNotifications = res.unread_notifications || [];
@@ -93,7 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           this.dialog.open(AlertDialogComponent, {
         data: {
           icon: 'error',
-          message: 'Ha ocurrido un error con las nitificaciones. Inténtalo más tarde.',
+          message: 'Ha ocurrido un error con las notificaciones. Inténtalo más tarde.',
           showCancel: false,
           acceptText: 'Aceptar'
         }
@@ -120,10 +119,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       if (this.unreadCount > 0) this.unreadCount--;
     }
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) return;
-
-    this.apiService.post<any>(`mark-read/${notificationId}`, {}, token).subscribe({
+    this.apiService.post<any>(`mark-read/${notificationId}`, {}).subscribe({
       next: () => {
         console.log(`Notificación ${notificationId} marcada como leída`);
       },

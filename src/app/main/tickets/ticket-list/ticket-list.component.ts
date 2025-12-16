@@ -103,12 +103,11 @@ export class TicketListComponent implements OnInit {
 
   async loadAllData(): Promise<void> {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
 
     try {
       const [projects, users] = await Promise.all([
-        this.apiService.get<any>('tickets-listprojects', token).toPromise(),
-        this.apiService.get<any>('tickets-listusers', token).toPromise()
+        this.apiService.get<any>('tickets-listprojects').toPromise(),
+        this.apiService.get<any>('tickets-listusers').toPromise()
       ]);
 
       this.projects = projects || [];
@@ -186,8 +185,7 @@ export class TicketListComponent implements OnInit {
   getTickets(filters: any = {}): void {
     this.isLoading = true;
     this.dataSource.data = [];
-    const token = localStorage.getItem('accessToken') || undefined;
-    this.apiService.post<any>('tickets', filters, token).subscribe({
+    this.apiService.post<any>('tickets', filters).subscribe({
       next: res => {
         this.dataSource.data = res;
         this.isLoading = false;

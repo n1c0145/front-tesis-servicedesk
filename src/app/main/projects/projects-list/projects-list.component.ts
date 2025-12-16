@@ -51,9 +51,8 @@ export class ProjectsListComponent {
 
   getProjects(): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<any>('projects', token).subscribe({
+    this.apiService.get<any>('projects').subscribe({
       next: (res) => {
         // columna derivada: número de usuarios
         const projects = res.map((p: any) => ({

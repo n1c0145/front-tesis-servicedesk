@@ -65,9 +65,8 @@ export class ManageProfileComponent {
   loadUser(): void {
     this.isLoading = true;
     const id = this.route.snapshot.paramMap.get('id');
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<any>(`get-profile/${id}`, token).subscribe({
+    this.apiService.get<any>(`get-profile/${id}`).subscribe({
       next: (res) => {
         this.user = res;
 
@@ -94,7 +93,6 @@ export class ManageProfileComponent {
   save(): void {
     this.isLoading = true;
     const id = this.user.id;
-    const token = localStorage.getItem('accessToken') || undefined;
 
     const body = {
       nombre: this.profileForm.get('nombre')?.value,
@@ -103,7 +101,7 @@ export class ManageProfileComponent {
       role_id: this.profileForm.get('role_id')?.value,
     };
 
-    this.apiService.patch<any>(`update-profile/${id}`, body, token).subscribe({
+    this.apiService.patch<any>(`update-profile/${id}`, body).subscribe({
       next: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {
@@ -138,9 +136,8 @@ export class ManageProfileComponent {
     confirmDialog.afterClosed().subscribe(result => {
       if (result) {
         this.isLoading = true;
-        const token = localStorage.getItem('accessToken') || undefined;
 
-        this.apiService.patch<any>(`users/disable/${id}`, {}, token).subscribe({
+        this.apiService.patch<any>(`users/disable/${id}`, {}).subscribe({
           next: (res) => {
             this.isLoading = false;
             this.user.estado = res.user.estado;

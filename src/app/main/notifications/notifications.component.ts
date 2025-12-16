@@ -44,9 +44,8 @@ export class NotificationsComponent implements OnInit {
   loadNotifications(): void {
     this.isLoading = true;
     const userId = localStorage.getItem('id');
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<any>(`notifications/${userId}`, token).subscribe({
+    this.apiService.get<any>(`notifications/${userId}`).subscribe({
       next: (res) => {
         this.dataSource = res;
         this.updatePaginatedData();

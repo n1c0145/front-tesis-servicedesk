@@ -51,10 +51,9 @@ export class ProfileComponent {
   loadProfile(): void {
     this.isLoading = true;
     const id = localStorage.getItem('id');
-    const token = localStorage.getItem('accessToken') || undefined;
 
 
-    this.apiService.get<any>(`get-profile/${id}`, token).subscribe({
+    this.apiService.get<any>(`get-profile/${id}`).subscribe({
       next: (res) => {
         this.roleName = res.role?.nombre || '';
 
@@ -83,7 +82,6 @@ export class ProfileComponent {
   save(): void {
     this.isLoading = true;
     const id = localStorage.getItem('id');
-    const token = localStorage.getItem('accessToken') || undefined;
 
     const body = {
       nombre: this.profileForm.get('nombre')?.value,
@@ -91,7 +89,7 @@ export class ProfileComponent {
       puesto: this.profileForm.get('puesto')?.value,
     };
 
-    this.apiService.patch<any>(`update-profile/${id}`, body, token).subscribe({
+    this.apiService.patch<any>(`update-profile/${id}`, body).subscribe({
       next: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {

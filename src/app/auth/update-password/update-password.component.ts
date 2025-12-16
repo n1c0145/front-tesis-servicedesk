@@ -71,14 +71,12 @@ export class UpdatePasswordComponent {
       return;
     }
 
-    const token = localStorage.getItem('accessToken') || undefined;
-
     const body = {
       old_password: this.passwordForm.get('old_password')?.value,
       new_password: this.passwordForm.get('new_password')?.value
     };
 
-    this.apiService.post<any>('change-password', body, token).subscribe({
+    this.apiService.post<any>('change-password', body).subscribe({
       next: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {

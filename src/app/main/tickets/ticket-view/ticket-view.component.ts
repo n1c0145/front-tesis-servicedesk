@@ -60,10 +60,9 @@ export class TicketViewComponent implements OnInit {
 
   loadTicket(id: string | number): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
     const endpoint = `ticket/${id}`;
 
-    this.apiService.get<any>(endpoint, token).subscribe({
+    this.apiService.get<any>(endpoint).subscribe({
       next: res => {
         this.ticket = res;
         this.isLoading = false;

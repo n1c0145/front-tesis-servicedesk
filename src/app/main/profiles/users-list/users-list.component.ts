@@ -50,9 +50,8 @@ export class UsersListComponent implements OnInit {
 
   getUsers(): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<any>('profiles', token).subscribe({
+    this.apiService.get<any>('profiles').subscribe({
       next: (res) => {
         this.dataSource.data = res;
         this.isLoading = false;

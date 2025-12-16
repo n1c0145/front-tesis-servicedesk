@@ -88,10 +88,9 @@ export class UpdateTicketComponent implements OnInit {
 
   getUsuariosProyecto(): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
 
     this.apiService
-      .post<any>('users-byproject', { project_id: this.ticket?.project_id }, token)
+      .post<any>('users-byproject', { project_id: this.ticket?.project_id })
       .subscribe({
         next: (res) => {
           this.isLoading = false;
@@ -176,7 +175,6 @@ export class UpdateTicketComponent implements OnInit {
   onSave(): void {
 
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
     const user_id = localStorage.getItem('id') || '';
 
     const formData = new FormData();
@@ -201,7 +199,7 @@ export class UpdateTicketComponent implements OnInit {
 
     this.archivos.forEach((file) => formData.append('archivos[]', file, file.name));
 
-    this.apiService.post<any>('new-thread', formData, token).subscribe({
+    this.apiService.post<any>('new-thread', formData).subscribe({
       next: (res) => {
         this.isLoading = false;
         const dialogRef = this.dialog.open(AlertDialogComponent, {

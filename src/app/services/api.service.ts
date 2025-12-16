@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -13,39 +13,17 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   // GET
-  get<T>(endpoint: string, token?: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, {
-      headers: this.getHeaders(token)
-    });
+  get<T>(endpoint: string): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`);
   }
 
   // POST
-  post<T>(endpoint: string, body: any, token?: string): Observable<T> {
-    const isFormData = body instanceof FormData;
-
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    if (!isFormData) {
-      headers = headers.set('Content-Type', 'application/json');
-    }
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers });
+  post<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body);
   }
 
   // PATCH
-  patch<T>(endpoint: string, body: any, token?: string): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, body, {
-      headers: this.getHeaders(token)
-    });
-  }
-
-  //headers dinámicos
-  private getHeaders(token?: string): HttpHeaders {
-    let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    return headers;
+  patch<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, body);
   }
 }

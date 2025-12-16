@@ -80,9 +80,8 @@ export class UpdateProjectComponent {
 
   // Cargar todos los usuarios activos
   loadUsers(): void {
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.get<User[]>('profiles', token).subscribe({
+    this.apiService.get<User[]>('profiles').subscribe({
       next: (users) => {
         this.allUsers = users.filter(u => u.estado === 1);
       },
@@ -97,8 +96,7 @@ export class UpdateProjectComponent {
   // Cargar proyecto por ID
   loadProject(id: string): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
-    this.apiService.get<any>(`projects/${id}`, token).subscribe({
+    this.apiService.get<any>(`projects/${id}`).subscribe({
       next: (project) => {
         this.isLoading = false;
         this.form.patchValue({
@@ -154,9 +152,8 @@ export class UpdateProjectComponent {
       descripcion: this.form.get('descripcion')!.value,
       user_ids: this.selectedUsers.map(u => u.id)
     };
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.patch<any>(`update-project/${this.projectId}`, body, token).subscribe({
+    this.apiService.patch<any>(`update-project/${this.projectId}`, body).subscribe({
       next: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {
@@ -195,8 +192,7 @@ export class UpdateProjectComponent {
       if (result) {
         if (!this.projectId) return;
         this.isLoading = true;
-        const token = localStorage.getItem('accessToken') || undefined;
-        this.apiService.patch(`delete-project/${this.projectId}`, null, token).subscribe({
+        this.apiService.patch(`delete-project/${this.projectId}`, null).subscribe({
           next: () => {
             this.isLoading = false;
             this.dialog.open(AlertDialogComponent, {

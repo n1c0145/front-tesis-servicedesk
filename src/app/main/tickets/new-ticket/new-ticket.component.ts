@@ -84,10 +84,9 @@ export class NewTicketComponent implements OnInit {
 
   cargarProyectos(): void {
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
     const user_id = localStorage.getItem('id');
 
-    this.apiService.post<any>('projects-byuser', { user_id }, token).subscribe({
+    this.apiService.post<any>('projects-byuser', { user_id }).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.proyectos = res;
@@ -145,9 +144,8 @@ export class NewTicketComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
 
-    this.apiService.post<any>('users-byproject', { project_id: projectId }, token).subscribe({
+    this.apiService.post<any>('users-byproject', { project_id: projectId }).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.usuariosProyecto = res;
@@ -224,7 +222,6 @@ export class NewTicketComponent implements OnInit {
     if (this.form.invalid) return;
 
     this.isLoading = true;
-    const token = localStorage.getItem('accessToken') || undefined;
     const created_by = localStorage.getItem('id');
 
     const formData = new FormData();
@@ -249,7 +246,7 @@ export class NewTicketComponent implements OnInit {
 
     this.archivos.forEach(file => formData.append('archivos[]', file, file.name));
 
-    this.apiService.post<any>('create-ticket', formData, token).subscribe({
+    this.apiService.post<any>('create-ticket', formData).subscribe({
       next: res => {
         this.isLoading = false;
         this.form.reset({ asignarBandeja: true, asignarUsuario: false });
@@ -277,9 +274,7 @@ export class NewTicketComponent implements OnInit {
 
     if (!titulo || !descripcion) return;
 
-    const token = localStorage.getItem('accessToken') || undefined;
-
-    this.apiService.post<any>('similar-tickets', { titulo, descripcion }, token)
+    this.apiService.post<any>('similar-tickets', { titulo, descripcion })
       .subscribe({
         next: (res) => {
           this.sugerencias = res.matches || [];
