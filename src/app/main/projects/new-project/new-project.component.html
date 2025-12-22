@@ -40,11 +40,87 @@
         </mat-chip>
       </mat-chip-listbox>
 
+      <div class="toggle-section" formGroupName="configuraciones">
+        <h2> Niveles de Servicio</h2>
+       
+        <div class="toggle-field">
+          <mat-slide-toggle formControlName="firstResponseEnabled" color="primary">
+            Primera Respuesta
+          </mat-slide-toggle>
+          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.firstResponseEnabled')?.value">
+            <mat-label>Tiempo (minutos)</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="firstresponse"
+              placeholder="Ej: 5">
+            <mat-error *ngIf="form.get('configuraciones.firstresponse')?.invalid">
+              Campo requerido (No puede ser cero minutos)
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="toggle-field">
+          <mat-slide-toggle formControlName="maxResolutionEnabled" color="primary">
+            Tiempo Máximo de Resolución
+          </mat-slide-toggle>
+          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.maxResolutionEnabled')?.value">
+            <mat-label>Tiempo (días)</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="maxresolution"
+              placeholder="Ej: 10">
+            <mat-error *ngIf="form.get('configuraciones.maxresolution')?.invalid">
+              Campo requerido (No puede ser cero días)
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="toggle-field">
+          <mat-slide-toggle formControlName="effectiveTimeEnabled" color="primary">
+            Tiempo Efectivo
+          </mat-slide-toggle>
+          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.effectiveTimeEnabled')?.value">
+            <mat-label>Tiempo (horas)</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="effectivetime"
+              placeholder="Ej: 10">
+            <mat-error *ngIf="form.get('configuraciones.effectivetime')?.invalid">
+              Campo requerido (No puede ser cero horas)
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="toggle-field">
+          <mat-slide-toggle formControlName="hoursBankEnabled" color="primary">
+            Bolsa de Horas
+          </mat-slide-toggle>
+          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.hoursBankEnabled')?.value">
+            <mat-label>Horas</mat-label>
+            <input
+              matInput
+              type="number"
+              min="0"
+              formControlName="hoursbank"
+              placeholder="Ej: 150">
+            <mat-error *ngIf="form.get('configuraciones.hoursbank')?.invalid">
+              Campo requerido (No puede ser cero horas)
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
       <button
         mat-raised-button
         color="primary"
         class="full-width"
-        [disabled]="form.invalid || selectedUsers.length === 0"
+        [disabled]="form.invalid || selectedUsers.length === 0 || !isConfigValid()"
         (click)="save()">
         Crear Proyecto
       </button>

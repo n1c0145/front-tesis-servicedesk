@@ -8,13 +8,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
-import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
+import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component'
 
 interface User {
   id: number;
@@ -37,6 +38,7 @@ interface User {
     MatChipsModule,
     MatIconModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
     LoadingComponent
   ],
   templateUrl: './update-project.component.html',
@@ -61,8 +63,21 @@ export class UpdateProjectComponent {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
-      userSearch: ['']
+      userSearch: [''],
+      configuraciones: this.fb.group({
+        firstResponseEnabled: [false],
+        maxResolutionEnabled: [false],
+        effectiveTimeEnabled: [false],
+        hoursBankEnabled: [false],
+
+        firstresponse: [null],
+        maxresolution: [null],
+        effectivetime: [null],
+        hoursbank: [null]
+      })
     });
+
+    this.setupToggleListeners();
   }
 
   ngOnInit(): void {
@@ -78,9 +93,59 @@ export class UpdateProjectComponent {
     );
   }
 
-  // Cargar todos los usuarios activos
-  loadUsers(): void {
+  private setupToggleListeners(): void {
+    const configGroup = this.form.get('configuraciones');
+    if (!configGroup) return;
 
+
+    configGroup.get('firstResponseEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('firstresponse');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('maxResolutionEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('maxresolution');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('effectiveTimeEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('effectivetime');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('hoursBankEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('hoursbank');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+      }
+      control?.updateValueAndValidity();
+    });
+  }
+
+  isConfigValid(): boolean {
+    const configGroup = this.form.get('configuraciones');
+    return configGroup ? configGroup.valid : true;
+  }
+
+  loadUsers(): void {
     this.apiService.get<User[]>('profiles').subscribe({
       next: (users) => {
         this.allUsers = users.filter(u => u.estado === 1);
@@ -93,15 +158,40 @@ export class UpdateProjectComponent {
     });
   }
 
-  // Cargar proyecto por ID
+  // Cargar proyecto 
   loadProject(id: string): void {
     this.isLoading = true;
     this.apiService.get<any>(`projects/${id}`).subscribe({
       next: (project) => {
         this.isLoading = false;
+
         this.form.patchValue({
           nombre: project.nombre,
           descripcion: project.descripcion
+        });
+
+        const config = {
+          firstResponseEnabled: project.firstresponse !== null,
+          maxResolutionEnabled: project.maxresolution !== null,
+          effectiveTimeEnabled: project.effectivetime !== null,
+          hoursBankEnabled: project.hoursbank !== null,
+
+          firstresponse: project.firstresponse,
+          maxresolution: project.maxresolution,
+          effectivetime: project.effectivetime,
+          hoursbank: project.hoursbank
+        };
+
+        this.form.get('configuraciones')?.patchValue(config);
+
+        setTimeout(() => {
+          const configGroup = this.form.get('configuraciones');
+          if (configGroup) {
+            configGroup.get('firstresponse')?.updateValueAndValidity();
+            configGroup.get('maxresolution')?.updateValueAndValidity();
+            configGroup.get('effectivetime')?.updateValueAndValidity();
+            configGroup.get('hoursbank')?.updateValueAndValidity();
+          }
         });
 
         // Cargar usuarios asignados como chips
@@ -145,12 +235,17 @@ export class UpdateProjectComponent {
   }
 
   save(): void {
-
     this.isLoading = true;
-    const body = {
+
+    const config = this.form.get('configuraciones')?.value;
+    const body: any = {
       nombre: this.form.get('nombre')!.value,
       descripcion: this.form.get('descripcion')!.value,
-      user_ids: this.selectedUsers.map(u => u.id)
+      user_ids: this.selectedUsers.map(u => u.id),
+      firstresponse: config.firstResponseEnabled ? config.firstresponse : null,
+      maxresolution: config.maxResolutionEnabled ? config.maxresolution : null,
+      effectivetime: config.effectiveTimeEnabled ? config.effectivetime : null,
+      hoursbank: config.hoursBankEnabled ? config.hoursbank : null
     };
 
     this.apiService.patch<any>(`update-project/${this.projectId}`, body).subscribe({

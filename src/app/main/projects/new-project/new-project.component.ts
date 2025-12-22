@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
@@ -37,12 +38,13 @@ interface User {
     MatChipsModule,
     MatIconModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
     LoadingComponent
   ],
   templateUrl: './new-project.component.html',
   styleUrl: './new-project.component.scss'
 })
-export class NewProjectComponent {
+export class NewProjectComponent implements OnInit {
   form: FormGroup;
   isLoading = false;
 
@@ -59,8 +61,21 @@ export class NewProjectComponent {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required],
-      userSearch: ['']
+      userSearch: [''],
+      configuraciones: this.fb.group({
+        firstResponseEnabled: [false],
+        maxResolutionEnabled: [false],
+        effectiveTimeEnabled: [false],
+        hoursBankEnabled: [false],
+
+        firstresponse: [null],
+        maxresolution: [null],
+        effectivetime: [null],
+        hoursbank: [null]
+      })
     });
+
+    this.setupToggleListeners();
   }
 
   ngOnInit(): void {
@@ -71,9 +86,62 @@ export class NewProjectComponent {
     );
   }
 
+  private setupToggleListeners(): void {
+    const configGroup = this.form.get('configuraciones');
+    if (!configGroup) return;
+
+    configGroup.get('firstResponseEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('firstresponse');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+        control?.setValue(null);
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('maxResolutionEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('maxresolution');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+        control?.setValue(null);
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('effectiveTimeEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('effectivetime');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+        control?.setValue(null);
+      }
+      control?.updateValueAndValidity();
+    });
+
+    configGroup.get('hoursBankEnabled')?.valueChanges.subscribe(enabled => {
+      const control = configGroup.get('hoursbank');
+      if (enabled) {
+        control?.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        control?.clearValidators();
+        control?.setValue(null);
+      }
+      control?.updateValueAndValidity();
+    });
+  }
+
+  isConfigValid(): boolean {
+    const configGroup = this.form.get('configuraciones');
+    return configGroup ? configGroup.valid : true;
+  }
+
   // cargar usuarios
   loadUsers(): void {
-
     this.apiService.get<User[]>('profiles').subscribe({
       next: (users) => {
         this.allUsers = users.filter(u => u.estado === 1);
@@ -92,11 +160,8 @@ export class NewProjectComponent {
   }
 
   // filtro
-
   private filterUsers(value: any): User[] {
-
     const filterValue = (typeof value === 'string' ? value : '').toLowerCase();
-
     return this.allUsers
       .filter(user =>
         `${user.nombre} ${user.apellido} - ${user.puesto}`
@@ -121,16 +186,30 @@ export class NewProjectComponent {
   }
 
   save(): void {
-
     this.isLoading = true;
 
     const userId = localStorage.getItem('id');
-    const body = {
+    const config = this.form.get('configuraciones')?.value;
+
+    const body: any = {
       nombre: this.form.get('nombre')!.value,
       descripcion: this.form.get('descripcion')!.value,
       user_ids: this.selectedUsers.map(u => u.id),
       created_by: userId
     };
+
+    if (config.firstResponseEnabled && config.firstresponse) {
+      body.firstresponse = config.firstresponse;
+    }
+    if (config.maxResolutionEnabled && config.maxresolution) {
+      body.maxresolution = config.maxresolution;
+    }
+    if (config.effectiveTimeEnabled && config.effectivetime) {
+      body.effectivetime = config.effectivetime;
+    }
+    if (config.hoursBankEnabled && config.hoursbank) {
+      body.hoursbank = config.hoursbank;
+    }
 
     this.apiService.post<any>('create-projects', body).subscribe({
       next: () => {
