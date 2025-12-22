@@ -16,6 +16,8 @@ import { TicketListComponent } from './main/tickets/ticket-list/ticket-list.comp
 import { NewTicketComponent } from './main/tickets/new-ticket/new-ticket.component';
 import { TicketViewComponent } from './main/tickets/ticket-view/ticket-view.component';
 import { NotificationsComponent } from './main/notifications/notifications.component';
+import { GeneralReportingComponent } from './main/reporting/general-reporting/general-reporting.component';
+import { SlaReportingComponent } from './main/reporting/sla-reporting/sla-reporting.component';
 
 export const routes: Routes = [
   {
@@ -52,6 +54,8 @@ export const routes: Routes = [
       { path: 'new-ticket', component: NewTicketComponent, canActivate: [authGuard] },
       { path: 'tickets/:id', component: TicketViewComponent, canActivate: [authGuard] },
       { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
+      { path: 'general-reporting', component: GeneralReportingComponent, canActivate: [authGuard] },
+      { path: 'sla-reporting', component: SlaReportingComponent, canActivate: [authGuard] },
     ]
   }
 ];
