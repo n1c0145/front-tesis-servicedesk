@@ -117,6 +117,10 @@
                             <strong>Historial de cambios:</strong>
                             <ul>
                                 <ng-container *ngFor="let h of thread.histories">
+                                    <li *ngIf="h.time > 0">
+                                        Se añadió <strong>{{ h.time }} minuto{{ h.time === 1 ? '' : 's' }}</strong> al
+                                        tiempo del ticket.
+                                    </li>
                                     <li *ngIf="h.changes.status">
                                         Se actualizó el estado de <strong>{{ h.changes.status.from }}</strong> a
                                         <strong>{{ h.changes.status.to }}</strong>.
