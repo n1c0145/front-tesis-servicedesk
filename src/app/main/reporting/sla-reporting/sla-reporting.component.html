@@ -1,1 +1,53 @@
-<p>sla-reporting works!</p>
+<app-loading [loading]="isLoading"></app-loading>
+
+<div *ngIf="!isLoading" style="padding: 24px; max-width: 800px; margin: 0 auto;">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Reporte SLA</mat-card-title>
+      <mat-card-subtitle>Selecciona un proyecto para generar el reporte</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content style="padding: 24px;">
+      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 20px;">
+        <mat-label>Por favor selecciona un proyecto</mat-label>
+        <mat-select [(ngModel)]="selectedProjectId" (selectionChange)="onProjectSelect()">
+          <mat-option [value]="null" disabled>Selecciona un proyecto</mat-option>
+          <mat-option *ngFor="let project of projects" [value]="project.id">
+            {{ project.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Filtro de fechas
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          
+          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
+            <mat-label>Rango de fechas</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start" name="startDate" />
+              <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end" name="endDate" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+
+          <div style="display: flex; gap: 12px;">
+            <button mat-raised-button color="primary" (click)="applyDateFilters()" [disabled]="isLoadingReport">
+              Aplicar fechas
+            </button>
+            <button mat-stroked-button color="warn" (click)="clearDates()" [disabled]="isLoadingReport">
+              Borrar fechas
+            </button>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <app-loading [loading]="isLoadingReport"></app-loading>
+    </mat-card-content>
+  </mat-card>
+</div>
