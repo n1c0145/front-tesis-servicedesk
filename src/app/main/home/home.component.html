@@ -1,1 +1,195 @@
-<h1>home</h1>
+<app-loading [loading]="isLoading"></app-loading>
+
+<div *ngIf="!isLoading && homeData" style="padding: 24px;">
+    <mat-card style="margin-bottom: 24px;">
+        <mat-card-header>
+            <div mat-card-avatar style="
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #3f51b5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            ">
+                {{ userInitial }}
+            </div>
+            <mat-card-title style="font-size: 20px;">{{ homeData.user.nombre_completo }}</mat-card-title>
+            <mat-card-subtitle style="display: flex; align-items: center; gap: 8px;">
+                <mat-icon style="font-size: 16px;">email</mat-icon>
+                {{ homeData.user.correo }}
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <mat-icon style="color: #666;">work</mat-icon>
+                    <span style="color: #666;">{{ homeData.user.puesto }}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <mat-icon style="color: #666;">badge</mat-icon>
+                    <span style="color: #666;">{{ homeData.user.role_name }}</span>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title
+                        style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <span>Mi Bandeja</span>
+                        <button mat-button color="primary" (click)="irAMiBandeja()">
+                            Ver todos
+                        </button>
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div style="overflow-x: auto;">
+                        <table mat-table [dataSource]="homeData.bandeja" style="width: 100%;">
+                            <ng-container matColumnDef="ticket_number">
+                                <th mat-header-cell *matHeaderCellDef># Ticket</th>
+                                <td mat-cell *matCellDef="let ticket">
+                                    <a href="javascript:void(0)" (click)="openTicket(ticket.id)"
+                                        style="color: #3f51b5; text-decoration: none; cursor: pointer;"
+                                        onmouseover="this.style.textDecoration='underline'"
+                                        onmouseout="this.style.textDecoration='none'">
+                                        {{ ticket.ticket_number }}
+                                    </a>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="titulo">
+                                <th mat-header-cell *matHeaderCellDef>Título</th>
+                                <td mat-cell *matCellDef="let ticket">{{ ticket.titulo }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                                <td mat-cell *matCellDef="let ticket">{{ ticket.status }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="priority">
+                                <th mat-header-cell *matHeaderCellDef>Prioridad</th>
+                                <td mat-cell *matCellDef="let ticket">
+                                    <span style="padding: 4px 8px; border-radius: 4px; color: white;"
+                                        [style.background-color]="getPriorityColor(ticket.priority)">
+                                        {{ ticket.priority }}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>Mis Proyectos</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <mat-list>
+                        <mat-list-item *ngFor="let project of homeData.proyectos" (click)="goToTickets(project)"
+                            style="cursor: pointer;" (mouseenter)="onMouseEnter($event)"
+                            (mouseleave)="onMouseLeave($event)">
+                            <mat-icon matListItemIcon>folder</mat-icon>
+                            <div matListItemTitle>
+                                <a style="color: #3f51b5; cursor: pointer; text-decoration: none;"
+                                    (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
+                                    {{ project.nombre }}
+                                </a>
+                            </div>
+                        </mat-list-item>
+                        <mat-list-item *ngIf="homeData.proyectos.length === 0">
+                            <div matListItemTitle style="color: #666;">No tienes proyectos asignados</div>
+                        </mat-list-item>
+                    </mat-list>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <mat-card>
+            <mat-card-content style="text-align: center; padding: 16px;">
+                <mat-icon style="font-size: 32px; color: #3f51b5; margin-bottom: 8px;">add_task</mat-icon>
+                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_creados }}</h3>
+                <p style="color: #666;">Tickets Creados</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content style="text-align: center; padding: 16px;">
+                <mat-icon style="font-size: 32px; color: #4caf50; margin-bottom: 8px;">assignment_ind</mat-icon>
+                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_asignados }}
+                </h3>
+                <p style="color: #666;">Tickets Asignados</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content style="text-align: center; padding: 16px;">
+                <mat-icon style="font-size: 32px; color: #f44336; margin-bottom: 8px;">priority_high</mat-icon>
+                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_alta_prioridad
+                    }}</h3>
+                <p style="color: #666;">Alta Prioridad</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content style="text-align: center; padding: 16px;">
+                <mat-icon style="font-size: 32px; color: #9c27b0; margin-bottom: 8px;">update</mat-icon>
+                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{
+                    homeData.kpis.actualizaciones_realizadas }}</h3>
+                <p style="color: #666;">Actualizaciones</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-content style="text-align: center; padding: 16px;">
+                <mat-icon style="font-size: 32px; color: #ff9800; margin-bottom: 8px;">schedule</mat-icon>
+                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tiempo_total_minutos }}
+                    min</h3>
+                <p style="color: #666;">{{ formatTime(homeData.kpis.tiempo_total_minutos) }}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Top Proyectos por Tiempo</mat-card-title>
+            </mat-card-header>
+            <mat-card-content style="display: flex; justify-content: center;">
+                <ngx-charts-pie-chart *ngIf="topProjectsData.length > 0" [view]="[400, 300]" [results]="topProjectsData"
+                    [legend]="false" [labels]="true" [doughnut]="true" [maxLabelLength]="50">
+                </ngx-charts-pie-chart>
+                <p *ngIf="topProjectsData.length === 0" style="color: #666; padding: 80px 0; text-align: center;">No hay
+                    datos de proyectos</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Top Tickets por Tiempo</mat-card-title>
+            </mat-card-header>
+            <mat-card-content style="display: flex; justify-content: center;">
+                <ngx-charts-pie-chart *ngIf="topTicketsData.length > 0" [view]="[400, 300]" [results]="topTicketsData"
+                    [legend]="false" [labels]="true" [doughnut]="true" [maxLabelLength]="50">
+                </ngx-charts-pie-chart>
+                <p *ngIf="topTicketsData.length === 0" style="color: #666; padding: 80px 0; text-align: center;">No hay
+                    datos de tickets</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

@@ -93,7 +93,6 @@ export class UpdateTicketComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.isLoading = false;
-          console.log('Respuesta usuarios:', res);
           if (Array.isArray(res)) {
             this.usuariosProyecto = res;
           } else if (res && Array.isArray(res.data)) {
