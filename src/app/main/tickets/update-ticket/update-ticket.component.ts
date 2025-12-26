@@ -52,7 +52,6 @@ export class UpdateTicketComponent implements OnInit {
 
   estados = [
     { id: 1, nombre: 'Abierto' },
-    { id: 2, nombre: 'Cerrado' },
     { id: 3, nombre: 'Se necesita más información' },
     { id: 4, nombre: 'En progreso' },
     { id: 5, nombre: 'En espera' },
