@@ -12,6 +12,8 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-sla-reporting',
@@ -27,7 +29,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
     LoadingComponent,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDividerModule,
+    MatProgressBarModule
   ],
   templateUrl: './sla-reporting.component.html'
 })
@@ -36,6 +40,7 @@ export class SlaReportingComponent implements OnInit {
   isLoadingReport = false;
   projects: any[] = [];
   selectedProjectId: number | null = null;
+  reportData: any = null;
 
   dateRange = {
     start: null as Date | null,
@@ -76,11 +81,13 @@ export class SlaReportingComponent implements OnInit {
       this.loadSlaReport(this.selectedProjectId);
     } else {
       this.dateRange = { start: null, end: null };
+      this.reportData = null;
     }
   }
 
   loadSlaReport(projectId: number, dateFrom?: string, dateTo?: string): void {
     this.isLoadingReport = true;
+    this.reportData = null;
 
     const requestData: any = {
       project_id: projectId
@@ -94,6 +101,7 @@ export class SlaReportingComponent implements OnInit {
     this.apiService.post<any>('sla-report', requestData).subscribe({
       next: (response) => {
         this.isLoadingReport = false;
+        this.reportData = response.data;
       },
       error: (error) => {
         this.isLoadingReport = false;
@@ -141,5 +149,59 @@ export class SlaReportingComponent implements OnInit {
 
   private formatDate(date: Date): string {
     return date.toISOString().split('T')[0];
+  }
+
+  hasRule(ruleName: string): boolean {
+    return this.reportData?.report_parameters?.sla_rules?.[ruleName] != null;
+  }
+
+  hasMetric(metricName: string): boolean {
+    const metric = this.reportData?.sla_metrics?.[metricName];
+    if (!metric) return false;
+
+    if (metricName === 'hours_bank') {
+      return metric.total_hours_used != null ||
+        metric.hours_contracted != null ||
+        metric.hours_remaining != null ||
+        metric.utilization_percentage != null ||
+        metric.status != null;
+    }
+
+    let ruleName = '';
+    switch (metricName) {
+      case 'first_response':
+        ruleName = 'firstresponse_minutes';
+        break;
+      case 'max_resolution':
+        ruleName = 'maxresolution_days';
+        break;
+      case 'effective_time':
+        ruleName = 'effectivetime_hours';
+        break;
+      case 'hours_bank':
+        ruleName = 'hoursbank_hours';
+        break;
+    }
+
+    if (!this.hasRule(ruleName)) {
+      return false;
+    }
+
+    return metric.compliant != null ||
+      metric.non_compliant != null ||
+      metric.total_analyzed != null ||
+      metric.compliance_percentage != null;
+  }
+
+  formatPercentage(value: number): string {
+    return value != null ? `${value}%` : '0%';
+  }
+
+  getStatusColor(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'available': return '#4caf50';
+      case 'exceeded': return '#f44336';
+      default: return '#757575';
+    }
   }
 }
