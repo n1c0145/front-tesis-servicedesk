@@ -17,7 +17,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
-
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-ticket-list',
@@ -42,18 +42,32 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
   styleUrls: ['./ticket-list.component.scss']
 })
 export class TicketListComponent implements OnInit {
-  displayedColumns: string[] = ['ticket_number', 'titulo', 'prioridad', 'estado', 'created_by', 'created_at'];
+
+  displayedColumns: string[] = [
+    'ticket_number',
+    'titulo',
+    'prioridad',
+    'estado',
+    'created_by',
+    'created_at'
+  ];
+
   dataSource = new MatTableDataSource<any>([]);
   isLoading = false;
 
   projects: any[] = [];
   users: any[] = [];
+
   selectedProjectId: number | null = null;
   selectedUserId: number | null = null;
   selectedCreatedById: number | null = null;
   selectedStatusId: number | null = null;
   selectedPriorityId: number | null = null;
-  dateRange: { start: Date | null; end: Date | null } = { start: null, end: null };
+
+  dateRange: { start: Date | null; end: Date | null } = {
+    start: null,
+    end: null
+  };
 
   statuses = [
     { id: 1, nombre: 'Abierto' },
@@ -82,9 +96,29 @@ export class TicketListComponent implements OnInit {
     private route: ActivatedRoute
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    await this.loadAllData();
+  ngOnInit(): void {
+    this.initTableConfig();
+    this.loadTicketsFromQueryParams(); 
+  }
+  private initTableConfig(): void {
+    setTimeout(() => {
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
 
+      this.dataSource.filterPredicate = (data, filter: string) => {
+        const normalized = filter.trim().toLowerCase();
+        return (
+          data.ticket_number?.toString().toLowerCase().includes(normalized) ||
+          data.titulo?.toLowerCase().includes(normalized) ||
+          data.prioridad?.toLowerCase().includes(normalized) ||
+          data.estado?.toLowerCase().includes(normalized) ||
+          data.created_by?.toLowerCase().includes(normalized)
+        );
+      };
+    });
+  }
+
+  private loadTicketsFromQueryParams(): void {
     this.route.queryParams.subscribe(params => {
       const projectId = params['projectId'];
       const assignedTo = params['assigned_to'];
@@ -101,48 +135,62 @@ export class TicketListComponent implements OnInit {
     });
   }
 
-  async loadAllData(): Promise<void> {
-    this.isLoading = true;
-
-    try {
-      const [projects, users] = await Promise.all([
-        this.apiService.get<any>('tickets-listprojects').toPromise(),
-        this.apiService.get<any>('tickets-listusers').toPromise()
-      ]);
-
-      this.projects = projects || [];
-      this.users = users || [];
-
-      setTimeout(() => {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.dataSource.filterPredicate = (data, filter: string) => {
-          const normalized = filter.trim().toLowerCase();
-          return (
-            data.ticket_number?.toString().toLowerCase().includes(normalized) ||
-            data.titulo?.toLowerCase().includes(normalized) ||
-            data.prioridad?.toLowerCase().includes(normalized) ||
-            data.estado?.toLowerCase().includes(normalized) ||
-            data.created_by?.toLowerCase().includes(normalized)
-          );
-        };
+  private loadProjectsAndUsers(): void {
+    setTimeout(() => {
+      forkJoin({
+        projects: this.apiService.get<any>('tickets-listprojects'),
+        users: this.apiService.get<any>('tickets-listusers')
+      }).subscribe({
+        next: ({ projects, users }) => {
+          this.projects = projects || [];
+          this.users = users || [];
+        },
+        error: () => {
+          this.dialog.open(AlertDialogComponent, {
+            data: {
+              icon: 'error',
+              message: 'Error al cargar proyectos o usuarios',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          });
+        }
       });
-    } catch {
-      this.dialog.open(AlertDialogComponent, {
-        data: { icon: 'error', message: 'Error al cargar los datos iniciales.', showCancel: false, acceptText: 'Aceptar' }
-      });
-    } finally {
-      this.isLoading = false;
-    }
+    }, 0);
   }
 
+  getTickets(filters: any = {}): void {
+    this.isLoading = true;
+    this.dataSource.data = [];
+    this.loadProjectsAndUsers();
+    this.apiService.post<any>('tickets', filters).subscribe({
+      next: res => {
+        this.dataSource.data = res;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.dialog.open(AlertDialogComponent, {
+          data: {
+            icon: 'error',
+            message: 'Error al cargar tickets',
+            showCancel: false,
+            acceptText: 'Aceptar'
+          }
+        });
+      }
+    });
+  }
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   applyFilters(): void {
-    if ((this.dateRange.start && !this.dateRange.end) || (!this.dateRange.start && this.dateRange.end)) {
+    if (
+      (this.dateRange.start && !this.dateRange.end) ||
+      (!this.dateRange.start && this.dateRange.end)
+    ) {
       this.dialog.open(AlertDialogComponent, {
         data: {
           icon: 'info',
@@ -155,15 +203,18 @@ export class TicketListComponent implements OnInit {
     }
 
     const filters: any = {};
+
     if (this.selectedProjectId) filters.project_id = this.selectedProjectId;
     if (this.selectedUserId) filters.assigned_to = this.selectedUserId;
     if (this.selectedCreatedById) filters.created_by = this.selectedCreatedById;
     if (this.selectedStatusId) filters.status_id = this.selectedStatusId;
     if (this.selectedPriorityId) filters.priority_id = this.selectedPriorityId;
+
     if (this.dateRange.start && this.dateRange.end) {
       filters.date_from = this.dateRange.start.toISOString().split('T')[0];
       filters.date_to = this.dateRange.end.toISOString().split('T')[0];
     }
+
     this.getTickets(filters);
   }
 
@@ -174,29 +225,14 @@ export class TicketListComponent implements OnInit {
     this.selectedStatusId = null;
     this.selectedPriorityId = null;
     this.dateRange = { start: null, end: null };
+
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {},
-      replaceUrl: true,
+      replaceUrl: true
     });
-    this.getTickets();
-  }
 
-  getTickets(filters: any = {}): void {
-    this.isLoading = true;
-    this.dataSource.data = [];
-    this.apiService.post<any>('tickets', filters).subscribe({
-      next: res => {
-        this.dataSource.data = res;
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        this.dialog.open(AlertDialogComponent, {
-          data: { icon: 'error', message: 'Error al cargar tickets', showCancel: false, acceptText: 'Aceptar' }
-        });
-      }
-    });
+    this.getTickets();
   }
 
   navigateTo(path: string): void {
@@ -204,9 +240,12 @@ export class TicketListComponent implements OnInit {
   }
 
   filterByAssigned(userId: number, userName: string): void {
-    this.router.navigate(['/ticket-list'], { queryParams: { assigned_to: userId, assignedName: userName } });
+    this.router.navigate(['/ticket-list'], {
+      queryParams: { assigned_to: userId, assignedName: userName }
+    });
   }
+
   openTicket(ticketId: number): void {
-  this.router.navigate(['/tickets', ticketId]);
-}
+    this.router.navigate(['/tickets', ticketId]);
+  }
 }
