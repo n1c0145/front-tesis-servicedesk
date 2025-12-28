@@ -37,6 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   unreadNotifications: any[] = [];
   @ViewChild('sidenav') sidenav!: MatSidenav;
   private pollInterval: any;
+  isAdmin = false;
 
   constructor(private router: Router, private apiService: ApiService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
@@ -44,6 +45,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const storedName = localStorage.getItem('nombre') || 'Usuario';
     this.userName = storedName;
     this.userInitial = storedName.charAt(0).toUpperCase();
+
+    const roleId = Number(localStorage.getItem('roleId'));
+    this.isAdmin = roleId === 1;
 
     this.loadNotifications();
     this.startPolling();
@@ -90,16 +94,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.dialog.open(AlertDialogComponent, {
-        data: {
-          icon: 'error',
-          message: 'Ha ocurrido un error con las notificaciones. Inténtalo más tarde.',
-          showCancel: false,
-          acceptText: 'Aceptar'
-        }
-      })
+            data: {
+              icon: 'error',
+              message: 'Ha ocurrido un error con las notificaciones. Inténtalo más tarde.',
+              showCancel: false,
+              acceptText: 'Aceptar'
+            }
+          })
         }
       });
-    }, 20000); 
+    }, 20000);
   }
   private showSnackBar(): void {
     this.snackBar.open('Tienes notificaciones nuevas', '', {

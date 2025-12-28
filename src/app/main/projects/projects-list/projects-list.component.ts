@@ -32,9 +32,11 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
 })
 export class ProjectsListComponent {
 
-  displayedColumns: string[] = ['nombre', 'descripcion', 'creadoPor', 'numUsuarios', 'acciones'];
+  displayedColumns: string[] = ['nombre', 'descripcion', 'creadoPor', 'numUsuarios'];
   dataSource = new MatTableDataSource<any>([]);
   isLoading = false;
+  roleId: number | null = null;
+  canManageProjects = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -46,6 +48,12 @@ export class ProjectsListComponent {
   ) { }
 
   ngOnInit(): void {
+    this.roleId = Number(localStorage.getItem('roleId'));
+    this.canManageProjects = this.roleId === 1 || this.roleId === 2;
+      if (this.canManageProjects) {
+    this.displayedColumns.push('acciones');
+  }
+
     this.getProjects();
   }
 
@@ -129,11 +137,11 @@ export class ProjectsListComponent {
   }
 
   goToTickets(project: any): void {
-  this.router.navigate(['/ticket-list'], {
-    queryParams: {
-      projectId: project.id,
-      projectName: project.nombre
-    }
-  });
-}
+    this.router.navigate(['/ticket-list'], {
+      queryParams: {
+        projectId: project.id,
+        projectName: project.nombre
+      }
+    });
+  }
 }

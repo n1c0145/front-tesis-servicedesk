@@ -3,7 +3,7 @@
   <mat-sidenav #sidenav mode="side" opened="true" position="start" class="sidenav-menu">
     <mat-nav-list>
       <a mat-list-item routerLink="/">Inicio</a>
-      <a mat-list-item routerLink="/users-list">Usuarios</a>
+      <a mat-list-item routerLink="/users-list" *ngIf="isAdmin">Usuarios</a>
       <a mat-list-item routerLink="/projects-list">Proyectos</a>
       <a mat-list-item routerLink="/ticket-list">Tickets</a>
       <a mat-list-item (click)="irAMiBandeja()">Mi Bandeja</a>
