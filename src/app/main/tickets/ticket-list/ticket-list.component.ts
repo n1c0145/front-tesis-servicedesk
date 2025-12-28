@@ -54,7 +54,7 @@ export class TicketListComponent implements OnInit {
 
   dataSource = new MatTableDataSource<any>([]);
   isLoading = false;
-
+  areFiltersReady = false;
   projects: any[] = [];
   users: any[] = [];
 
@@ -98,7 +98,7 @@ export class TicketListComponent implements OnInit {
 
   ngOnInit(): void {
     this.initTableConfig();
-    this.loadTicketsFromQueryParams(); 
+    this.loadTicketsFromQueryParams();
   }
   private initTableConfig(): void {
     setTimeout(() => {
@@ -144,8 +144,10 @@ export class TicketListComponent implements OnInit {
         next: ({ projects, users }) => {
           this.projects = projects || [];
           this.users = users || [];
+          this.areFiltersReady = true;
         },
         error: () => {
+          this.areFiltersReady = true;
           this.dialog.open(AlertDialogComponent, {
             data: {
               icon: 'error',

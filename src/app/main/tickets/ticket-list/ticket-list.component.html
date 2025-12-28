@@ -13,9 +13,17 @@
   </mat-form-field>
 
   <mat-accordion>
-    <mat-expansion-panel>
+    <mat-expansion-panel [disabled]="!areFiltersReady">
       <mat-expansion-panel-header>
-        <mat-panel-title>Filtros Avanzados</mat-panel-title>
+        <mat-panel-title>
+          <ng-container *ngIf="areFiltersReady; else loadingFilters">
+            Filtros Avanzados
+          </ng-container>
+
+          <ng-template #loadingFilters>
+            Cargando filtros...
+          </ng-template>
+        </mat-panel-title>
       </mat-expansion-panel-header>
 
       <div style="display:flex; gap:15px; flex-wrap:wrap;">
