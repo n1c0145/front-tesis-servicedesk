@@ -111,7 +111,7 @@ export class GeneralReportingComponent implements OnInit {
       { label: 'Abiertos', value: d.tickets_summary.tickets_open },
       { label: 'Cerrados', value: d.tickets_summary.tickets_resolved },
       { label: 'Con SLA', value: d.tickets_summary.tickets_with_sla },
-      { label: 'Tiempo promedio', value: d.resolution_metrics.average_resolution_formatted },
+      { label: 'Tiempo promedio de resolución', value: d.resolution_metrics.average_resolution_formatted },
       { label: 'Promedio (min)', value: `${d.resolution_metrics.average_time_minutes} min` },
       { label: 'Actualizaciones', value: d.updates_summary.total_updates },
       { label: 'Públicas', value: d.updates_summary.public_updates },
