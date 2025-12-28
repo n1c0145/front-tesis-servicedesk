@@ -1,1 +1,128 @@
-<p>general-reporting works!</p>
+<app-loading [loading]="isLoading"></app-loading>
+
+<div style="padding:24px; max-width:1400px; margin:0 auto;">
+
+    <mat-card style="margin-bottom:24px;">
+        <mat-card-header>
+            <mat-card-title>Reporte General</mat-card-title>
+            <mat-card-subtitle>
+                Filtros avanzados
+            </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+
+            <mat-accordion>
+                <mat-expansion-panel [disabled]="!areFiltersReady">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <ng-container *ngIf="areFiltersReady; else loadingFilters">
+                                Filtros Avanzados
+                            </ng-container>
+
+                            <ng-template #loadingFilters>
+                                Cargando filtros...
+                            </ng-template>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <mat-form-field appearance="fill" style="width:100%; margin-bottom:16px;">
+                        <mat-label>Proyecto</mat-label>
+                        <mat-select [(ngModel)]="selectedProjectId">
+                            <mat-option [value]="null">Todos los proyectos</mat-option>
+                            <mat-option *ngFor="let p of projects" [value]="p.id">
+                                {{ p.nombre }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" style="width:100%; margin-bottom:16px;">
+                        <mat-label>Rango de fechas</mat-label>
+                        <mat-date-range-input [rangePicker]="picker">
+                            <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start">
+                            <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+
+                    <div style="display:flex; gap:12px;">
+                        <button mat-raised-button color="primary" (click)="applyFilters()">
+                            Aplicar
+                        </button>
+                        <button mat-stroked-button color="warn" (click)="clearFilters()">
+                            Limpiar
+                        </button>
+                    </div>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+
+        </mat-card-content>
+    </mat-card>
+
+    <div style="display:grid;
+              grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+              gap:16px; margin-bottom:24px;">
+
+        <mat-card *ngFor="let kpi of kpis">
+            <mat-card-content class="kpi">
+                <h3>{{ kpi.value }}</h3>
+                <p>{{ kpi.label }}</p>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+
+        <mat-card>
+            <mat-card-title>Abiertos vs Cerrados</mat-card-title>
+            <ngx-charts-pie-chart [results]="reportData.charts.open_vs_close" [doughnut]="true" [labels]="true">
+            </ngx-charts-pie-chart>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-title>SLA vs No SLA</mat-card-title>
+            <ngx-charts-pie-chart [results]="reportData.charts.sla_vs_no_sla" [doughnut]="true" [labels]="true">
+            </ngx-charts-pie-chart>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-title>Estados de Tickets</mat-card-title>
+            <ngx-charts-bar-vertical [results]="reportData.charts.status_distribution" [showDataLabel]="true"
+                [xAxis]="true" [yAxis]="true">
+            </ngx-charts-bar-vertical>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-title>Prioridades</mat-card-title>
+            <ngx-charts-bar-horizontal [results]="reportData.charts.priority_distribution" [showDataLabel]="true"
+                [xAxis]="true" [yAxis]="true">
+            </ngx-charts-bar-horizontal>
+        </mat-card>
+        <mat-card>
+            <mat-card-title>Antigüedad de Tickets</mat-card-title>
+            <ngx-charts-bar-vertical [results]="reportData.charts.ticket_aging" [showDataLabel]="true" [xAxis]="true"
+                [yAxis]="true">
+            </ngx-charts-bar-vertical>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-title>Top Tickets por Tiempo</mat-card-title>
+            <ngx-charts-pie-chart [results]="reportData.charts.top_tickets_time" [doughnut]="true" [labels]="true"
+                [tooltipDisabled]="false">
+            </ngx-charts-pie-chart>
+        </mat-card>
+        <mat-card>
+            <mat-card-title>Top Proyectos por Tiempo</mat-card-title>
+            <ngx-charts-pie-chart [results]="reportData.charts.top_projects_time" [doughnut]="true" [labels]="true">
+            </ngx-charts-pie-chart>
+        </mat-card>
+        <mat-card>
+            <mat-card-title>Top Usuarios por Tiempo</mat-card-title>
+            <ngx-charts-pie-chart [results]="reportData.charts.top_users_time" [doughnut]="true" [labels]="true">
+            </ngx-charts-pie-chart>
+        </mat-card>
+    </div>
+</div>
