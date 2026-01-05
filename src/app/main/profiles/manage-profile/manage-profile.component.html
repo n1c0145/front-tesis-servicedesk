@@ -1,52 +1,158 @@
-<div class="profile-container">
-  <mat-card class="profile-card">
-    <h2>Usuario: {{ user?.estado === 1 ? 'Activo' : 'Bloqueado' }}</h2>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
+      </button>
+    </a>
 
-    <form [formGroup]="profileForm">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Correo</mat-label>
-        <input matInput formControlName="correo" />
-      </mat-form-field>
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Cédula</mat-label>
-        <input matInput formControlName="cedula" />
-      </mat-form-field>
+    <a [routerLink]="['/users-list']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">people</mat-icon>
+        Usuarios
+      </button>
+    </a>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Rol</mat-label>
-        <mat-select formControlName="role_id">
-          <mat-option *ngFor="let r of roles" [value]="r.id">{{ r.nombre }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre" />
-      </mat-form-field>
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">manage_accounts</mat-icon>
+      Gestionar Usuario
+    </button>
+  </div>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Apellido</mat-label>
-        <input matInput formControlName="apellido" />
-      </mat-form-field>
+  <div class="flex justify-center">
+    <mat-card class="w-full max-w-2xl shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">manage_accounts</mat-icon>
+            </div>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-800">Gestionar Usuario</h1>
+              <div class="flex items-center mt-1">
+                <div class="flex items-center mr-4">
+                  <div class="w-2 h-2 rounded-full mr-2" [class.bg-green-500]="user?.estado === 1"
+                    [class.bg-red-500]="user?.estado !== 1">
+                  </div>
+                  <span class="text-sm font-medium" [class.text-green-600]="user?.estado === 1"
+                    [class.text-red-600]="user?.estado !== 1">
+                    {{ user?.estado === 1 ? 'Activo' : 'Bloqueado' }}
+                  </span>
+                </div>
+                <span class="text-xs text-gray-500">
+                  {{ user?.nombre }} {{ user?.apellido }}
+                </span>
+              </div>
+            </div>
+          </div>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Puesto</mat-label>
-        <input matInput formControlName="puesto" />
-      </mat-form-field>
 
-      <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar el usuario' : ''">
-        <button mat-raised-button color="primary" class="full-width" (click)="save()" type="button"
-          [disabled]="profileForm.invalid">
-          Actualizar usuario
-        </button>
+        </div>
       </div>
 
-      <button mat-raised-button color="warn" class="full-width" (click)="changeStatus()">
-        {{ user?.estado === 1 ? 'Bloquear usuario' : 'Desbloquear usuario' }}
-      </button>
-    </form>
-  </mat-card>
+      <div class="p-6">
+        <form [formGroup]="profileForm" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Correo Electrónico
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">mail</mat-icon>
+                <input type="email" formControlName="correo"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md bg-gray-50 text-gray-600 text-sm cursor-not-allowed">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Cédula
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">badge</mat-icon>
+                <input type="text" formControlName="cedula"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md bg-gray-50 text-gray-600 text-sm cursor-not-allowed">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Rol *
+              </label>
+              <div class="relative">
+                <mat-icon
+                  class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">admin_panel_settings</mat-icon>
+                <mat-select formControlName="role_id"
+                  class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:bg-white text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                  panelClass="custom-select-panel">
+                  <mat-option *ngFor="let r of roles" [value]="r.id" class="text-sm py-2 hover:bg-gray-100">
+                    {{ r.nombre }}
+                  </mat-option>
+                </mat-select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Puesto *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">work</mat-icon>
+                <input type="text" formControlName="puesto"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nombre *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">person</mat-icon>
+                <input type="text" formControlName="nombre"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Apellido *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">people</mat-icon>
+                <input type="text" formControlName="apellido"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4">
+            <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar el usuario' : ''">
+              <button mat-raised-button
+                class="w-full py-2.5 text-sm font-medium transition-all duration-300 bg-gray-700 text-white hover:bg-gray-800"
+                (click)="save()" type="button" [disabled]="profileForm.invalid">
+                <mat-icon class="mr-2 text-base">save</mat-icon>
+                Actualizar Usuario
+              </button>
+            </div>
+
+            <button mat-raised-button [color]="user?.estado === 1 ? 'warn' : 'primary'"
+              class="w-full py-2.5 text-sm font-medium transition-all duration-300" (click)="changeStatus()">
+              <mat-icon class="mr-2 text-base">
+                {{ user?.estado === 1 ? 'block' : 'check_circle' }}
+              </mat-icon>
+              {{ user?.estado === 1 ? 'Bloquear Usuario' : 'Desbloquear Usuario' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
 </div>
 
 <app-loading [loading]="isLoading"></app-loading>

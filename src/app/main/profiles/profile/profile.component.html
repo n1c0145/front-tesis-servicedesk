@@ -1,58 +1,158 @@
-<div class="profile-container">
-    <mat-card class="profile-card">
-        <h1>Mi Perfil</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">person</mat-icon>
+      Mi Perfil
+    </button>
+  </div>
 
-        <form [formGroup]="profileForm">
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Correo</mat-label>
-                <input matInput formControlName="correo" />
-            </mat-form-field>
+  <div class="flex justify-center">
+    <mat-card class="w-full max-w-2xl shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">account_circle</mat-icon>
+            </div>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-800">Mi Perfil</h1>
+              <p class="text-sm text-gray-500">Actualiza tu información personal</p>
+            </div>
+          </div>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Cédula</mat-label>
-                <input matInput formControlName="cedula" />
-            </mat-form-field>
+        </div>
+      </div>
 
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Rol</mat-label>
-                <input matInput [value]="roleName" disabled />
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Nombre</mat-label>
-                <input matInput formControlName="nombre" />
-                <mat-error *ngIf="profileForm.get('nombre')?.invalid && profileForm.get('nombre')?.touched">
-                    Ingresa tu nombre
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Apellido</mat-label>
-                <input matInput formControlName="apellido" />
-                <mat-error *ngIf="profileForm.get('apellido')?.invalid && profileForm.get('apellido')?.touched">
-                    Ingresa tu apellido
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="full-width">
-                <mat-label>Puesto</mat-label>
-                <input matInput formControlName="puesto" />
-                <mat-error *ngIf="profileForm.get('puesto')?.invalid && profileForm.get('puesto')?.touched">
-                    Ingresa tu puesto
-                </mat-error>
-            </mat-form-field>
-
-            <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar tu perfil' : ''">
-                <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit"
-                    [disabled]="profileForm.invalid">
-                    Actualizar perfil
-                </button>
+      <div class="p-6">
+        <form [formGroup]="profileForm" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Correo Electrónico
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">mail</mat-icon>
+                <input 
+                  type="email"
+                  formControlName="correo"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md bg-gray-50 text-gray-600 text-sm cursor-not-allowed">
+              </div>
             </div>
 
-            <button mat-raised-button color="accent" class="full-width" (click)="navigateTo('/update-password')">
-                Actualizar contraseña
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Cédula
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">badge</mat-icon>
+                <input 
+                  type="text"
+                  formControlName="cedula"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md bg-gray-50 text-gray-600 text-sm cursor-not-allowed">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Rol
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">admin_panel_settings</mat-icon>
+                <input 
+                  type="text"
+                  [value]="roleName"
+                  disabled
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md bg-gray-50 text-gray-600 text-sm cursor-not-allowed">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Puesto *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">work</mat-icon>
+                <input 
+                  type="text"
+                  formControlName="puesto"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                  [class.border-red-300]="profileForm.get('puesto')?.invalid && profileForm.get('puesto')?.touched"
+                  [class.focus:ring-red-300]="profileForm.get('puesto')?.invalid && profileForm.get('puesto')?.touched">
+              </div>
+              <div *ngIf="profileForm.get('puesto')?.invalid && profileForm.get('puesto')?.touched" class="mt-1 text-xs text-red-500">
+                Ingresa tu puesto
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Nombre *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">person</mat-icon>
+                <input 
+                  type="text"
+                  formControlName="nombre"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                  [class.border-red-300]="profileForm.get('nombre')?.invalid && profileForm.get('nombre')?.touched"
+                  [class.focus:ring-red-300]="profileForm.get('nombre')?.invalid && profileForm.get('nombre')?.touched">
+              </div>
+              <div *ngIf="profileForm.get('nombre')?.invalid && profileForm.get('nombre')?.touched" class="mt-1 text-xs text-red-500">
+                Ingresa tu nombre
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Apellido *
+              </label>
+              <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">people</mat-icon>
+                <input 
+                  type="text"
+                  formControlName="apellido"
+                  class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                  [class.border-red-300]="profileForm.get('apellido')?.invalid && profileForm.get('apellido')?.touched"
+                  [class.focus:ring-red-300]="profileForm.get('apellido')?.invalid && profileForm.get('apellido')?.touched">
+              </div>
+              <div *ngIf="profileForm.get('apellido')?.invalid && profileForm.get('apellido')?.touched" class="mt-1 text-xs text-red-500">
+                Ingresa tu apellido
+              </div>
+            </div>
+          </div> 
+
+          <div class="space-y-3 pt-4">
+            <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar tu perfil' : ''">
+              <button mat-raised-button 
+                      class="w-full py-2.5 text-sm font-medium transition-all duration-300 bg-gray-700 text-white hover:bg-gray-800"
+                      (click)="save()" 
+                      type="submit"
+                      [disabled]="profileForm.invalid">
+                <mat-icon class="mr-2 text-base">save</mat-icon>
+                Actualizar Perfil
+              </button>
+            </div>
+
+            <button mat-stroked-button 
+                    class="w-full py-2.5 text-sm font-medium transition-all duration-300 border-gray-400 text-gray-700 hover:bg-gray-50"
+                    (click)="navigateTo('/update-password')">
+              <mat-icon class="mr-2 text-base">lock_reset</mat-icon>
+              Actualizar Contraseña
             </button>
+          </div>
         </form>
+      </div>
     </mat-card>
+  </div>
 </div>
+
 <app-loading [loading]="isLoading"></app-loading>

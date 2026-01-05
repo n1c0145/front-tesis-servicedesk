@@ -14,6 +14,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-manage-profile',
@@ -27,7 +29,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatSelectModule,
     LoadingComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    RouterModule,
+    MatIconModule
   ],
   templateUrl: './manage-profile.component.html',
   styleUrl: './manage-profile.component.scss'
