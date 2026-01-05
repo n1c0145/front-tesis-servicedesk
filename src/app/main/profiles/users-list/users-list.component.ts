@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
+import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-users-list',
@@ -25,7 +27,9 @@ import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    LoadingComponent
+    LoadingComponent,
+    RouterModule,
+    MatCardModule
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss'
