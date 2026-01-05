@@ -7,6 +7,26 @@
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 600px) {
+  .sidenav-menu {
+    width: 85% !important;
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+  }
+  
+
+  .user-menu-container mat-icon {
+    display: none !important;
+  }
+}
+
+@media (min-width: 700px) {
+  .sidenav-menu {
+    width: 25%;
+  }
+}
+
 .main-toolbar {
   position: sticky;
   top: 0;
@@ -70,6 +90,7 @@
   width: 100%;
   box-sizing: border-box;
 }
+
 .notification-content {
   flex: 1;
   overflow-wrap: anywhere;
@@ -131,4 +152,20 @@
   font-size: 16px;
   text-transform: uppercase;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.mat-list-item {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.mat-list-item .mat-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 699px) {
+  .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 }

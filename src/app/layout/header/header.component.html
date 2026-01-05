@@ -1,15 +1,47 @@
 <mat-sidenav-container class="sidenav-container">
 
   <mat-sidenav #sidenav mode="side" opened="true" position="start" class="sidenav-menu">
+
     <mat-nav-list>
-      <a mat-list-item routerLink="/">Inicio</a>
-      <a mat-list-item routerLink="/users-list" *ngIf="isAdmin">Usuarios</a>
-      <a mat-list-item routerLink="/projects-list">Proyectos</a>
-      <a mat-list-item routerLink="/ticket-list">Tickets</a>
-      <a mat-list-item (click)="irAMiBandeja()">Mi Bandeja</a>
-      <a mat-list-item routerLink="/notifications">Notificaciones</a>
-      <a mat-list-item routerLink="/general-reporting">Reportes</a>
-      <a mat-list-item routerLink="/sla-reporting">Acuerdos Nivel de Servicio</a>
+      <a mat-list-item routerLink="/" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">home</mat-icon>
+        <span>Inicio</span>
+      </a>
+
+      <a mat-list-item routerLink="/users-list" *ngIf="isAdmin" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">people</mat-icon>
+        <span>Usuarios</span>
+      </a>
+
+      <a mat-list-item routerLink="/projects-list" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">folder</mat-icon>
+        <span>Proyectos</span>
+      </a>
+
+      <a mat-list-item routerLink="/ticket-list" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">confirmation_number</mat-icon>
+        <span>Tickets</span>
+      </a>
+
+      <a mat-list-item (click)="irAMiBandeja()" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">inbox</mat-icon>
+        <span>Mi Bandeja</span>
+      </a>
+
+      <a mat-list-item routerLink="/notifications" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">notifications</mat-icon>
+        <span>Notificaciones</span>
+      </a>
+
+      <a mat-list-item routerLink="/general-reporting" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">assessment</mat-icon>
+        <span>Reportes</span>
+      </a>
+
+      <a mat-list-item routerLink="/sla-reporting" class="flex items-center py-3">
+        <mat-icon class="mr-3 text-gray-600">verified</mat-icon>
+        <span>Acuerdos Nivel de Servicio</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -20,10 +52,11 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <span>{{ title }}</span>
+      <span
+        class="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent font-semibold">{{
+        title }}</span>
       <span class="toolbar-spacer"></span>
 
-      <!-- Notificaciones -->
       <div class="notification-container" [matMenuTriggerFor]="notificationsMenu">
         <button mat-icon-button>
           <mat-icon>notifications</mat-icon>
@@ -55,12 +88,11 @@
         </div>
       </mat-menu>
 
-      <!--Avatar -->
       <div class="user-menu-container" [matMenuTriggerFor]="userMenu">
         <div class="user-avatar">
           {{ userInitial }}
         </div>
-        <mat-icon>expand_more</mat-icon>
+        <mat-icon class="hidden sm:inline">expand_more</mat-icon>
       </div>
 
       <mat-menu #userMenu="matMenu">
@@ -76,7 +108,9 @@
 
     </mat-toolbar>
 
-    <router-outlet></router-outlet>
+    <div class="p-4">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 
 </mat-sidenav-container>
