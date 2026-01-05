@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +24,8 @@ import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.com
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    LoadingComponent
+    LoadingComponent,
+    MatTooltipModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

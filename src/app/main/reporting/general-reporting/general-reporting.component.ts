@@ -59,19 +59,18 @@ export class GeneralReportingComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadReport();
-    this.loadProjects();
-  }
 
+    this.loadProjects();
+
+  }
   loadReport(payload: any = {}): void {
     this.isLoading = true;
-    this.areFiltersReady = false;
 
     this.apiService.post<any>('general-report', payload).subscribe({
       next: res => {
         this.reportData = res.data;
         this.buildKpis();
         this.isLoading = false;
-        this.areFiltersReady = true;
 
       },
       error: () => this.dialog.open(AlertDialogComponent, {
@@ -90,7 +89,7 @@ export class GeneralReportingComponent implements OnInit {
       next: res => {
         this.projects = res;
         this.areFiltersReady = true;
-        this.isLoading = false;
+
       },
       error: () => this.dialog.open(AlertDialogComponent, {
         data: {

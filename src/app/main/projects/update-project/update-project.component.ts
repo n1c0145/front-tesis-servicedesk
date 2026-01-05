@@ -16,6 +16,7 @@ import { ApiService } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component'
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 interface User {
   id: number;
@@ -39,7 +40,8 @@ interface User {
     MatIconModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
-    LoadingComponent
+    LoadingComponent,
+    MatTooltipModule
   ],
   templateUrl: './update-project.component.html',
   styleUrl: './update-project.component.scss'

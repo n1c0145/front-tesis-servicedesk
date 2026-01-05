@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-update-password',
@@ -21,7 +22,7 @@ import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.com
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule, LoadingComponent],
+    MatButtonModule, LoadingComponent, MatTooltipModule],
   templateUrl: './update-password.component.html',
   styleUrl: './update-password.component.scss'
 })

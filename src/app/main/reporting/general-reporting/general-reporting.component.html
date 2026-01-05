@@ -1,6 +1,6 @@
 <app-loading [loading]="isLoading"></app-loading>
 
-<div style="padding:24px; max-width:1400px; margin:0 auto;">
+<div *ngIf="!isLoading && reportData" style="padding:24px; max-width:1400px; margin:0 auto;">
 
     <mat-card style="margin-bottom:24px;">
         <mat-card-header>
@@ -126,3 +126,4 @@
         </mat-card>
     </div>
 </div>
+

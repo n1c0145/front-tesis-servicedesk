@@ -132,10 +132,12 @@
       </mat-expansion-panel>
 
       <!-- Botón guardar -->
-      <button mat-raised-button color="primary" class="full-width" type="submit" [disabled]="form.invalid || isLoading">
-        {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
-      </button>
-
+      <div [matTooltip]="form.invalid ? 'Completa todos los campos requeridos para crear el ticket' : ''">
+        <button mat-raised-button color="primary" class="full-width" type="submit"
+          [disabled]="form.invalid || isLoading">
+          {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
+        </button>
+      </div>
     </form>
   </mat-card>
 

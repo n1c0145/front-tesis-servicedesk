@@ -94,9 +94,12 @@
 
 <mat-dialog-actions>
     <button mat-button type="button" (click)="onCancel()">Cancelar</button>
-    <button mat-raised-button color="primary" type="button" (click)="onSave()" [disabled]="form.invalid || isLoading">
-        Guardar
-    </button>
+    <div [matTooltip]="form.invalid ? 'Completa el mensaje para crear el hilo' : ''">
+        <button mat-raised-button color="primary" type="button" (click)="onSave()"
+            [disabled]="form.invalid || isLoading">
+            Guardar
+        </button>
+    </div>
 </mat-dialog-actions>
 
 <app-loading [loading]="isLoading"></app-loading>

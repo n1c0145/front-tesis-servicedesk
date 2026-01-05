@@ -42,10 +42,12 @@
                 </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit"
-                [disabled]="profileForm.invalid">
-                Actualizar perfil
-            </button>
+            <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar tu perfil' : ''">
+                <button mat-raised-button color="primary" class="full-width" (click)="save()" type="submit"
+                    [disabled]="profileForm.invalid">
+                    Actualizar perfil
+                </button>
+            </div>
 
             <button mat-raised-button color="accent" class="full-width" (click)="navigateTo('/update-password')">
                 Actualizar contraseña

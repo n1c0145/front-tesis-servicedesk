@@ -90,10 +90,13 @@
         </div>
       </div>
 
-      <button mat-raised-button color="primary" class="full-width"
-        [disabled]="form.invalid || selectedUsers.length === 0" (click)="save()">
-        Actualizar Proyecto
-      </button>
+      <div
+        [matTooltip]="form.invalid || selectedUsers.length === 0 ? 'Completa todos los campos y agrega al menos un usuario' : ''">
+        <button mat-raised-button color="primary" class="full-width"
+          [disabled]="form.invalid || selectedUsers.length === 0" (click)="save()">
+          Actualizar Proyecto
+        </button>
+      </div>
 
       <button mat-raised-button color="warn" class="full-width" style="margin-top: 10px;" (click)="deleteProject()">
         Eliminar Proyecto

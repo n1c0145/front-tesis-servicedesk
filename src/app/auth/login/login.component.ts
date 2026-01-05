@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
@@ -27,7 +28,8 @@ import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.com
     MatButtonModule,
     MatDialogModule,
     HttpClientModule,
-    LoadingComponent
+    LoadingComponent,
+    MatTooltipModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

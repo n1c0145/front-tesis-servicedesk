@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,7 @@ import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule, LoadingComponent],
+    MatButtonModule, LoadingComponent, MatTooltipModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })

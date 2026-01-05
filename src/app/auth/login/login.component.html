@@ -6,19 +6,25 @@
                 <mat-label>Correo</mat-label>
                 <input matInput placeholder="usuario@dominio.com" formControlName="email">
                 <mat-error *ngIf="email.invalid && email.touched">
-                    Ingresa un correo válido
+                    <span *ngIf="email.errors?.['required']">El correo es requerido</span>
+                    <span *ngIf="email.errors?.['pattern']">Ingresa un correo válido</span>
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Contraseña</mat-label>
                 <input matInput type="password" placeholder="Contraseña" formControlName="password">
+                <mat-error *ngIf="password.invalid && password.touched">
+                    La contraseña es obligatoria
+                </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="loginForm.invalid"
-                (click)="save()">
-                Iniciar Sesión
-            </button>
+            <div [matTooltip]="loginForm.invalid ? 'Ingresa tu correo y contraseña para continuar' : ''">
+                <button mat-raised-button color="primary" class="full-width" [disabled]="loginForm.invalid"
+                    (click)="save()">
+                    Iniciar Sesión
+                </button>
+            </div>
         </form>
 
         <div class="links">

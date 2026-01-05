@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-forgot-password',
@@ -23,7 +24,7 @@ import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.com
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatStepperModule, LoadingComponent],
+    MatStepperModule, LoadingComponent, MatTooltipModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
 })

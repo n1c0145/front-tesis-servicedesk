@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../services/api.service';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-update-ticket',
@@ -32,6 +33,7 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
     MatListModule,
     NgxFileDropModule,
     LoadingComponent,
+    MatTooltipModule
   ],
 })
 export class UpdateTicketComponent implements OnInit {

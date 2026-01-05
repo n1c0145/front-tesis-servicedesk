@@ -35,10 +35,12 @@
         <input matInput formControlName="puesto" />
       </mat-form-field>
 
-      <button mat-raised-button color="primary" class="full-width" (click)="save()" type="button"
-        [disabled]="profileForm.invalid">
-        Actualizar usuario
-      </button>
+      <div [matTooltip]="profileForm.invalid ? 'Completa todos los campos para actualizar el usuario' : ''">
+        <button mat-raised-button color="primary" class="full-width" (click)="save()" type="button"
+          [disabled]="profileForm.invalid">
+          Actualizar usuario
+        </button>
+      </div>
 
       <button mat-raised-button color="warn" class="full-width" (click)="changeStatus()">
         {{ user?.estado === 1 ? 'Bloquear usuario' : 'Desbloquear usuario' }}

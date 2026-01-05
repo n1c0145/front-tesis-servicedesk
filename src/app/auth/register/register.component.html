@@ -7,6 +7,7 @@
                 <mat-label>Correo</mat-label>
                 <input matInput placeholder="usuario@dominio.com" formControlName="email">
                 <mat-error *ngIf="email.invalid && email.touched">
+                    <div *ngIf="email.errors?.['required']">El correo es requerido</div>
                     <div *ngIf="email.errors?.['pattern'] && !email.errors?.['nonAscii']">
                         Ingresa un correo válido
                     </div>
@@ -17,7 +18,8 @@
             </mat-form-field>
             <mat-form-field appearance="fill" class="full-width">
                 <mat-label>Cédula</mat-label>
-                <input matInput placeholder="1234567890" formControlName="cedula">
+                <input matInput placeholder="1234567890" formControlName="cedula" (input)="onlyNumbers($event)">
+
                 <mat-error *ngIf="cedula.invalid && cedula.touched">
                     Ingresa una cédula válida de 10 dígitos
                 </mat-error>
@@ -71,10 +73,12 @@
                 </mat-error>
             </mat-form-field>
 
-            <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid"
-                (click)="save()">
-                Registrarse
-            </button>
+            <div [matTooltip]="registerForm.invalid ? 'Completa todos los campos correctamente para registrarte' : ''">
+                <button mat-raised-button color="primary" class="full-width" [disabled]="registerForm.invalid"
+                    (click)="save()">
+                    Registrarse
+                </button>
+            </div>
         </form>
 
         <div class="links">
