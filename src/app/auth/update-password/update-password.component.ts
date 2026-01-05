@@ -13,6 +13,8 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-update-password',
@@ -22,7 +24,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule, LoadingComponent, MatTooltipModule],
+    MatButtonModule, LoadingComponent, MatTooltipModule,MatIconModule,RouterModule],
   templateUrl: './update-password.component.html',
   styleUrl: './update-password.component.scss'
 })
