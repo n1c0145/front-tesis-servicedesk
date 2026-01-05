@@ -13,6 +13,8 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-register',
@@ -25,7 +27,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatButtonModule,
     LoadingComponent,
-    MatTooltipModule
+    MatTooltipModule,
+    MatIconModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

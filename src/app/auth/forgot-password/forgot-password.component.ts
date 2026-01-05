@@ -14,6 +14,8 @@ import { LoadingComponent } from '../../layout/loading/loading.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
   selector: 'app-forgot-password',
@@ -24,7 +26,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatStepperModule, LoadingComponent, MatTooltipModule],
+    MatStepperModule, LoadingComponent, MatTooltipModule,
+    MatIconModule],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
 })
@@ -168,4 +171,9 @@ export class ForgotPasswordComponent {
       }
     });
   }
+
+  navigateTo(path: string) {
+    this.router.navigate([path]);
+  }
+
 }
