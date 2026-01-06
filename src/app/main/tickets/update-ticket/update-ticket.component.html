@@ -1,103 +1,201 @@
-<h2 mat-dialog-title>Nuevo Hilo - {{ ticket?.titulo }}</h2>
+<h2 mat-dialog-title class="border-b border-gray-200 pb-4 mb-4">
+    <div class="flex items-center">
+        <div class="bg-gray-100 p-2 rounded-lg mr-3">
+            <mat-icon class="text-gray-600">add_comment</mat-icon>
+        </div>
+        <div>
+            <div class="text-lg font-semibold text-gray-800">Nuevo Hilo</div>
+            <div class="text-sm text-gray-500">Ticket: {{ ticket?.titulo }}</div>
+        </div>
+    </div>
+</h2>
 
-<mat-dialog-content class="update-dialog-content">
-    <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
-        <!-- Mensaje del hilo -->
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Mensaje</mat-label>
-            <textarea matInput formControlName="mensaje" placeholder="Escribe el mensaje inicial"></textarea>
-            <mat-error *ngIf="form.get('mensaje')?.invalid && form.get('mensaje')?.touched">
+<mat-dialog-content class="update-dialog-content pb-6">
+    <form [formGroup]="form" (ngSubmit)="onSave()" novalidate class="space-y-6">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Mensaje *
+            </label>
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">chat</mat-icon>
+                <textarea formControlName="mensaje" placeholder="Escribe el contenido del mensaje" rows="4"
+                    class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm resize-none"
+                    [class.border-red-300]="form.get('mensaje')?.invalid && form.get('mensaje')?.touched"
+                    [class.focus:ring-red-300]="form.get('mensaje')?.invalid && form.get('mensaje')?.touched">
+        </textarea>
+            </div>
+            <div *ngIf="form.get('mensaje')?.invalid && form.get('mensaje')?.touched" class="mt-1 text-xs text-red-500">
                 Ingresa un mensaje
-            </mat-error>
-        </mat-form-field>
+            </div>
+        </div>
 
-        <!-- Privado -->
-        <mat-checkbox *ngIf="roleId !== 4" formControlName="private">
-            ¿El hilo será privado?
-        </mat-checkbox>
+        <div *ngIf="roleId !== 4" class="flex items-center p-3 border border-gray-200 rounded-lg bg-white">
+            <mat-checkbox formControlName="private" color="primary" class="mr-3"></mat-checkbox>
+            <div>
+                <span class="text-sm font-medium text-gray-700">¿El hilo será privado?</span>
+                <p class="text-xs text-gray-500 mt-1">Solo usuarios internos podrán ver este hilo</p>
+            </div>
+        </div>
 
-        <!-- Tiempo -->
-        <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
-            <mat-label>Tiempo (minutos)</mat-label>
-            <input matInput type="number" formControlName="time" min="0" placeholder="Ej: 15" />
-            <mat-error *ngIf="form.get('time')?.invalid && form.get('time')?.touched">
+        <div *ngIf="roleId !== 4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tiempo por adicionar (minutos)
+            </label>
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500">timer</mat-icon>
+                <input type="number" formControlName="time" min="0" placeholder="Ej: 15"
+                    class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                    [class.border-red-300]="form.get('time')?.invalid && form.get('time')?.touched"
+                    [class.focus:ring-red-300]="form.get('time')?.invalid && form.get('time')?.touched">
+            </div>
+            <div *ngIf="form.get('time')?.invalid && form.get('time')?.touched" class="mt-1 text-xs text-red-500">
                 Ingresa un número entero válido
-            </mat-error>
-        </mat-form-field>
+            </div>
+        </div>
 
-        <!-- Prioridad  -->
-        <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
-            <mat-label>Prioridad</mat-label>
-            <mat-select formControlName="priority_id">
-                <mat-option [value]="ticket?.priority_id">
-                    {{ getPrioridadNombre(ticket?.priority_id) || 'Actual' }}
-                </mat-option>
-                <mat-option *ngFor="let prioridad of getPrioridadesFiltradas()" [value]="prioridad.id">
-                    {{ prioridad.nombre }}
-                </mat-option>
-            </mat-select>
-            <mat-hint>Actual: {{ getPrioridadNombre(ticket?.priority_id) || 'Sin asignar' }}</mat-hint>
-        </mat-form-field>
+        <div *ngIf="roleId !== 4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Prioridad
+            </label>
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">priority_high</mat-icon>
+                <mat-select formControlName="priority_id"
+                    class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                    panelClass="custom-select-panel">
+                    <mat-option [value]="ticket?.priority_id" class="text-sm py-2 hover:bg-gray-100">
+                        <div class="flex items-center">
+                            <span>{{ getPrioridadNombre(ticket?.priority_id) || 'Actual' }}</span>
+                        </div>
+                    </mat-option>
+                    <mat-option *ngFor="let prioridad of getPrioridadesFiltradas()" [value]="prioridad.id"
+                        class="text-sm py-2 hover:bg-gray-100">
+                        {{ prioridad.nombre }}
+                    </mat-option>
+                </mat-select>
+            </div>
+            <div class="mt-1 text-xs text-gray-500 flex items-center">
+                <mat-icon class="text-xs mr-1">info</mat-icon>
+                Actual: {{ getPrioridadNombre(ticket?.priority_id) || 'Sin asignar' }}
+            </div>
+        </div>
 
-        <!-- Estado -->
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Estado</mat-label>
-            <mat-select formControlName="status_id">
-                <mat-option [value]="ticket?.status_id">
-                    {{ getEstadoNombre(ticket?.status_id) }}
-                </mat-option>
-                <mat-option *ngFor="let estado of getEstadosFiltrados()" [value]="estado.id">
-                    {{ estado.nombre }}
-                </mat-option>
-            </mat-select>
-            <mat-hint>Estado actual: {{ getEstadoNombre(ticket?.status_id) }}</mat-hint>
-        </mat-form-field>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Estado
+            </label>
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">circle</mat-icon>
+                <mat-select formControlName="status_id"
+                    class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                    panelClass="custom-select-panel">
+                    <mat-option [value]="ticket?.status_id" class="text-sm py-2 hover:bg-gray-100">
+                        <div class="flex items-center">
+                            <span>{{ getEstadoNombre(ticket?.status_id) }}</span>
+                        </div>
+                    </mat-option>
+                    <mat-option *ngFor="let estado of getEstadosFiltrados()" [value]="estado.id"
+                        class="text-sm py-2 hover:bg-gray-100">
+                        {{ estado.nombre }}
+                    </mat-option>
+                </mat-select>
+            </div>
+            <div class="mt-1 text-xs text-gray-500 flex items-center">
+                <mat-icon class="text-xs mr-1">info</mat-icon>
+                Estado actual: {{ getEstadoNombre(ticket?.status_id) }}
+            </div>
+        </div>
 
-        <!-- Asignado a -->
-        <mat-form-field appearance="fill" class="full-width">
-            <mat-label>Asignado a</mat-label>
-            <mat-select formControlName="assigned_to">
-                <mat-option [value]="0">Bandeja general del proyecto</mat-option>
-                <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
-                    {{ u.user_name }}
-                </mat-option>
-            </mat-select>
-            <mat-hint>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Asignado a
+            </label>
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">assignment_ind</mat-icon>
+                <mat-select formControlName="assigned_to"
+                    class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                    panelClass="custom-select-panel">
+                    <mat-option [value]="0" class="text-sm py-2 hover:bg-gray-100">
+                        Bandeja general del proyecto
+                    </mat-option>
+                    <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id"
+                        class="text-sm py-2 hover:bg-gray-100">
+                        {{ u.user_name }}
+                    </mat-option>
+                </mat-select>
+            </div>
+            <div class="mt-1 text-xs text-gray-500 flex items-center">
+                <mat-icon class="text-xs mr-1">info</mat-icon>
                 Asignado actual: {{
                 (ticket?.assigned_to === 0 || !ticket?.assigned_to)
                 ? 'Bandeja general'
                 : ticket?.assigned_to_nombre
                 }}
-            </mat-hint>
-        </mat-form-field>
+            </div>
+        </div>
 
-        <!-- Archivos -->
-        <ngx-file-drop (onFileDrop)="onFileDrop($event)">
-            <ng-template ngx-file-drop-content-tmp>
-                <mat-icon>cloud_upload</mat-icon>
-                <p>Arrastra archivos aquí o</p>
-                <button mat-button type="button" (click)="fileInput.click()">Examinar</button>
-                <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)" />
-            </ng-template>
-        </ngx-file-drop>
+        <div class="border border-gray-200 rounded-lg p-4 bg-white">
+            <label class="block text-sm font-medium text-gray-700 mb-3">
+                Archivos adjuntos
+                <span class="text-xs text-gray-500 font-normal">(Opcional)</span>
+            </label>
 
-        <mat-list *ngIf="archivos.length > 0">
-            <mat-list-item *ngFor="let file of archivos">
-                {{ file.name }}
-                <button mat-icon-button type="button" (click)="eliminarArchivo(file.name)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </mat-list-item>
-        </mat-list>
+            <ngx-file-drop (onFileDrop)="onFileDrop($event)" dropZoneClassName="drop-zone" [multiple]="true">
+                <ng-template ngx-file-drop-content-tmp>
+                    <div class="text-center py-6">
+                        <mat-icon class="text-4xl text-gray-300 mb-3">cloud_upload</mat-icon>
+                        <p class="text-sm text-gray-600 mb-2">Arrastra archivos aquí o</p>
+                        <button mat-button type="button" class="bg-gray-700 hover:bg-gray-800 text-white text-sm"
+                            (click)="fileInput.click()">
+                            <mat-icon class="mr-2 text-sm">folder_open</mat-icon>
+                            Seleccionar archivos
+                        </button>
+                        <p class="text-xs text-gray-500 mt-3">Formatos soportados: imágenes, documentos, PDF de máximo
+                            10 MB</p>
+                    </div>
+                </ng-template>
+            </ngx-file-drop>
+
+            <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)" />
+
+            <div *ngIf="archivos.length > 0" class="mt-4">
+                <div class="flex items-center mb-2">
+                    <mat-icon class="text-gray-500 mr-2 text-sm">attach_file</mat-icon>
+                    <span class="text-sm font-medium text-gray-700">Archivos seleccionados ({{ archivos.length
+                        }})</span>
+                </div>
+                <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                    <div *ngFor="let file of archivos"
+                        class="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded">
+                        <div class="flex items-center">
+                            <mat-icon class="text-gray-400 mr-2 text-sm">insert_drive_file</mat-icon>
+                            <div>
+                                <span class="text-sm text-gray-800">{{ file.name }}</span>
+                                <div class="text-xs text-gray-500">{{ file.size }}</div>
+                            </div>
+                        </div>
+                        <button mat-icon-button type="button" class="text-gray-400 hover:text-red-500"
+                            (click)="eliminarArchivo(file.name)">
+                            <mat-icon class="text-sm">delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </mat-dialog-content>
 
-<mat-dialog-actions>
-    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
-    <div [matTooltip]="form.invalid ? 'Completa el mensaje para crear el hilo' : ''">
+<mat-dialog-actions class="border-t border-gray-200 pt-4 px-6 pb-6">
+    <button mat-button type="button" (click)="onCancel()"
+        class="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded-lg transition-all duration-300">
+        Cancelar
+    </button>
+
+    <div [matTooltip]="form.invalid ? 'Completa el mensaje para crear el hilo' : ''" class="ml-2">
         <button mat-raised-button color="primary" type="button" (click)="onSave()"
-            [disabled]="form.invalid || isLoading">
-            Guardar
+            [disabled]="form.invalid || isLoading"
+            class="bg-gray-700 hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center">
+            <mat-icon class="mr-2 text-base">{{ isLoading ? 'hourglass_empty' : 'save' }}</mat-icon>
+            {{ isLoading ? 'Guardando...' : 'Guardar Hilo' }}
         </button>
     </div>
 </mat-dialog-actions>

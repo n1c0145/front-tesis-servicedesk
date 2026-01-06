@@ -13,6 +13,7 @@ import { ApiService } from '../../../services/api.service';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { UpdateTicketComponent } from "../update-ticket/update-ticket.component";
+import { RouterModule } from '@angular/router';
 
 
 @Component({
@@ -30,7 +31,7 @@ import { UpdateTicketComponent } from "../update-ticket/update-ticket.component"
     MatExpansionModule,
     MatDialogModule,
     LoadingComponent,
-
+    RouterModule
   ],
   templateUrl: './ticket-view.component.html',
   styleUrls: ['./ticket-view.component.scss']

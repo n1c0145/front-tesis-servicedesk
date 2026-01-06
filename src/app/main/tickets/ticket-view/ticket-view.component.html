@@ -1,161 +1,385 @@
-<ng-container *ngIf="isLoading; else content">
-    <app-loading></app-loading>
-</ng-container>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+        <a [routerLink]="['/home']" class="no-underline">
+            <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+                <mat-icon class="mr-1 text-base">home</mat-icon>
+                Inicio
+            </button>
+        </a>
 
-<ng-template #content>
-    <mat-card class="ticket-header mat-elevation-z3">
-        <div class="header-row">
-            <div class="header-left">
-                <h2 class="ticket-title">{{ ticket.titulo }}</h2>
-                <h3 class="ticket-number">#{{ ticket.ticket_number }}</h3>
-                <p class="ticket-desc" *ngIf="ticket.descripcion">{{ ticket.descripcion }}</p>
-            </div>
+        <mat-icon class="text-gray-400">chevron_right</mat-icon>
 
-            <div class="header-right" *ngIf="ticket.closed_by === null || ticket.status_id !== 7">
-                <button mat-flat-button color="primary" (click)="onActualizar()">Nuevo Hilo</button>
-            </div>
-        </div>
+        <a [routerLink]="['/ticket-list']" class="no-underline">
+            <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+                <mat-icon class="mr-1 text-base">confirmation_number</mat-icon>
+                Tickets
+            </button>
+        </a>
 
-        <mat-divider></mat-divider>
+        <mat-icon class="text-gray-400">chevron_right</mat-icon>
 
-        <mat-card-content>
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <strong>Estado:</strong>
-                    <span>{{ ticket.status_name ?? '-' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Prioridad:</strong>
-                    <span>{{ ticket.priority_name ?? '-' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Proyecto:</strong>
-                    <span>{{ ticket.project_name ?? '-' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Abierto por:</strong>
-                    <span>{{ ticket.created_by_nombre ?? '-' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Asignado a:</strong>
-                    <span *ngIf="ticket.assigned_to; else bandeja">
-                        {{ ticket.assigned_to_nombre }}
-                    </span>
-                    <ng-template #bandeja>
-                        Bandeja general de {{ ticket.project_name }}
-                    </ng-template>
-                </div>
-
-                <div class="meta-item" *ngIf="ticket.closed_by_nombre">
-                    <strong>Cerrado por:</strong>
-                    <span>{{ ticket.closed_by_nombre }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Creación:</strong>
-                    <span>{{ ticket.fecha_creacion | date: 'medium' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Última actualización:</strong>
-                    <span>{{ ticket.fecha_actualizacion | date: 'medium' }}</span>
-                </div>
-
-                <div class="meta-item">
-                    <strong>Tiempo ocupado:</strong>
-                    <span>{{ ticket.time ?? '-' }} min</span>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
-
-    <div class="threads-header">
-        <h3>Hilos del Ticket</h3>
-        <button mat-stroked-button (click)="toggleAllPanels()">
-            {{ isExpandedAll ? 'Contraer todo' : 'Expandir todo' }}
+        <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+            <mat-icon class="mr-1 text-base">article</mat-icon>
+            Ticket #{{ ticket?.ticket_number || '...' }}
         </button>
     </div>
 
-    <mat-accordion class="threads-accordion" multi>
-        <ng-container *ngFor="let thread of ticket.threads">
-            <ng-container *ngIf="roleId !== 4 || thread.private === 0">
-                <mat-expansion-panel class="thread-panel" [ngClass]="{'private-thread': thread.private === 1}" #panel>
+    <ng-container *ngIf="isLoading; else content">
+        <div class="flex justify-center items-center min-h-[400px]">
+            <app-loading></app-loading>
+        </div>
+    </ng-container>
 
-                    <div *ngIf="thread.private === 1" class="private-header">
-                        Hilo Interno
-                    </div>
-
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            <div class="thread-header">
-                                <div class="user">{{ thread.user?.nombre_completo ?? 'Usuario' }}</div>
-                                <div class="created-at">{{ thread.created_at | date: 'medium' }}</div>
+    <ng-template #content>
+        <div class="flex justify-center">
+            <mat-card class="w-full max-w-5xl shadow-lg rounded-xl overflow-hidden border border-gray-200 mb-6">
+                <div class="border-b border-gray-200 p-5 bg-gray-50">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex items-center">
+                            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+                                <mat-icon class="text-gray-600">article</mat-icon>
                             </div>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
-
-                    <div class="thread-body">
-                        <p class="mensaje">{{ thread.mensaje }}</p>
-
-                        <div *ngIf="thread.attachments?.length" class="attachments">
-                            <strong>Adjuntos:</strong>
-                            <mat-list>
-                                <mat-list-item *ngFor="let a of thread.attachments">
-                                    <a (click)="openAttachment(a.url)" href="javascript:void(0)" rel="noopener">
-                                        <mat-icon mat-list-icon>attach_file</mat-icon>
-                                        <span class="attachment-name">{{ a.nombre_archivo }}</span>
-                                    </a>
-                                </mat-list-item>
-                            </mat-list>
+                            <div>
+                                <h1 class="text-lg font-semibold text-gray-800">Ticket #{{ ticket.ticket_number }}</h1>
+                                <p class="text-sm text-gray-500">Detalle completo del ticket</p>
+                            </div>
                         </div>
 
-                        <div *ngIf="thread.histories?.length" class="histories">
-                            <strong>Historial de cambios:</strong>
-                            <ul>
-                                <ng-container *ngFor="let h of thread.histories">
-                                    <li *ngIf="h.time > 0">
-                                        Se añadió <strong>{{ h.time }} minuto{{ h.time === 1 ? '' : 's' }}</strong> al
-                                        tiempo del ticket.
-                                    </li>
-                                    <li *ngIf="h.changes.status">
-                                        Se actualizó el estado de <strong>{{ h.changes.status.from }}</strong> a
-                                        <strong>{{ h.changes.status.to }}</strong>.
-                                    </li>
-                                    <li *ngIf="h.changes.priority">
-                                        Se actualizó la prioridad de <strong>{{ h.changes.priority.from }}</strong> a
-                                        <strong>{{ h.changes.priority.to }}</strong>.
-                                    </li>
-                                    <li *ngIf="h.changes.assigned">
-                                        Se cambió la asignación de
-                                        <ng-container *ngIf="h.changes.assigned.from.id; else fromText">
-                                            <a href="javascript:void(0)"
-                                                (click)="onAssignedClick(h.changes.assigned.from)">{{
-                                                h.changes.assigned.from.name }}</a>
-                                        </ng-container>
-                                        <ng-template #fromText><strong>{{ h.changes.assigned.from.name
-                                                }}</strong></ng-template>
-                                        a
-                                        <ng-container *ngIf="h.changes.assigned.to.id; else toText">
-                                            <a href="javascript:void(0)"
-                                                (click)="onAssignedClick(h.changes.assigned.to)">{{
-                                                h.changes.assigned.to.name }}</a>
-                                        </ng-container>
-                                        <ng-template #toText><strong>{{ h.changes.assigned.to.name
-                                                }}</strong></ng-template>.
-                                    </li>
-                                </ng-container>
-                            </ul>
+                        <div class="header-right" *ngIf="ticket.closed_by === null || ticket.status_id !== 7">
+                            <button mat-raised-button color="primary" (click)="onActualizar()"
+                                class="bg-gray-700 hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center">
+                                <mat-icon class="mr-2">add_comment</mat-icon>
+                                Nuevo Hilo
+                            </button>
                         </div>
-
                     </div>
-                </mat-expansion-panel>
-            </ng-container>
-        </ng-container>
-    </mat-accordion>
-</ng-template>
+                </div>
+
+                <div class="p-5 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900 mb-3">{{ ticket.titulo }}</h2>
+                    <p class="text-gray-700" *ngIf="ticket.descripcion">{{ ticket.descripcion }}</p>
+                </div>
+
+                <div class="p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">circle</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Estado</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full mr-2"
+                                    [class.bg-green-500]="ticket.status_name === 'Abierto' || ticket.status_name === 'En Proceso'"
+                                    [class.bg-blue-500]="ticket.status_name === 'Pendiente'"
+                                    [class.bg-gray-500]="ticket.status_name === 'Cerrado' || ticket.status_name === 'Resuelto'">
+                                </div>
+                                <span class="text-sm font-medium text-gray-800">{{ ticket.status_name ?? '-' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">priority_high</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Prioridad</span>
+                            </div>
+                            <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                                [class.bg-red-100]="ticket.priority_name === 'Alta'"
+                                [class.text-red-800]="ticket.priority_name === 'Alta'"
+                                [class.bg-yellow-100]="ticket.priority_name === 'Media'"
+                                [class.text-yellow-800]="ticket.priority_name === 'Media'"
+                                [class.bg-green-100]="ticket.priority_name === 'Baja'"
+                                [class.text-green-800]="ticket.priority_name === 'Baja'"
+                                [class.bg-gray-100]="!ticket.priority_name"
+                                [class.text-gray-800]="!ticket.priority_name">
+                                {{ ticket.priority_name ?? '-' }}
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">folder</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Proyecto</span>
+                            </div>
+                            <span class="text-sm text-gray-800">{{ ticket.project_name ?? '-' }}</span>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">person</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Abierto
+                                    por</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                                    <mat-icon class="text-gray-600 text-xs">person</mat-icon>
+                                </div>
+                                <span class="text-sm text-gray-800">{{ ticket.created_by_nombre ?? '-' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">assignment_ind</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Asignado
+                                    a</span>
+                            </div>
+                            <div *ngIf="ticket.assigned_to; else bandeja" class="flex items-center">
+                                <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                                    <mat-icon class="text-blue-600 text-xs">person</mat-icon>
+                                </div>
+                                <span class="text-sm text-gray-800">{{ ticket.assigned_to_nombre }}</span>
+                            </div>
+                            <ng-template #bandeja>
+                                <div class="flex items-center">
+                                    <mat-icon class="text-gray-400 mr-2 text-sm">inbox</mat-icon>
+                                    <span class="text-sm text-gray-600">Bandeja general de {{ ticket.project_name
+                                        }}</span>
+                                </div>
+                            </ng-template>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200" *ngIf="ticket.closed_by_nombre">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">lock</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Cerrado
+                                    por</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                                    <mat-icon class="text-gray-600 text-xs">person</mat-icon>
+                                </div>
+                                <span class="text-sm text-gray-800">{{ ticket.closed_by_nombre }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">calendar_today</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Creación</span>
+                            </div>
+                            <div class="flex items-center">
+                                <mat-icon class="text-gray-400 mr-2 text-sm">access_time</mat-icon>
+                                <span class="text-sm text-gray-800">{{ ticket.fecha_creacion | date: 'medium' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">update</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Última
+                                    actualización</span>
+                            </div>
+                            <div class="flex items-center">
+                                <mat-icon class="text-gray-400 mr-2 text-sm">schedule</mat-icon>
+                                <span class="text-sm text-gray-800">{{ ticket.fecha_actualizacion | date: 'medium'
+                                    }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div class="flex items-center mb-2">
+                                <mat-icon class="text-gray-500 mr-2 text-sm">timer</mat-icon>
+                                <span class="text-xs font-medium text-gray-600 uppercase tracking-wide">Tiempo
+                                    ocupado</span>
+                            </div>
+                            <div class="flex items-center">
+                                <mat-icon class="text-gray-400 mr-2 text-sm">hourglass_empty</mat-icon>
+                                <span class="text-sm text-gray-800">{{ ticket.time ?? '0' }} min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+
+        <div class="flex justify-center">
+            <div class="w-full max-w-5xl">
+                <div
+                    class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center">
+                        <div class="bg-gray-100 p-2 rounded-lg mr-3">
+                            <mat-icon class="text-gray-600">forum</mat-icon>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800">Hilos del Ticket</h2>
+                            <p class="text-sm text-gray-500">{{ ticket.threads?.length || 0 }} hilos registrados</p>
+                        </div>
+                    </div>
+
+                    <button mat-stroked-button (click)="toggleAllPanels()"
+                        class="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded-lg transition-all duration-300 flex items-center">
+                        <mat-icon class="mr-2 text-sm">{{ isExpandedAll ? 'unfold_less' : 'unfold_more' }}</mat-icon>
+                        {{ isExpandedAll ? 'Contraer todo' : 'Expandir todo' }}
+                    </button>
+                </div>
+
+                <mat-accordion class="threads-accordion space-y-4" multi>
+                    <ng-container *ngFor="let thread of ticket.threads">
+                        <ng-container *ngIf="roleId !== 4 || thread.private === 0">
+                            <mat-expansion-panel class="border border-gray-200 rounded-lg overflow-hidden"
+                                [ngClass]="{'bg-blue-50 border-blue-200': thread.private === 1}">
+
+                                <mat-expansion-panel-header class="bg-white hover:bg-gray-50 border-b border-gray-200">
+                                    <mat-panel-title>
+                                        <div class="flex flex-col md:flex-row md:items-center justify-between w-full">
+                                            <div class="flex items-center mb-2 md:mb-0">
+                                                <div
+                                                    class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                                                    <mat-icon class="text-gray-600 text-sm">person</mat-icon>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-800">{{
+                                                        thread.user?.nombre_completo ?? 'Usuario' }}</div>
+                                                    <div class="flex items-center text-xs text-gray-500 mt-1">
+                                                        <mat-icon class="text-xs mr-1">access_time</mat-icon>
+                                                        {{ thread.created_at | date: 'medium' }}
+                                                        <span *ngIf="thread.private === 1"
+                                                            class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                                            <mat-icon class="text-xs align-middle mr-1">lock</mat-icon>
+                                                            Interno
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <div class="p-5 bg-white">
+                                    <div class="mb-6">
+                                        <div class="flex items-center mb-3">
+                                            <mat-icon class="text-gray-500 mr-2">chat</mat-icon>
+                                            <span class="text-sm font-medium text-gray-700">Mensaje</span>
+                                        </div>
+                                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                            <p class="text-gray-800 whitespace-pre-line">{{ thread.mensaje }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="thread.attachments?.length" class="mb-6">
+                                        <div class="flex items-center mb-3">
+                                            <mat-icon class="text-gray-500 mr-2">attach_file</mat-icon>
+                                            <span class="text-sm font-medium text-gray-700">Adjuntos</span>
+                                            <span class="ml-2 text-xs text-gray-500">({{ thread.attachments.length
+                                                }})</span>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            <div *ngFor="let a of thread.attachments"
+                                                class="flex items-center p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                                                (click)="openAttachment(a.url)">
+                                                <mat-icon class="text-gray-500 mr-3">insert_drive_file</mat-icon>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-medium text-gray-800 truncate">{{
+                                                        a.nombre_archivo }}</div>
+                                                </div>
+                                                <mat-icon
+                                                    class="text-gray-400 hover:text-blue-600">open_in_new</mat-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="thread.histories?.length" class="mt-6 pt-6 border-t border-gray-200">
+                                        <div class="flex items-center mb-3">
+                                            <mat-icon class="text-gray-500 mr-2">history</mat-icon>
+                                            <span class="text-sm font-medium text-gray-700">Historial de cambios</span>
+                                        </div>
+                                        <div class="space-y-3">
+                                            <ng-container *ngFor="let h of thread.histories">
+                                                <div *ngIf="h.time > 0"
+                                                    class="flex items-start p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                                    <mat-icon class="text-yellow-600 mr-2 mt-0.5">timer</mat-icon>
+                                                    <div>
+                                                        <span class="text-sm text-gray-800">
+                                                            Se añadió <strong class="text-yellow-700">{{ h.time }}
+                                                                minuto{{ h.time === 1 ? '' : 's' }}</strong> al tiempo
+                                                            del ticket.
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div *ngIf="h.changes?.status"
+                                                    class="flex items-start p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                                    <mat-icon class="text-blue-600 mr-2 mt-0.5">swap_horiz</mat-icon>
+                                                    <div>
+                                                        <span class="text-sm text-gray-800">
+                                                            Se actualizó el estado de <strong class="text-blue-700">{{
+                                                                h.changes.status.from }}</strong> a
+                                                            <strong class="text-blue-700">{{ h.changes.status.to
+                                                                }}</strong>.
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div *ngIf="h.changes?.priority"
+                                                    class="flex items-start p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                                    <mat-icon class="text-purple-600 mr-2 mt-0.5">flag</mat-icon>
+                                                    <div>
+                                                        <span class="text-sm text-gray-800">
+                                                            Se actualizó la prioridad de <strong
+                                                                class="text-purple-700">{{ h.changes.priority.from
+                                                                }}</strong> a
+                                                            <strong class="text-purple-700">{{ h.changes.priority.to
+                                                                }}</strong>.
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div *ngIf="h.changes?.assigned"
+                                                    class="flex items-start p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                    <mat-icon class="text-green-600 mr-2 mt-0.5">person_add</mat-icon>
+                                                    <div>
+                                                        <span class="text-sm text-gray-800">
+                                                            Se cambió la asignación de
+                                                            <ng-container
+                                                                *ngIf="h.changes.assigned.from.id; else fromText">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="onAssignedClick(h.changes.assigned.from)"
+                                                                    class="text-green-700 hover:text-green-900 hover:underline font-medium">
+                                                                    {{ h.changes.assigned.from.name }}
+                                                                </a>
+                                                            </ng-container>
+                                                            <ng-template #fromText>
+                                                                <strong class="text-green-700">{{
+                                                                    h.changes.assigned.from.name }}</strong>
+                                                            </ng-template>
+                                                            a
+                                                            <ng-container *ngIf="h.changes.assigned.to.id; else toText">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="onAssignedClick(h.changes.assigned.to)"
+                                                                    class="text-green-700 hover:text-green-900 hover:underline font-medium">
+                                                                    {{ h.changes.assigned.to.name }}
+                                                                </a>
+                                                            </ng-container>
+                                                            <ng-template #toText>
+                                                                <strong class="text-green-700">{{
+                                                                    h.changes.assigned.to.name }}</strong>
+                                                            </ng-template>.
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </ng-container>
+                    </ng-container>
+
+                    <div *ngIf="!ticket.threads?.length"
+                        class="text-center py-10 bg-white rounded-lg border border-gray-200">
+                        <mat-icon class="text-4xl text-gray-300 mb-3">forum</mat-icon>
+                        <p class="text-lg font-medium text-gray-700">No hay hilos registrados</p>
+                        <p class="text-sm text-gray-500 mt-1">Este ticket aún no tiene actualizaciones</p>
+                        <button mat-raised-button color="primary" (click)="onActualizar()"
+                            class="mt-4 bg-gray-700 hover:bg-gray-800">
+                            <mat-icon class="mr-2">add_comment</mat-icon>
+                            Crear primer hilo
+                        </button>
+                    </div>
+                </mat-accordion>
+            </div>
+        </div>
+    </ng-template>
+</div>
 
 <app-loading [loading]="isLoading"></app-loading>

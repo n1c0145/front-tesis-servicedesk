@@ -1,77 +1,39 @@
-.update-dialog-content {
-  min-width: 500px;
-  max-width: 600px;
-  padding: 0 24px;
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 8px 0;
-  }
+.drop-zone {
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  min-height: 100px !important;
+  transition: all 0.3s ease !important;
 }
 
-.full-width {
-  width: 100%;
+.drop-zone:hover {
+  border-color: #9ca3af !important;
+  background-color: #f3f4f6 !important;
 }
 
-// Espaciado entre elementos del formulario
-mat-form-field {
-  margin-bottom: 8px;
+.drop-zone.ngx-file-drop__drop-zone--over {
+  border-color: #3b82f6 !important;
+  background-color: #eff6ff !important;
 }
 
-mat-checkbox {
-  margin: 12px 0;
+/* Ajustes para el diálogo de Material */
+mat-dialog-container {
+  border-radius: 0.75rem !important;
+  padding: 0 !important;
 }
 
-// Área de archivos con buen espaciado
-ngx-file-drop {
-  border: 2px dashed #e0e0e0;
-  border-radius: 8px;
-  padding: 24px 16px;
-  text-align: center;
-  margin: 16px 0;
-  background-color: #fafafa;
+.mat-dialog-title {
+  margin: 0 !important;
+  padding: 1.25rem !important;
 }
 
-// Lista de archivos
-mat-list {
-  margin: 16px 0;
-  
-  mat-list-item {
-    height: 48px;
-    border-bottom: 1px solid #f0f0f0;
-    
-    &:last-child {
-      border-bottom: none;
-    }
-  }
+.mat-dialog-content {
+  margin: 0 !important;
+  padding: 0 1.5rem !important;
 }
 
-// Acciones del diálogo
-mat-dialog-actions {
-  padding: 16px 24px;
-  margin-bottom: 0;
-  gap: 12px;
-  
-  button {
-    min-width: 100px;
-  }
+.mat-dialog-actions {
+  margin: 0 !important;
+  padding: 1rem 1.5rem !important;
+  min-height: auto !important;
 }
-
-// Título del diálogo
-mat-dialog-title {
-  margin: 0;
-  padding: 20px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  font-weight: 500;
-}
-
-// Contenido del diálogo
-mat-dialog-content {
-  margin: 0;
-  padding: 20px 0;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
