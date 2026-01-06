@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from '../../services/api.service';
 import { LoadingComponent } from '../../layout/loading/loading.component';
 import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-notifications',
@@ -18,7 +19,8 @@ import { AlertDialogComponent } from '../../layout/alert-dialog/alert-dialog.com
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    LoadingComponent
+    LoadingComponent,
+    RouterModule
   ],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss'

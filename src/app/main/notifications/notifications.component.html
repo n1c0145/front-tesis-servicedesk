@@ -1,30 +1,117 @@
-<div class="notifications-container">
-  <h2>Notificaciones</h2>
-
-  <div class="notifications-list">
-    <mat-card
-      *ngFor="let noti of paginatedData"
-      [ngClass]="{ 'unread': !noti.read_at }"
-      class="notification-item"
-    >
-      <mat-card-content>
-        <div class="notification-header">
-          <mat-icon class="icon" color="primary">notifications</mat-icon>
-          <h3>{{ noti.data.title }}</h3>
-        </div>
-        <p class="message">{{ noti.data.message }}</p>
-        <small class="date">{{ noti.created_at | date: 'short' }}</small>
-      </mat-card-content>
-    </mat-card>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">notifications</mat-icon>
+      Notificaciones
+    </button>
   </div>
 
-  <mat-paginator
-    [length]="dataSource.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    showFirstLastButtons
-    (page)="onPageChange($event)"
-  ></mat-paginator>
+  <div class="flex justify-center">
+    <mat-card class="w-full max-w-4xl shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">notifications</mat-icon>
+            </div>
+          <div>
+              <h1 class="text-lg font-semibold text-gray-800">Notificaciones</h1>
+              <p class="text-sm text-gray-500">Revisa todo tu historial de notificaciones</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="p-5">
+        <div class="notifications-list space-y-4 mb-6">
+          <mat-card
+            *ngFor="let noti of paginatedData"
+            [ngClass]="{'bg-blue-50 border-l-4 border-blue-500': !noti.read_at}"
+            class="notification-item border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-default"
+          >
+            <mat-card-content class="p-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 mr-4">
+                  <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                       [class.bg-blue-100]="!noti.read_at"
+                       [class.bg-gray-100]="noti.read_at">
+                    <mat-icon [class.text-blue-600]="!noti.read_at" 
+                              [class.text-gray-500]="noti.read_at"
+                              class="text-lg">
+                      {{ noti.read_at ? 'notifications_none' : 'notifications_active' }}
+                    </mat-icon>
+                  </div>
+                </div>
+                
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between mb-2">
+                    <h3 class="text-sm font-semibold text-gray-800 truncate">
+                      {{ noti.data.title }}
+                    </h3>
+                    <span *ngIf="!noti.read_at" 
+                          class="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full whitespace-nowrap">
+                      <mat-icon class="text-xs align-middle mr-1">circle</mat-icon>
+                      Sin leer
+                    </span>
+                  </div>
+                  
+                  <p class="text-sm text-gray-600 mb-3 leading-relaxed">
+                    {{ noti.data.message }}
+                  </p>
+                  
+                  <div class="flex items-center text-xs text-gray-500">
+                    <mat-icon class="text-xs mr-1">schedule</mat-icon>
+                    <span>{{ noti.created_at | date: 'medium' }}</span>
+                    
+                    <span class="mx-2">•</span>
+                    
+                    <mat-icon class="text-xs mr-1">event</mat-icon>
+                    <span>{{ noti.created_at | date: 'shortDate' }}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div *ngIf="!dataSource.length" 
+             class="text-center py-12 bg-white rounded-lg border border-gray-200">
+          <mat-icon class="text-4xl text-gray-300 mb-4">notifications_off</mat-icon>
+          <h3 class="text-lg font-medium text-gray-700 mb-2">No hay notificaciones</h3>
+          <p class="text-sm text-gray-500">No tienes notificaciones en este momento</p>
+          <button mat-button 
+                  color="primary"
+                  routerLink="/home"
+                  class="mt-4 text-blue-600 hover:bg-blue-50">
+            <mat-icon class="mr-2">arrow_back</mat-icon>
+            Volver al inicio
+          </button>
+        </div>
+
+        <div *ngIf="dataSource.length > 0" 
+             class="mt-6 bg-white p-4 rounded-lg border border-gray-200">
+          <mat-paginator
+            [length]="dataSource.length"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[10, 25, 50]"
+            showFirstLastButtons
+            (page)="onPageChange($event)"
+            class="custom-paginator"
+          ></mat-paginator>
+        </div>
+      </div>
+    </mat-card>
+  </div>
 </div>
 
 <app-loading [loading]="isLoading"></app-loading>
