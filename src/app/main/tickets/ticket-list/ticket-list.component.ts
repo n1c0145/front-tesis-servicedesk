@@ -18,6 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
 import { forkJoin } from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-ticket-list',
@@ -36,7 +38,9 @@ import { forkJoin } from 'rxjs';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    LoadingComponent
+    LoadingComponent,
+    RouterModule,
+    MatCardModule
   ],
   templateUrl: './ticket-list.component.html',
   styleUrls: ['./ticket-list.component.scss']

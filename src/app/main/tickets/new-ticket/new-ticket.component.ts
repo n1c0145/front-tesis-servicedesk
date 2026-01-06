@@ -18,6 +18,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { Router } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-new-ticket',
@@ -37,7 +38,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactiveFormsModule,
     MatExpansionModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    RouterModule
   ],
   templateUrl: './new-ticket.component.html',
   styleUrl: './new-ticket.component.scss'

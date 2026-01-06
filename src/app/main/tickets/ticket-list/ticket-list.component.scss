@@ -1,22 +1,35 @@
-.tickets-container {
-  padding: 20px;
+.custom-date-range .mat-date-range-input-container {
+  height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+.custom-date-range .mat-date-range-input-inner {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-mat-form-field {
-  margin-bottom: 15px;
+.custom-date-range .mat-date-range-input-start-wrapper,
+.custom-date-range .mat-date-range-input-end-wrapper {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-table {
-  width: 100%;
+.custom-date-range .mat-date-range-input input {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
 }
 
-mat-paginator {
-  margin-top: 15px;
+.custom-date-range input::placeholder {
+  color: #9ca3af !important; 
+  opacity: 1 !important;
+}
+
+.custom-date-range .mat-date-range-input-separator {
+  margin: 0 8px !important;
+  color: #9ca3af !important;
 }

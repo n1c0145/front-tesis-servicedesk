@@ -1,49 +1,17 @@
-.create-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
+.drop-zone {
+  border: 2px dashed #d1d5db !important;
+  border-radius: 0.5rem !important;
+  background-color: #f9fafb !important;
+  min-height: 120px !important;
+  transition: all 0.3s ease !important;
 }
 
-.create-card {
-  width: 600px;
-  padding: 25px;
+.drop-zone:hover {
+  border-color: #9ca3af !important;
+  background-color: #f3f4f6 !important;
 }
 
-.full-width {
-  width: 100%;
-  margin-bottom: 15px;
-}
-
-.advanced-options {
-  border-top: 1px solid #ccc;
-  margin-top: 15px;
-  padding-top: 10px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-h3 {
-  margin-top: 15px;
-  font-weight: 600;
-}
-
-mat-checkbox {
-  display: block;
-  margin-bottom: 10px;
-}
-
-
-.sugerencias-box a {
-  color: #1976d2;      
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.sugerencias-box a:hover {
-  color: #0d47a1;       
-  text-decoration: underline;
+.drop-zone.ngx-file-drop__drop-zone--over {
+  border-color: #3b82f6 !important;
+  background-color: #eff6ff !important;
 }

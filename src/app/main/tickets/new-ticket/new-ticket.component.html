@@ -1,145 +1,315 @@
-<div class="create-container">
-  <mat-card class="create-card">
-    <h1>Crear Ticket</h1>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <a [routerLink]="['/ticket-list']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">confirmation_number</mat-icon>
+        Tickets
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">add_circle</mat-icon>
+      Crear Ticket
+    </button>
+  </div>
 
-    <form [formGroup]="form" (ngSubmit)="guardar()">
-
-      <!-- Proyecto -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Proyecto</mat-label>
-        <mat-select formControlName="project_id" (selectionChange)="onProjectChange()">
-          <mat-option *ngFor="let p of proyectos" [value]="p.project_id">
-            {{ p.nombre }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('project_id')?.invalid && form.get('project_id')?.touched">
-          Selecciona un proyecto
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Título -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Título</mat-label>
-        <input matInput formControlName="titulo" placeholder="Escribe un título">
-        <mat-error *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched">
-          Ingresa un título
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Descripción -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Descripción</mat-label>
-        <textarea matInput formControlName="descripcion" placeholder="Describe el ticket"
-          (blur)="buscarSugerencias()"></textarea>
-        <mat-error *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">Ingresa la descripción
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Sugerencias de tickets -->
-      <div *ngIf="mostrarSugerencias">
-
-        <div>
-          <h3>Sugerencias de tickets:</h3>
-
-          <mat-slide-toggle [checked]="activarSugerencias" (change)="onToggleChange($event)">
-            {{ activarSugerencias ? 'Desactivar sugerencias' : 'Activar sugerencias' }}
-          </mat-slide-toggle>
-        </div>
-
-        <div *ngIf="activarSugerencias">
-
-          <div *ngIf="sugerencias.length === 0">
-            No existen tickets sugeridos
+  <div class="flex justify-center">
+    <mat-card class="w-full max-w-3xl shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">add_circle</mat-icon>
+            </div>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-800">Crear Nuevo Ticket</h1>
+              <p class="text-sm text-gray-500">Completa la información para crear un nuevo ticket</p>
+            </div>
           </div>
 
-          <ul *ngIf="sugerencias.length > 0" class="sugerencias-box">
-            <li *ngFor="let s of sugerencias">
-              <a (click)="abrirTicketSugerido(s.ticket_id)">
-                #{{ s.ticket_number }} - {{ s.titulo }}
-              </a>
-            </li>
-          </ul>
-
         </div>
       </div>
-      <!-- SLA (solo clientes) -->
-      <mat-checkbox *ngIf="roleId === 4" formControlName="sla">¿Aplica SLA?</mat-checkbox>
 
-      <!-- Prioridad (solo internos) -->
-      <mat-form-field *ngIf="roleId !== 4" appearance="fill" class="full-width">
-        <mat-label>Prioridad</mat-label>
-        <mat-select formControlName="prioridad">
-          <mat-option *ngFor="let p of prioridades" [value]="p.id">{{ p.nombre }}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched">
-          Selecciona una prioridad
-        </mat-error>
-      </mat-form-field>
+      <div class="p-6">
+        <form [formGroup]="form" (ngSubmit)="guardar()" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Proyecto *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">folder</mat-icon>
+              <mat-select formControlName="project_id" (selectionChange)="onProjectChange()"
+                class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                panelClass="custom-select-panel">
+                <mat-option *ngFor="let p of proyectos" [value]="p.project_id" class="text-sm py-2 hover:bg-gray-100">
+                  {{ p.nombre }}
+                </mat-option>
+              </mat-select>
+            </div>
+            <div *ngIf="form.get('project_id')?.invalid && form.get('project_id')?.touched" class="mt-1 text-xs text-red-500">
+              Selecciona un proyecto
+            </div>
+          </div>
 
-      <!-- Mensaje inicial -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Mensaje inicial</mat-label>
-        <textarea matInput formControlName="mensaje_inicial" placeholder="Escribe un mensaje"></textarea>
-        <mat-error *ngIf="form.get('mensaje_inicial')?.invalid && form.get('mensaje_inicial')?.touched">
-          Ingresa un mensaje inicial
-        </mat-error>
-      </mat-form-field>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Título *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">title</mat-icon>
+              <input 
+                type="text"
+                formControlName="titulo"
+                placeholder="Escribe un título descriptivo para el ticket"
+                class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                [class.border-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+                [class.focus:ring-red-300]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+            </div>
+            <div *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched" class="mt-1 text-xs text-red-500">
+              Ingresa un título
+            </div>
+          </div>
 
-      <!-- Archivos -->
-      <ngx-file-drop (onFileDrop)="onFileDrop($event)">
-        <ng-template ngx-file-drop-content-tmp>
-          <mat-icon>cloud_upload</mat-icon>
-          <p>Arrastra archivos aquí o</p>
-          <button mat-button type="button" (click)="fileInput.click()">Examinar</button>
-          <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)">
-        </ng-template>
-      </ngx-file-drop>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Descripción *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">description</mat-icon>
+              <textarea 
+                formControlName="descripcion"
+                placeholder="Describe el problema, solicitud o consulta en detalle"
+                rows="4"
+                (blur)="buscarSugerencias()"
+                class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm resize-none"
+                [class.border-red-300]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+                [class.focus:ring-red-300]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+              </textarea>
+            </div>
+            <div *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" class="mt-1 text-xs text-red-500">
+              Ingresa la descripción
+            </div>
+          </div>
 
-      <mat-list *ngIf="archivos.length > 0">
-        <mat-list-item *ngFor="let file of archivos">
-          {{ file.name }}
-          <button mat-icon-button (click)="eliminarArchivo(file.name)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </mat-list-item>
-      </mat-list>
+          <div *ngIf="mostrarSugerencias" class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center">
+                <mat-icon class="text-gray-500 mr-2">lightbulb</mat-icon>
+                <h3 class="text-md font-semibold text-gray-800">Sugerencias de tickets</h3>
+              </div>
+              <mat-slide-toggle [checked]="activarSugerencias" (change)="onToggleChange($event)" color="primary">
+                <span class="text-sm text-gray-700">
+                  {{ activarSugerencias ? 'Desactivar' : 'Activar' }}
+                </span>
+              </mat-slide-toggle>
+            </div>
 
-      <!-- Opciones avanzadas -->
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>Opciones avanzadas</mat-panel-title>
-        </mat-expansion-panel-header>
+            <div *ngIf="activarSugerencias">
+              <div *ngIf="sugerencias.length === 0" class="text-center py-4">
+                <mat-icon class="text-gray-300 text-3xl mb-2">search_off</mat-icon>
+                <p class="text-sm text-gray-600">No existen tickets sugeridos</p>
+              </div>
 
-        <mat-checkbox formControlName="asignarBandeja" (change)="onCheckBandeja()">
-          Asignar a bandeja general
-        </mat-checkbox>
+              <div *ngIf="sugerencias.length > 0" class="space-y-2 max-h-60 overflow-y-auto pr-2">
+                <div *ngFor="let s of sugerencias" 
+                     class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
+                     (click)="abrirTicketSugerido(s.ticket_id)">
+                  <div class="flex-1">
+                    <div class="flex items-center">
+                      <mat-icon class="text-blue-500 mr-2 text-sm">link</mat-icon>
+                      <span class="font-medium text-gray-800 text-sm">#{{ s.ticket_number }}</span>
+                      <span class="mx-2 text-gray-400">-</span>
+                      <span class="text-gray-700 text-sm truncate">{{ s.titulo }}</span>
+                    </div>
+                    <div class="mt-1 text-xs text-gray-500 flex items-center">
+                      <mat-icon class="text-xs mr-1">calendar_today</mat-icon>
+                      {{ s.created_at | date:'shortDate' }}
+                    </div>
+                  </div>
+                  <mat-icon class="text-gray-400 hover:text-blue-600">open_in_new</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <mat-checkbox formControlName="asignarUsuario" (change)="onCheckUsuario()">
-          Asignar a un usuario específico
-        </mat-checkbox>
+          <div *ngIf="roleId === 4" class="flex items-center p-3 border border-gray-200 rounded-lg bg-white">
+            <mat-checkbox formControlName="sla" color="primary" class="mr-3"></mat-checkbox>
+            <div>
+              <span class="text-sm font-medium text-gray-700">¿Aplica Acuerdo de Nivel de Servicio (SLA)?</span>
+              <p class="text-xs text-gray-500 mt-1">Marca esta opción si el ticket debe cumplir con tiempos de respuesta definidos</p>
+            </div>
+          </div>
 
-        <mat-form-field *ngIf="form.get('asignarUsuario')?.value" appearance="fill" class="full-width">
-          <mat-label>Usuario</mat-label>
-          <mat-select formControlName="usuarioAsignado">
-            <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id">
-              {{ u.user_name }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="form.get('usuarioAsignado')?.invalid && form.get('usuarioAsignado')?.touched">
-            Selecciona un usuario
-          </mat-error>
-        </mat-form-field>
-      </mat-expansion-panel>
+          <div *ngIf="roleId !== 4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Prioridad *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">priority_high</mat-icon>
+              <mat-select formControlName="prioridad"
+                class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                panelClass="custom-select-panel">
+                <mat-option *ngFor="let p of prioridades" [value]="p.id" class="text-sm py-2 hover:bg-gray-100">
+                  {{ p.nombre }}
+                </mat-option>
+              </mat-select>
+            </div>
+            <div *ngIf="form.get('prioridad')?.invalid && form.get('prioridad')?.touched" class="mt-1 text-xs text-red-500">
+              Selecciona una prioridad
+            </div>
+          </div>
 
-      <!-- Botón guardar -->
-      <div [matTooltip]="form.invalid ? 'Completa todos los campos requeridos para crear el ticket' : ''">
-        <button mat-raised-button color="primary" class="full-width" type="submit"
-          [disabled]="form.invalid || isLoading">
-          {{ isLoading ? 'Creando ticket...' : 'Guardar' }}
-        </button>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Mensaje inicial *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">chat</mat-icon>
+              <textarea 
+                formControlName="mensaje_inicial"
+                placeholder="Escribe el primer mensaje para este ticket"
+                rows="3"
+                class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm resize-none"
+                [class.border-red-300]="form.get('mensaje_inicial')?.invalid && form.get('mensaje_inicial')?.touched"
+                [class.focus:ring-red-300]="form.get('mensaje_inicial')?.invalid && form.get('mensaje_inicial')?.touched">
+              </textarea>
+            </div>
+            <div *ngIf="form.get('mensaje_inicial')?.invalid && form.get('mensaje_inicial')?.touched" class="mt-1 text-xs text-red-500">
+              Ingresa un mensaje inicial
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-lg p-4 bg-white">
+            <label class="block text-sm font-medium text-gray-700 mb-3">
+              Archivos adjuntos
+              <span class="text-xs text-gray-500 font-normal">(Opcional)</span>
+            </label>
+            
+            <ngx-file-drop 
+              (onFileDrop)="onFileDrop($event)"
+              dropZoneClassName="drop-zone"
+              [multiple]="true">
+              <ng-template ngx-file-drop-content-tmp>
+                <div class="text-center py-8">
+                  <mat-icon class="text-4xl text-gray-300 mb-3">cloud_upload</mat-icon>
+                  <p class="text-sm text-gray-600 mb-2">Arrastra archivos aquí o</p>
+                  <button mat-button type="button" 
+                          class="bg-gray-700 hover:bg-gray-800 text-white text-sm"
+                          (click)="fileInput.click()">
+                    <mat-icon class="mr-2 text-sm">folder_open</mat-icon>
+                    Seleccionar archivos
+                  </button>
+                  <p class="text-xs text-gray-500 mt-3 pb-5">Formatos soportados: imágenes, documentos, PDF de máximo 10 MB</p>
+                </div>
+              </ng-template>
+            </ngx-file-drop>
+            
+            <input #fileInput type="file" multiple hidden (change)="onFileBrowse($event)">
+
+            <div *ngIf="archivos.length > 0" class="mt-4">
+              <div class="flex items-center mb-2">
+                <mat-icon class="text-gray-500 mr-2 text-sm">attach_file</mat-icon>
+                <span class="text-sm font-medium text-gray-700">Archivos seleccionados ({{ archivos.length }})</span>
+              </div>
+              <div class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                <div *ngFor="let file of archivos" 
+                     class="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-400 mr-2 text-sm">insert_drive_file</mat-icon>
+                    <div>
+                      <span class="text-sm text-gray-800">{{ file.name }}</span>
+                      <div class="text-xs text-gray-500">{{ file.size }}</div>
+                    </div>
+                  </div>
+                  <button mat-icon-button 
+                          class="text-gray-400 hover:text-red-500"
+                          (click)="eliminarArchivo(file.name)">
+                    <mat-icon class="text-sm">delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <mat-accordion class="border border-gray-200 rounded-lg overflow-hidden">
+            <mat-expansion-panel class="border-0">
+              <mat-expansion-panel-header class="bg-gray-50 hover:bg-gray-100 border-b border-gray-200">
+                <mat-panel-title class="flex items-center">
+                  <mat-icon class="mr-2 text-gray-600">settings</mat-icon>
+                  <span class="font-medium text-gray-800">Opciones avanzadas</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="p-4 space-y-4">
+                <div class="flex items-center p-3 border border-gray-200 rounded-lg bg-white">
+                  <mat-checkbox formControlName="asignarBandeja" 
+                                (change)="onCheckBandeja()" 
+                                color="primary" 
+                                class="mr-3"></mat-checkbox>
+                  <div>
+                    <span class="text-sm font-medium text-gray-700">Asignar a bandeja general</span>
+                    <p class="text-xs text-gray-500 mt-1">El ticket estará disponible para cualquier usuario del proyecto</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start p-3 border border-gray-200 rounded-lg bg-white">
+                  <mat-checkbox formControlName="asignarUsuario" 
+                                (change)="onCheckUsuario()" 
+                                color="primary" 
+                                class="mr-3 mt-1"></mat-checkbox>
+                  <div class="flex-1">
+                    <span class="text-sm font-medium text-gray-700">Asignar a un usuario específico</span>
+                    <p class="text-xs text-gray-500 mt-1 mb-3">Selecciona un usuario para asignarle el ticket directamente</p>
+                    
+                    <div *ngIf="form.get('asignarUsuario')?.value" class="mt-3">
+                      <label class="block text-xs font-medium text-gray-600 mb-2">
+                        Usuario asignado *
+                      </label>
+                      <div class="relative">
+                        <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">person</mat-icon>
+                        <mat-select formControlName="usuarioAsignado"
+                          class="w-full pl-11 pr-10 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                          panelClass="custom-select-panel">
+                          <mat-option *ngFor="let u of usuariosProyecto" [value]="u.id" class="text-sm py-2 hover:bg-gray-100">
+                            {{ u.user_name }}
+                          </mat-option>
+                        </mat-select>
+                      </div>
+                      <div *ngIf="form.get('usuarioAsignado')?.invalid && form.get('usuarioAsignado')?.touched" class="mt-1 text-xs text-red-500">
+                        Selecciona un usuario
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+
+          <div [matTooltip]="form.invalid ? 'Completa todos los campos requeridos para crear el ticket' : ''" 
+               class="pt-4 border-t border-gray-200">
+            <button mat-raised-button 
+                    class="w-full py-2.5 text-sm font-medium transition-all duration-300 bg-gray-700 text-white hover:bg-gray-800 hover:shadow-lg"
+                    type="submit"
+                    [disabled]="form.invalid || isLoading">
+              <mat-icon class="mr-2 text-base">{{ isLoading ? 'hourglass_empty' : 'save' }}</mat-icon>
+              {{ isLoading ? 'Creando ticket...' : 'Crear Ticket' }}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </mat-card>
-
-  <app-loading [loading]="isLoading"></app-loading>
+    </mat-card>
+  </div>
 </div>
+
+<app-loading [loading]="isLoading"></app-loading>
