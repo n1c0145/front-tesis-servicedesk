@@ -12,6 +12,10 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '../../../layout/alert-dialog/alert-dialog.component';
 import { LoadingComponent } from '../../../layout/loading/loading.component';
+import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+
+
 
 @Component({
   selector: 'app-projects-list',
@@ -25,7 +29,9 @@ import { LoadingComponent } from '../../../layout/loading/loading.component';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    LoadingComponent
+    LoadingComponent,
+    RouterModule,
+    MatCardModule
   ],
   templateUrl: './projects-list.component.html',
   styleUrl: './projects-list.component.scss'

@@ -1,66 +1,201 @@
-<div class="projects-container">
-  <div class="header">
-    <h2>Lista de Proyectos</h2>
-    <button  *ngIf="canManageProjects" mat-raised-button color="primary" (click)="navigateTo('/new-project')">
-      <mat-icon>add</mat-icon> Nuevo Proyecto
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">folder</mat-icon>
+      Proyectos
     </button>
   </div>
 
-  <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Buscar</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filtra por nombre, descripción, etc.">
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+  <div class="flex justify-center">
+    <mat-card class="w-full shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">folder</mat-icon>
+            </div>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-800">Gestión de Proyectos</h1>
+              <p class="text-sm text-gray-500">Administra y gestiona los proyectos del sistema</p>
+            </div>
+          </div>
+          
+          <button *ngIf="canManageProjects" 
+                  mat-raised-button 
+                  color="primary"
+                  (click)="navigateTo('/new-project')"
+                  class="bg-gray-700 hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center">
+            <mat-icon class="mr-2">add</mat-icon>
+            Nuevo Proyecto
+          </button>
+        </div>
+      </div>
 
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z3">
+      <div class="p-5">
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Buscar proyectos
+          </label>
+          <div class="relative">
+            <mat-icon class="absolute left-3 top-3 text-gray-500">search</mat-icon>
+            <input 
+              type="text"
+              (keyup)="applyFilter($event)"
+              placeholder="Filtra por nombre, descripción, creador, etc."
+              class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+              #searchInput>
+          </div>
+          <p class="mt-1 text-xs text-gray-500">
+            Presiona Enter para buscar. Se buscará en todos los campos visibles.
+          </p>
+        </div>
 
-    <!-- Nombre -->
-    <ng-container matColumnDef="nombre">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
-      <td mat-cell *matCellDef="let project">
-        <a class="project-link" (click)="goToTickets(project)">
-          {{ project.nombre }}
-        </a>
-      </td>
-    </ng-container>
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+          <table
+            mat-table
+            [dataSource]="dataSource"
+            matSort
+            class="w-full min-w-max">
+            
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-base text-gray-500">description</mat-icon>
+                  Nombre del Proyecto
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let project" class="px-4 py-3 text-sm">
+                <a class="project-link text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-medium flex items-center"
+                   (click)="goToTickets(project)">
+                  <mat-icon class="mr-2 text-sm text-blue-500">folder_open</mat-icon>
+                  {{ project.nombre }}
+                </a>
+              </td>
+            </ng-container>
 
-    <!-- Descripción -->
-    <ng-container matColumnDef="descripcion">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
-      <td mat-cell *matCellDef="let project"> {{ project.descripcion }} </td>
-    </ng-container>
+            <ng-container matColumnDef="descripcion">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-base text-gray-500">info</mat-icon>
+                  Descripción
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let project" class="px-4 py-3 text-sm text-gray-900">
+                <div class="flex items-start">
+                  <mat-icon class="mr-2 text-gray-400 text-sm mt-0.5">subject</mat-icon>
+                  <span class="line-clamp-2">{{ project.descripcion || 'Sin descripción' }}</span>
+                </div>
+              </td>
+            </ng-container>
 
-    <!-- Creación -->
-    <ng-container matColumnDef="creadoPor">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Creado Por </th>
-      <td mat-cell *matCellDef="let project">
-        {{ project.creator?.nombre }} {{ project.creator?.apellido }} el
-        {{ project.created_at | date:'short' }}
-      </td>
-    </ng-container>
+            <ng-container matColumnDef="creadoPor">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-base text-gray-500">person_add</mat-icon>
+                  Creado Por
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let project" class="px-4 py-3 text-sm text-gray-900">
+                <div class="flex flex-col">
+                  <div class="flex items-center mb-1">
+                    <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center mr-2">
+                      <mat-icon class="text-gray-600 text-xs">person</mat-icon>
+                    </div>
+                    <span class="font-medium">{{ project.creator?.nombre }} {{ project.creator?.apellido }}</span>
+                  </div>
+                  <div class="flex items-center text-xs text-gray-500">
+                    <mat-icon class="mr-1 text-xs">calendar_today</mat-icon>
+                    {{ project.created_at | date:'mediumDate' }}
+                  </div>
+                </div>
+              </td>
+            </ng-container>
 
-    <!-- Número de Usuarios -->
-    <ng-container matColumnDef="numUsuarios">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Nº Usuarios </th>
-      <td mat-cell *matCellDef="let project"> {{ project.numUsuarios }} </td>
-    </ng-container>
+            <ng-container matColumnDef="numUsuarios">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-base text-gray-500">people</mat-icon>
+                  Usuarios
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let project" class="px-4 py-3 text-sm text-gray-900">
+                <div class="flex items-center">
+                  <div class="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 rounded-full mr-3">
+                    <span class="text-sm font-bold">{{ project.numUsuarios || 0 }}</span>
+                  </div>
+                  <span class="text-xs text-gray-500">
+                    {{ project.numUsuarios === 1 ? 'usuario' : 'usuarios' }}
+                  </span>
+                </div>
+              </td>
+            </ng-container>
 
-    <!-- Acciones -->
-    <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef> Acciones </th>
-      <td mat-cell *matCellDef="let project">
-        <button *ngIf="canManageProjects" mat-raised-button color="primary" (click)="editProject(project.id)">
-          <mat-icon>edit</mat-icon> Editar
-        </button>
-      </td>
-    </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider bg-gray-50">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-base text-gray-500">settings</mat-icon>
+                  Acciones
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let project" class="px-4 py-3 text-sm">
+                <div class="flex gap-2">
+                  <button *ngIf="canManageProjects" 
+                          mat-raised-button 
+                          color="primary"
+                          (click)="editProject(project.id)"
+                          class="text-xs py-1 px-3 bg-gray-700 hover:bg-gray-800">
+                    <mat-icon class="text-sm mr-1">edit</mat-icon>
+                    Editar
+                  </button>
+                </div>
+              </td>
+            </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+            <tr *matNoDataRow class="bg-white">
+              <td class="px-4 py-8 text-center text-gray-500" [attr.colspan]="displayedColumns.length">
+                <div class="flex flex-col items-center justify-center">
+                  <mat-icon class="text-4xl text-gray-300 mb-2">folder_off</mat-icon>
+                  <p class="text-lg font-medium text-gray-700">No se encontraron proyectos</p>
+                  <p class="text-sm text-gray-500 mt-1">
+                    {{ searchInput.value ? 'Intenta con otros términos de búsqueda' : 'No hay proyectos creados' }}
+                  </p>
+                  <button *ngIf="canManageProjects" 
+                          mat-raised-button 
+                          color="primary"
+                          (click)="navigateTo('/new-project')"
+                          class="mt-4 bg-gray-700 hover:bg-gray-800">
+                    <mat-icon class="mr-2">add</mat-icon>
+                    Crear primer proyecto
+                  </button>
+                </div>
+              </td>
+            </tr>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
-  </mat-paginator>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns" 
+                class="bg-white hover:bg-gray-50 border-b border-gray-200"></tr>
+          </table>
+        </div>
+
+        <div class="mt-4 bg-white p-4 rounded-lg border border-gray-200">
+          <mat-paginator
+            [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons
+            class="custom-paginator">
+          </mat-paginator>
+        </div>
+      </div>
+    </mat-card>
+  </div>
 </div>
 
 <app-loading [loading]="isLoading"></app-loading>

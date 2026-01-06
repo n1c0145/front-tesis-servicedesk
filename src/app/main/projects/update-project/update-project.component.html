@@ -1,133 +1,298 @@
-<div style="display: flex; align-items: center; gap: 4px; margin-bottom: 24px; padding: 12px; background-color: #fafafa; border-radius: 4px; border: 1px solid #e0e0e0;">
-  
-  <a [routerLink]="['/home']" style="text-decoration: none;">
-    <button mat-button color="primary" style="border-radius: 20px;">
-      <mat-icon style="margin-right: 4px; font-size: 18px;">home</mat-icon>
-      Inicio
-    </button>
-  </a>
-  
-  <mat-icon style="color: #9e9e9e; font-size: 20px;">chevron_right</mat-icon>
-  
-  <a [routerLink]="['/projects-list']" style="text-decoration: none;">
-    <button mat-button color="primary" style="border-radius: 20px;">
-      Proyectos
-    </button>
-  </a>
-  
-  <mat-icon style="color: #9e9e9e; font-size: 20px;">chevron_right</mat-icon>
-  
-  <button mat-button disabled style="border-radius: 20px; color: #616161; font-weight: 500;">
-    Editar Proyecto
-  </button>
-  
-</div>
-
-<div class="create-container">
-  <mat-card class="create-card">
-    <h1>Actualizar Proyecto</h1>
-
-    <form [formGroup]="form">
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre">
-        <mat-error *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
-          Ingresa un nombre válido
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Descripción</mat-label>
-        <textarea matInput formControlName="descripcion"></textarea>
-        <mat-error *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
-          Ingresa una descripción
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Agregar Usuarios*</mat-label>
-        <input matInput formControlName="userSearch" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addUser($event.option.value)">
-          <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-            {{ user.nombre }} {{ user.apellido }} - {{ user.puesto }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-
-      <mat-chip-listbox class="chip-list" *ngIf="selectedUsers.length > 0">
-        <mat-chip *ngFor="let user of selectedUsers" (removed)="removeUser(user)">
-          {{ user.nombre }} {{ user.apellido }} - {{ user.puesto }}
-          <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
-      </mat-chip-listbox>
-
-      <div class="toggle-section" formGroupName="configuraciones">
-        <div class="toggle-field">
-          <mat-slide-toggle formControlName="firstResponseEnabled" color="primary">
-            Primera Respuesta
-          </mat-slide-toggle>
-          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.firstResponseEnabled')?.value">
-            <mat-label>Tiempo (horas)</mat-label>
-            <input matInput type="number" min="1" formControlName="firstresponse" placeholder="Ej: 5">
-            <mat-error *ngIf="form.get('configuraciones.firstresponse')?.invalid">
-              Campo requerido (No puede ser cero horas)
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="toggle-field">
-          <mat-slide-toggle formControlName="maxResolutionEnabled" color="primary">
-            Tiempo Máximo de Resolución
-          </mat-slide-toggle>
-          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.maxResolutionEnabled')?.value">
-            <mat-label>Tiempo (días)</mat-label>
-            <input matInput type="number" min="1" formControlName="maxresolution" placeholder="Ej: 10">
-            <mat-error *ngIf="form.get('configuraciones.maxresolution')?.invalid">
-              Campo requerido (No puede ser cero días)
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="toggle-field">
-          <mat-slide-toggle formControlName="effectiveTimeEnabled" color="primary">
-            Tiempo Efectivo
-          </mat-slide-toggle>
-          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.effectiveTimeEnabled')?.value">
-            <mat-label>Tiempo (horas)</mat-label>
-            <input matInput type="number" min="1" formControlName="effectivetime" placeholder="Ej: 10">
-            <mat-error *ngIf="form.get('configuraciones.effectivetime')?.invalid">
-              Campo requerido (No puede ser cero horas)
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="toggle-field">
-          <mat-slide-toggle formControlName="hoursBankEnabled" color="primary">
-            Bolsa de Horas
-          </mat-slide-toggle>
-          <mat-form-field appearance="fill" *ngIf="form.get('configuraciones.hoursBankEnabled')?.value">
-            <mat-label>Horas</mat-label>
-            <input matInput type="number" min="1" formControlName="hoursbank" placeholder="Ej: 150">
-            <mat-error *ngIf="form.get('configuraciones.hoursbank')?.invalid">
-              Campo requerido (No puede ser cero) horas
-            </mat-error>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <div
-        [matTooltip]="form.invalid || selectedUsers.length === 0 ? 'Completa todos los campos y agrega al menos un usuario' : ''">
-        <button mat-raised-button color="primary" class="full-width"
-          [disabled]="form.invalid || selectedUsers.length === 0" (click)="save()">
-          Actualizar Proyecto
-        </button>
-      </div>
-
-      <button mat-raised-button color="warn" class="full-width" style="margin-top: 10px;" (click)="deleteProject()">
-        Eliminar Proyecto
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+  <div class="flex items-center gap-2 mb-6 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <a [routerLink]="['/home']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">home</mat-icon>
+        Inicio
       </button>
-    </form>
-  </mat-card>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <a [routerLink]="['/projects-list']" class="no-underline">
+      <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+        <mat-icon class="mr-1 text-base">folder</mat-icon>
+        Proyectos
+      </button>
+    </a>
+    
+    <mat-icon class="text-gray-400">chevron_right</mat-icon>
+    
+    <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+      <mat-icon class="mr-1 text-base">edit</mat-icon>
+      Editar Proyecto
+    </button>
+  </div>
+
+  <div class="flex justify-center">
+    <mat-card class="w-full max-w-3xl shadow-lg rounded-xl overflow-hidden border border-gray-200">
+      <div class="border-b border-gray-200 p-5 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-gray-100 p-2 rounded-lg mr-3">
+              <mat-icon class="text-gray-600">edit</mat-icon>
+            </div>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-800">Editar Proyecto</h1>
+              <p class="text-sm text-gray-500">Actualiza la información del proyecto</p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="p-6">
+        <form [formGroup]="form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Nombre del Proyecto *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">title</mat-icon>
+              <input 
+                type="text"
+                formControlName="nombre"
+                placeholder="Nombre del proyecto"
+                class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                [class.border-red-300]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+                [class.focus:ring-red-300]="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+            </div>
+            <div *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched" class="mt-1 text-xs text-red-500">
+              Ingresa un nombre válido
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Descripción *
+            </label>
+            <div class="relative">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">description</mat-icon>
+              <textarea 
+                formControlName="descripcion"
+                placeholder="Descripción del proyecto"
+                rows="4"
+                class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm resize-none"
+                [class.border-red-300]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"
+                [class.focus:ring-red-300]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+              </textarea>
+            </div>
+            <div *ngIf="form.get('descripcion')?.invalid && form.get('descripcion')?.touched" class="mt-1 text-xs text-red-500">
+              Ingresa una descripción
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Agregar Usuarios *
+              <span class="text-xs text-gray-500 font-normal">(Mínimo 1 usuario)</span>
+            </label>
+            <div class="relative mb-3">
+              <mat-icon class="absolute left-3 top-3 text-gray-500">person_search</mat-icon>
+              <input 
+                type="text"
+                formControlName="userSearch"
+                placeholder="Buscar usuario por nombre, apellido o puesto..."
+                class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm"
+                [matAutocomplete]="auto">
+              <mat-icon class="absolute right-3 top-3 text-gray-400 pointer-events-none">arrow_drop_down</mat-icon>
+            </div>
+            
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addUser($event.option.value)">
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user" class="text-sm py-2">
+                <div class="flex items-center">
+                  <div>
+                    <div class="font-medium text-gray-800">{{ user.nombre }} {{ user.apellido }}</div>
+                    <div class="text-xs text-gray-500">{{ user.puesto }}</div>
+                  </div>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+
+            <div *ngIf="selectedUsers.length > 0" class="mt-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+              <div class="flex items-center mb-2">
+                <mat-icon class="text-gray-500 mr-2 text-sm">group</mat-icon>
+                <span class="text-sm font-medium text-gray-700">Usuarios seleccionados ({{ selectedUsers.length }})</span>
+              </div>
+              <mat-chip-listbox class="flex flex-wrap gap-2">
+                <mat-chip *ngFor="let user of selectedUsers" 
+                          (removed)="removeUser(user)"
+                          class="bg-white border border-gray-300 text-gray-700 text-sm">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-500 mr-1 text-sm">person</mat-icon>
+                    {{ user.nombre }} {{ user.apellido }}
+                    <span class="text-gray-500 ml-1">- {{ user.puesto }}</span>
+                  </div>
+                  <mat-icon matChipRemove class="text-gray-400 hover:text-red-500">cancel</mat-icon>
+                </mat-chip>
+              </mat-chip-listbox>
+            </div>
+            
+            <div *ngIf="selectedUsers.length === 0" class="mt-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+              <div class="text-center text-gray-500 text-sm">
+                <mat-icon class="text-gray-400 mb-1">info</mat-icon>
+                <p>No hay usuarios seleccionados. Busca y agrega al menos un usuario.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-6 mt-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-gray-100 p-2 rounded-lg mr-3">
+                <mat-icon class="text-gray-600">timelapse</mat-icon>
+              </div>
+              <div>
+                <h2 class="text-md font-semibold text-gray-800">Niveles de Servicio (SLA)</h2>
+                <p class="text-sm text-gray-500">Configura los acuerdos de nivel de servicio para este proyecto</p>
+              </div>
+            </div>
+
+            <div class="space-y-4" formGroupName="configuraciones">
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-500 mr-2">schedule</mat-icon>
+                    <span class="font-medium text-gray-700">Primera Respuesta</span>
+                  </div>
+                  <mat-slide-toggle formControlName="firstResponseEnabled" color="primary">
+                  </mat-slide-toggle>
+                </div>
+                
+                <div *ngIf="form.get('configuraciones.firstResponseEnabled')?.value" class="mt-3">
+                  <label class="block text-xs font-medium text-gray-600 mb-2">
+                    Tiempo máximo para primera respuesta
+                  </label>
+                  <div class="relative">
+                    <mat-icon class="absolute left-3 top-3 text-gray-500">timer</mat-icon>
+                    <input 
+                      type="number"
+                      min="1"
+                      formControlName="firstresponse"
+                      placeholder="Ej: 5"
+                      class="w-full pl-11 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+                    <span class="absolute right-3 top-2.5 text-gray-500 text-sm">minutos</span>
+                  </div>
+                  <div *ngIf="form.get('configuraciones.firstresponse')?.invalid" class="mt-1 text-xs text-red-500">
+                    Campo requerido (No puede ser cero minutos)
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-500 mr-2">event_available</mat-icon>
+                    <span class="font-medium text-gray-700">Tiempo Máximo de Resolución</span>
+                  </div>
+                  <mat-slide-toggle formControlName="maxResolutionEnabled" color="primary">
+                  </mat-slide-toggle>
+                </div>
+                
+                <div *ngIf="form.get('configuraciones.maxResolutionEnabled')?.value" class="mt-3">
+                  <label class="block text-xs font-medium text-gray-600 mb-2">
+                    Tiempo máximo para resolver tickets
+                  </label>
+                  <div class="relative">
+                    <mat-icon class="absolute left-3 top-3 text-gray-500">calendar_today</mat-icon>
+                    <input 
+                      type="number"
+                      min="1"
+                      formControlName="maxresolution"
+                      placeholder="Ej: 10"
+                      class="w-full pl-11 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+                    <span class="absolute right-3 top-2.5 text-gray-500 text-sm">días</span>
+                  </div>
+                  <div *ngIf="form.get('configuraciones.maxresolution')?.invalid" class="mt-1 text-xs text-red-500">
+                    Campo requerido (No puede ser cero días)
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-500 mr-2">access_time</mat-icon>
+                    <span class="font-medium text-gray-700">Tiempo Efectivo</span>
+                  </div>
+                  <mat-slide-toggle formControlName="effectiveTimeEnabled" color="primary">
+                  </mat-slide-toggle>
+                </div>
+                
+                <div *ngIf="form.get('configuraciones.effectiveTimeEnabled')?.value" class="mt-3">
+                  <label class="block text-xs font-medium text-gray-600 mb-2">
+                    Tiempo efectivo de trabajo por ticket
+                  </label>
+                  <div class="relative">
+                    <mat-icon class="absolute left-3 top-3 text-gray-500">hourglass_empty</mat-icon>
+                    <input 
+                      type="number"
+                      min="1"
+                      formControlName="effectivetime"
+                      placeholder="Ej: 10"
+                      class="w-full pl-11 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+                    <span class="absolute right-3 top-2.5 text-gray-500 text-sm">horas</span>
+                  </div>
+                  <div *ngIf="form.get('configuraciones.effectivetime')?.invalid" class="mt-1 text-xs text-red-500">
+                    Campo requerido (No puede ser cero horas)
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center">
+                    <mat-icon class="text-gray-500 mr-2">account_balance_wallet</mat-icon>
+                    <span class="font-medium text-gray-700">Bolsa de Horas</span>
+                  </div>
+                  <mat-slide-toggle formControlName="hoursBankEnabled" color="primary">
+                  </mat-slide-toggle>
+                </div>
+                
+                <div *ngIf="form.get('configuraciones.hoursBankEnabled')?.value" class="mt-3">
+                  <label class="block text-xs font-medium text-gray-600 mb-2">
+                    Total de horas disponibles para el proyecto
+                  </label>
+                  <div class="relative">
+                    <mat-icon class="absolute left-3 top-3 text-gray-500">savings</mat-icon>
+                    <input 
+                      type="number"
+                      min="1"
+                      formControlName="hoursbank"
+                      placeholder="Ej: 150"
+                      class="w-full pl-11 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all text-sm">
+                    <span class="absolute right-3 top-2.5 text-gray-500 text-sm">horas</span>
+                  </div>
+                  <div *ngIf="form.get('configuraciones.hoursbank')?.invalid" class="mt-1 text-xs text-red-500">
+                    Campo requerido (No puede ser cero horas)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-6 border-t border-gray-200">
+            <div [matTooltip]="form.invalid || selectedUsers.length === 0 ? 'Completa todos los campos y agrega al menos un usuario' : ''">
+              <button mat-raised-button 
+                      class="w-full py-2.5 text-sm font-medium transition-all duration-300 bg-gray-700 text-white hover:bg-gray-800 hover:shadow-lg"
+                      [disabled]="form.invalid || selectedUsers.length === 0"
+                      (click)="save()">
+                <mat-icon class="mr-2 text-base">save</mat-icon>
+                Actualizar Proyecto
+              </button>
+            </div>
+
+            <button mat-raised-button 
+                    color="warn"
+                    class="w-full py-2.5 text-sm font-medium transition-all duration-300 hover:shadow-lg"
+                    (click)="deleteProject()">
+              <mat-icon class="mr-2 text-base">delete</mat-icon>
+              Eliminar Proyecto
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-card>
+  </div>
 </div>
 
 <app-loading [loading]="isLoading"></app-loading>
