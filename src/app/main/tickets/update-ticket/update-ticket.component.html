@@ -61,7 +61,7 @@
                 <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">priority_high</mat-icon>
                 <mat-select formControlName="priority_id"
                     class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                    panelClass="custom-select-panel">
+                    panelClass="custom-select-panel"  placeholder="Selecciona una prioridad">
                     <mat-option [value]="ticket?.priority_id" class="text-sm py-2 hover:bg-gray-100">
                         <div class="flex items-center">
                             <span>{{ getPrioridadNombre(ticket?.priority_id) || 'Actual' }}</span>
@@ -87,7 +87,7 @@
                 <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">circle</mat-icon>
                 <mat-select formControlName="status_id"
                     class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                    panelClass="custom-select-panel">
+                    panelClass="custom-select-panel"  placeholder="Selecciona un estado">
                     <mat-option [value]="ticket?.status_id" class="text-sm py-2 hover:bg-gray-100">
                         <div class="flex items-center">
                             <span>{{ getEstadoNombre(ticket?.status_id) }}</span>
@@ -113,7 +113,7 @@
                 <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">assignment_ind</mat-icon>
                 <mat-select formControlName="assigned_to"
                     class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                    panelClass="custom-select-panel">
+                    panelClass="custom-select-panel"  placeholder="Selecciona un usuario">
                     <mat-option [value]="0" class="text-sm py-2 hover:bg-gray-100">
                         Bandeja general del proyecto
                     </mat-option>

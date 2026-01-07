@@ -79,7 +79,7 @@
                     <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">folder</mat-icon>
                     <mat-select [(ngModel)]="selectedProjectId"
                       class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                      panelClass="custom-select-panel">
+                      panelClass="custom-select-panel" placeholder="Selecciona un proyecto">
                       <mat-option *ngFor="let project of projects" [value]="project.id"
                         class="text-sm py-2 hover:bg-gray-100">
                         {{ project.nombre }}
@@ -96,7 +96,7 @@
                     <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">person</mat-icon>
                     <mat-select [(ngModel)]="selectedUserId"
                       class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                      panelClass="custom-select-panel">
+                      panelClass="custom-select-panel"  placeholder="Selecciona un usuario">
                       <mat-option *ngFor="let user of users" [value]="user.id" class="text-sm py-2 hover:bg-gray-100">
                         {{ user.user }}
                       </mat-option>
@@ -112,7 +112,7 @@
                     <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">person_add</mat-icon>
                     <mat-select [(ngModel)]="selectedCreatedById"
                       class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                      panelClass="custom-select-panel">
+                      panelClass="custom-select-panel" placeholder="Selecciona un usuario">
                       <mat-option *ngFor="let user of users" [value]="user.id" class="text-sm py-2 hover:bg-gray-100">
                         {{ user.user }}
                       </mat-option>
@@ -128,7 +128,7 @@
                     <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">circle</mat-icon>
                     <mat-select [(ngModel)]="selectedStatusId"
                       class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                      panelClass="custom-select-panel">
+                      panelClass="custom-select-panel" placeholder="Selecciona un estado">
                       <mat-option *ngFor="let s of statuses" [value]="s.id" class="text-sm py-2 hover:bg-gray-100">
                         {{ s.nombre }}
                       </mat-option>
@@ -145,7 +145,7 @@
                       class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">priority_high</mat-icon>
                     <mat-select [(ngModel)]="selectedPriorityId"
                       class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                      panelClass="custom-select-panel">
+                      panelClass="custom-select-panel" placeholder="Selecciona una prioridad">
                       <mat-option *ngFor="let p of priorities" [value]="p.id" class="text-sm py-2 hover:bg-gray-100">
                         {{ p.nombre }}
                       </mat-option>

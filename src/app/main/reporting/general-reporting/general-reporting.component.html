@@ -55,8 +55,8 @@
                   <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">folder</mat-icon>
                   <mat-select [(ngModel)]="selectedProjectId"
                     class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
-                    panelClass="custom-select-panel">
-                    <mat-option [value]="null" class="text-sm py-2 hover:bg-gray-100">
+                    panelClass="custom-select-panel" placeholder="Selecciona un proyecto">
+                    <mat-option [value]="null" class="text-sm py-2 hover:bg-gray-100"  placeholder="Selecciona un proyecto">
                       Todos los proyectos
                     </mat-option>
                     <mat-option *ngFor="let p of projects" [value]="p.id" class="text-sm py-2 hover:bg-gray-100">
