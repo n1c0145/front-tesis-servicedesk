@@ -1,129 +1,384 @@
 <app-loading [loading]="isLoading"></app-loading>
 
-<div *ngIf="!isLoading && reportData" style="padding:24px; max-width:1400px; margin:0 auto;">
+<div *ngIf="!isLoading && reportData" class="min-h-screen bg-gray-50 p-4">
+  <div class="mb-6">
+    <div class="flex items-center p-3 bg-white rounded-lg border border-gray-200">
+      <a [routerLink]="['/home']" class="no-underline">
+        <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+          <mat-icon class="mr-1 text-base">home</mat-icon>
+          Inicio
+        </button>
+      </a>
+      <mat-icon class="mx-2 text-gray-400">chevron_right</mat-icon>
+      <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+        <mat-icon class="mr-1">assessment</mat-icon>
+        Reporte General
+      </button>
+    </div>
+  </div>
 
-    <mat-card style="margin-bottom:24px;">
-        <mat-card-header>
-            <mat-card-title>Reporte General</mat-card-title>
-            <mat-card-subtitle>
-                Filtros avanzados
-            </mat-card-subtitle>
-        </mat-card-header>
+  <div class="max-w-7xl mx-auto">
+    <mat-card class="mb-6 border border-gray-200 shadow-sm">
+      <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+        <div class="flex items-center mb-4">
+          <mat-icon class="mr-3 text-gray-600">filter_alt</mat-icon>
+          <div>
+            <h3 class="font-semibold text-gray-800">Reporte General</h3>
+            <p class="text-xs text-gray-500">Reporte General para rendimiento y análisis de datos</p>
+          </div>
+        </div>
+      </mat-card-header>
+      
+      <mat-card-content class="p-5">
+        <mat-accordion>
+          <mat-expansion-panel [disabled]="!areFiltersReady">
+            <mat-expansion-panel-header>
+              <mat-panel-title class="text-sm font-medium text-gray-700">
+                <div class="flex items-center">
+                  <mat-icon class="mr-2 text-gray-500 text-base">filter_list</mat-icon>
+                  <ng-container *ngIf="areFiltersReady; else loadingFilters">
+                    Filtros Avanzados
+                  </ng-container>
+                  <ng-template #loadingFilters>
+                    Cargando filtros...
+                  </ng-template>
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            
+            <div class="pt-4 space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Proyecto
+                </label>
+                <div class="relative">
+                  <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">folder</mat-icon>
+                  <mat-select [(ngModel)]="selectedProjectId"
+                    class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+                    panelClass="custom-select-panel">
+                    <mat-option [value]="null" class="text-sm py-2 hover:bg-gray-100">
+                      Todos los proyectos
+                    </mat-option>
+                    <mat-option *ngFor="let p of projects" [value]="p.id" class="text-sm py-2 hover:bg-gray-100">
+                      {{ p.nombre }}
+                    </mat-option>
+                  </mat-select>
+                </div>
+              </div>
 
-        <mat-card-content>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Rango de fechas
+                </label>
+                <div class="relative">
+                  <mat-icon class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10 pointer-events-none text-sm">
+                    calendar_today
+                  </mat-icon>
 
-            <mat-accordion>
-                <mat-expansion-panel [disabled]="!areFiltersReady">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            <ng-container *ngIf="areFiltersReady; else loadingFilters">
-                                Filtros Avanzados
-                            </ng-container>
+                  <div class="custom-date-range">
+                    <mat-date-range-input [rangePicker]="picker"
+                      class="w-full pl-10 pr-10 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus-within:ring-2 focus-within:ring-gray-400 focus-within:border-gray-400 outline-none transition-all">
+                      <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start" />
+                      <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end" />
+                    </mat-date-range-input>
+                  </div>
 
-                            <ng-template #loadingFilters>
-                                Cargando filtros...
-                            </ng-template>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
+                  <mat-datepicker-toggle matSuffix [for]="picker"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                    <mat-icon class="text-gray-400 hover:text-gray-600 text-sm">calendar_today</mat-icon>
+                  </mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </div>
+              </div>
 
-                    <mat-form-field appearance="fill" style="width:100%; margin-bottom:16px;">
-                        <mat-label>Proyecto</mat-label>
-                        <mat-select [(ngModel)]="selectedProjectId">
-                            <mat-option [value]="null">Todos los proyectos</mat-option>
-                            <mat-option *ngFor="let p of projects" [value]="p.id">
-                                {{ p.nombre }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" style="width:100%; margin-bottom:16px;">
-                        <mat-label>Rango de fechas</mat-label>
-                        <mat-date-range-input [rangePicker]="picker">
-                            <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start">
-                            <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end">
-                        </mat-date-range-input>
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <mat-date-range-picker #picker></mat-date-range-picker>
-                    </mat-form-field>
-
-                    <div style="display:flex; gap:12px;">
-                        <button mat-raised-button color="primary" (click)="applyFilters()">
-                            Aplicar
-                        </button>
-                        <button mat-stroked-button color="warn" (click)="clearFilters()">
-                            Limpiar
-                        </button>
-                    </div>
-
-                </mat-expansion-panel>
-            </mat-accordion>
-
-        </mat-card-content>
+              <div class="flex gap-3 pt-2">
+                <button mat-raised-button color="primary" (click)="applyFilters()" class="text-sm">
+                  <mat-icon class="mr-1 text-base">check</mat-icon>
+                  Aplicar
+                </button>
+                <button mat-stroked-button color="warn" (click)="clearFilters()" class="text-sm">
+                  <mat-icon class="mr-1 text-base">clear</mat-icon>
+                  Limpiar
+                </button>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-card-content>
     </mat-card>
 
-    <div style="display:grid;
-              grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-              gap:16px; margin-bottom:24px;">
-
-        <mat-card *ngFor="let kpi of kpis">
-            <mat-card-content class="kpi">
-                <h3>{{ kpi.value }}</h3>
-                <p>{{ kpi.label }}</p>
-            </mat-card-content>
-        </mat-card>
-
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+      <mat-card *ngFor="let kpi of kpis" class="border border-gray-200 shadow-sm">
+        <mat-card-content class="p-4 text-center">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto mb-3"
+               [ngClass]="getKpiColorClass(kpi.label)">
+            <mat-icon class="text-lg md:text-xl" [ngClass]="getKpiIconColorClass(kpi.label)">
+              {{ getKpiIcon(kpi.label) }}
+            </mat-icon>
+          </div>
+          <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ kpi.value }}</h3>
+          <p class="text-sm text-gray-600">{{ kpi.label }}</p>
+        </mat-card-content>
+      </mat-card>
     </div>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
-
-        <mat-card>
-            <mat-card-title>Abiertos vs Cerrados</mat-card-title>
-            <ngx-charts-pie-chart [results]="reportData.charts.open_vs_close" [doughnut]="true" [labels]="true">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">pie_chart</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Abiertos vs Cerrados</h3>
+              <p class="text-xs text-gray-500">Distribución por estado final</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full relative">
+            <ngx-charts-pie-chart 
+              *ngIf="reportData.charts?.open_vs_close?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.open_vs_close"
+              [doughnut]="true"
+              [labels]="true"
+              [legend]="false"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-pie-chart>
-        </mat-card>
+            <div *ngIf="!reportData.charts?.open_vs_close?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">insert_chart</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-        <mat-card>
-            <mat-card-title>SLA vs No SLA</mat-card-title>
-            <ngx-charts-pie-chart [results]="reportData.charts.sla_vs_no_sla" [doughnut]="true" [labels]="true">
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">donut_large</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">SLA vs No SLA</h3>
+              <p class="text-xs text-gray-500">Tickets con y sin SLA</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-pie-chart 
+              *ngIf="reportData.charts?.sla_vs_no_sla?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.sla_vs_no_sla"
+              [doughnut]="true"
+              [labels]="true"
+              [legend]="false"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-pie-chart>
-        </mat-card>
+            <div *ngIf="!reportData.charts?.sla_vs_no_sla?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">insert_chart_outlined</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-        <mat-card>
-            <mat-card-title>Estados de Tickets</mat-card-title>
-            <ngx-charts-bar-vertical [results]="reportData.charts.status_distribution" [showDataLabel]="true"
-                [xAxis]="true" [yAxis]="true">
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">bar_chart</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Estados de Tickets</h3>
+              <p class="text-xs text-gray-500">Distribución por estado actual</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-bar-vertical 
+              *ngIf="reportData.charts?.status_distribution?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.status_distribution"
+              [showDataLabel]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-bar-vertical>
-        </mat-card>
+            <div *ngIf="!reportData.charts?.status_distribution?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">stacked_bar_chart</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-        <mat-card>
-            <mat-card-title>Prioridades</mat-card-title>
-            <ngx-charts-bar-horizontal [results]="reportData.charts.priority_distribution" [showDataLabel]="true"
-                [xAxis]="true" [yAxis]="true">
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">horizontal_split</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Prioridades</h3>
+              <p class="text-xs text-gray-500">Distribución por nivel de prioridad</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-bar-horizontal 
+              *ngIf="reportData.charts?.priority_distribution?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.priority_distribution"
+              [showDataLabel]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-bar-horizontal>
-        </mat-card>
-        <mat-card>
-            <mat-card-title>Antigüedad de Tickets</mat-card-title>
-            <ngx-charts-bar-vertical [results]="reportData.charts.ticket_aging" [showDataLabel]="true" [xAxis]="true"
-                [yAxis]="true">
+            <div *ngIf="!reportData.charts?.priority_distribution?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">low_priority</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">calendar_month</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Antigüedad de Tickets</h3>
+              <p class="text-xs text-gray-500">Tiempo desde su creación</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-bar-vertical 
+              *ngIf="reportData.charts?.ticket_aging?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.ticket_aging"
+              [showDataLabel]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-bar-vertical>
-        </mat-card>
+            <div *ngIf="!reportData.charts?.ticket_aging?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">schedule</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
-        <mat-card>
-            <mat-card-title>Top Tickets por Tiempo</mat-card-title>
-            <ngx-charts-pie-chart [results]="reportData.charts.top_tickets_time" [doughnut]="true" [labels]="true"
-                [tooltipDisabled]="false">
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">leaderboard</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Top Tickets por Tiempo</h3>
+              <p class="text-xs text-gray-500">Tickets con mayor tiempo invertido</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-pie-chart 
+              *ngIf="reportData.charts?.top_tickets_time?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.top_tickets_time"
+              [doughnut]="true"
+              [labels]="true"
+              [legend]="false"
+              [tooltipDisabled]="false"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-pie-chart>
-        </mat-card>
-        <mat-card>
-            <mat-card-title>Top Proyectos por Tiempo</mat-card-title>
-            <ngx-charts-pie-chart [results]="reportData.charts.top_projects_time" [doughnut]="true" [labels]="true">
+            <div *ngIf="!reportData.charts?.top_tickets_time?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">timeline</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">pie_chart</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Top Proyectos por Tiempo</h3>
+              <p class="text-xs text-gray-500">Proyectos con mayor tiempo invertido</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-pie-chart 
+              *ngIf="reportData.charts?.top_projects_time?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.top_projects_time"
+              [doughnut]="true"
+              [labels]="true"
+              [legend]="false"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-pie-chart>
-        </mat-card>
-        <mat-card>
-            <mat-card-title>Top Usuarios por Tiempo</mat-card-title>
-            <ngx-charts-pie-chart [results]="reportData.charts.top_users_time" [doughnut]="true" [labels]="true">
+            <div *ngIf="!reportData.charts?.top_projects_time?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">folder_data</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">donut_large</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Top Usuarios por Tiempo</h3>
+              <p class="text-xs text-gray-500">Usuarios con mayor tiempo trabajado</p>
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-4">
+          <div class="h-64 w-full">
+            <ngx-charts-pie-chart 
+              *ngIf="reportData.charts?.top_users_time?.length > 0"
+              [scheme]="'ocean'"
+              [results]="reportData.charts.top_users_time"
+              [doughnut]="true"
+              [labels]="true"
+              [legend]="false"
+              [animations]="false"
+              [view]="chartView">
             </ngx-charts-pie-chart>
-        </mat-card>
+            <div *ngIf="!reportData.charts?.top_users_time?.length" class="h-full flex items-center justify-center text-gray-500">
+              <div class="text-center">
+                <mat-icon class="text-4xl mb-2">person_search</mat-icon>
+                <p class="text-sm">No hay datos disponibles</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
+  </div>
 </div>
-

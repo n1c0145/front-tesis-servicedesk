@@ -14,6 +14,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sla-reporting',
@@ -31,7 +33,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatNativeDateModule,
     MatExpansionModule,
     MatDividerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    RouterModule,
+    MatIconModule
   ],
   templateUrl: './sla-reporting.component.html'
 })
@@ -197,11 +201,13 @@ export class SlaReportingComponent implements OnInit {
     return value != null ? `${value}%` : '0%';
   }
 
-  getStatusColor(status: string): string {
-    switch (status?.toLowerCase()) {
-      case 'available': return '#4caf50';
-      case 'exceeded': return '#f44336';
-      default: return '#757575';
+
+    getStatusText(status: string): string {
+    switch (status) {
+      case 'available': return 'Disponible';
+      case 'warning': return 'Advertencia';
+      case 'exceeded': return 'Excedido';
+      default: return 'Desconocido';
     }
   }
 }

@@ -1,238 +1,412 @@
 <app-loading [loading]="isLoading"></app-loading>
 
-<div style="padding: 24px; max-width: 1200px; margin: 0 auto;">
-  <mat-card style="margin-bottom: 24px;">
-    <mat-card-header>
-      <mat-card-title>Reporte SLA</mat-card-title>
-      <mat-card-subtitle>Selecciona un proyecto para generar el reporte</mat-card-subtitle>
-    </mat-card-header>
-    
-    <mat-card-content style="padding: 24px;">
-      <mat-form-field appearance="fill" style="width: 100%; margin-bottom: 20px;">
-        <mat-label>Por favor selecciona un proyecto</mat-label>
-        <mat-select [(ngModel)]="selectedProjectId" (selectionChange)="onProjectSelect()">
-          <mat-option [value]="null" disabled>Selecciona un proyecto</mat-option>
-          <mat-option *ngFor="let project of projects" [value]="project.id">
-            {{ project.nombre }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+<div *ngIf="!isLoading" class="min-h-screen bg-gray-50 p-4">
+  <div class="mb-6">
+    <div class="flex items-center p-3 bg-white rounded-lg border border-gray-200">
+      <a [routerLink]="['/home']" class="no-underline">
+        <button mat-button color="primary" class="rounded-full px-3 py-1 hover:bg-blue-50 transition-colors">
+          <mat-icon class="mr-1 text-base">home</mat-icon>
+          Inicio
+        </button>
+      </a>
+      <mat-icon class="mx-2 text-gray-400">chevron_right</mat-icon>
+      <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+        <mat-icon class="mr-1">assessment</mat-icon>
+        Reporte Niveles de Servicio
+      </button>
+    </div>
+  </div>
 
-      <mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>Filtro de fechas</mat-panel-title>
-          </mat-expansion-panel-header>
-          
-          <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 16px;">
-            <mat-label>Rango de fechas</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start" name="startDate" />
-              <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end" name="endDate" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
-
-          <div style="display: flex; gap: 12px;">
-            <button mat-raised-button color="primary" (click)="applyDateFilters()" [disabled]="isLoadingReport">
-              Aplicar fechas
-            </button>
-            <button mat-stroked-button color="warn" (click)="clearDates()" [disabled]="isLoadingReport">
-              Borrar fechas
-            </button>
+  <div class="max-w-6xl mx-auto">
+    <mat-card class="mb-2 border border-gray-200 shadow-sm">
+      <mat-card-header class="border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center mb-4">
+          <mat-icon class="mr-3 text-gray-600">assessment</mat-icon>
+          <div>
+            <h3 class="font-semibold text-gray-800">Reporte SLA</h3>
+            <p class="text-xs text-gray-500">Selecciona un proyecto para generar el reporte</p>
           </div>
-        </mat-expansion-panel>
-      </mat-accordion>
-
-      <app-loading [loading]="isLoadingReport"></app-loading>
-    </mat-card-content>
-  </mat-card>
-
-  <div *ngIf="reportData">
-    <mat-card style="margin-bottom: 24px;">
-      <mat-card-header>
-        <mat-card-title>
-          {{ reportData.report_parameters?.project_name || 'Proyecto' }}
-        </mat-card-title>
-        <mat-card-subtitle>
-          <div *ngIf="reportData.report_parameters?.date_from && reportData.report_parameters?.date_to">
-            Período: {{ reportData.report_parameters.date_from }} - {{ reportData.report_parameters.date_to }}
-          </div>
-          <div *ngIf="!reportData.report_parameters?.date_from || !reportData.report_parameters?.date_to">
-            Reporte completo (sin filtro de fechas)
-          </div>
-          <div>Generado: {{ reportData.report_parameters?.generated_at | date:'medium' }}</div>
-        </mat-card-subtitle>
+        </div>
       </mat-card-header>
+
+      <mat-card-content class="p-5">
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 my-3">
+            Proyecto *
+          </label>
+          <div class="relative">
+            <mat-icon class="absolute left-3 top-3 text-gray-500 z-10 pointer-events-none">folder</mat-icon>
+            <mat-select [(ngModel)]="selectedProjectId" (selectionChange)="onProjectSelect()"
+              class="w-full pl-11 pr-10 py-2.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-all cursor-pointer"
+              panelClass="custom-select-panel">
+              <mat-option [value]="null" disabled class="text-sm py-2">Selecciona un proyecto</mat-option>
+              <mat-option *ngFor="let project of projects" [value]="project.id" class="text-sm py-2 hover:bg-gray-100">
+                {{ project.nombre }}
+              </mat-option>
+            </mat-select>
+          </div>
+        </div>
+
+        <mat-accordion class="mb-4">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title class="text-sm font-medium text-gray-700">
+                <mat-icon class="mr-2 text-gray-500 text-base">filter_list</mat-icon>
+                Filtro de fechas
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="pt-4">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Rango de fechas
+                </label>
+                <div class="relative">
+                  <mat-icon
+                    class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 z-10 pointer-events-none text-sm">
+                    calendar_today
+                  </mat-icon>
+
+                  <div class="custom-date-range">
+                    <mat-date-range-input [rangePicker]="picker"
+                      class="w-full pl-10 pr-10 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-sm text-gray-700 focus-within:ring-2 focus-within:ring-gray-400 focus-within:border-gray-400 outline-none transition-all">
+                      <input matStartDate placeholder="Desde" [(ngModel)]="dateRange.start" name="startDate" />
+                      <input matEndDate placeholder="Hasta" [(ngModel)]="dateRange.end" name="endDate" />
+                    </mat-date-range-input>
+                  </div>
+
+                  <mat-datepicker-toggle matSuffix [for]="picker"
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2">
+                    <mat-icon class="text-gray-400 hover:text-gray-600 text-sm">calendar_today</mat-icon>
+                  </mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </div>
+              </div>
+
+              <div class="flex gap-3 mt-4">
+                <button mat-raised-button color="primary" (click)="applyDateFilters()" [disabled]="isLoadingReport"
+                  class="text-sm">
+                  <mat-icon class="mr-1 text-base">check</mat-icon>
+                  Aplicar fechas
+                </button>
+                <button mat-stroked-button color="warn" (click)="clearDates()" [disabled]="isLoadingReport"
+                  class="text-sm">
+                  <mat-icon class="mr-1 text-base">clear</mat-icon>
+                  Borrar fechas
+                </button>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <app-loading [loading]="isLoadingReport"></app-loading>
+      </mat-card-content>
     </mat-card>
 
-    <div *ngIf="hasRule('firstresponse_minutes') || hasRule('maxresolution_days') || 
-                hasRule('effectivetime_hours') || hasRule('hoursbank_hours')"
-         style="margin-bottom: 24px;">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Reglas contratadas</mat-card-title>
+    <div *ngIf="reportData">
+      <mat-card class="mb-6 border border-gray-200 shadow-sm">
+        <mat-card-content class="p-5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-bold text-gray-800 mb-1">
+                {{ reportData.report_parameters?.project_name || 'Reporte SLA' }}
+              </h2>
+              <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600">
+                <div class="flex items-center">
+                  <mat-icon class="mr-1 text-xs">calendar_today</mat-icon>
+                  <span *ngIf="reportData.report_parameters?.date_from && reportData.report_parameters?.date_to">
+                    {{ reportData.report_parameters.date_from }} - {{ reportData.report_parameters.date_to }}
+                  </span>
+                  <span *ngIf="!reportData.report_parameters?.date_from || !reportData.report_parameters?.date_to">
+                    Reporte completo
+                  </span>
+                </div>
+                <div class="flex items-center">
+                  <mat-icon class="mr-1 text-xs">schedule</mat-icon>
+                  <span>Generado: {{ reportData.report_parameters?.generated_at | date:'medium' }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div *ngIf="hasRule('firstresponse_minutes') || hasRule('maxresolution_days') || 
+                  hasRule('effectivetime_hours') || hasRule('hoursbank_hours')" class="mb-6">
+        <mat-card class="border border-gray-200 shadow-sm">
+          <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+            <div class="flex items-center">
+              <mat-icon class="mr-3 text-gray-600">gavel</mat-icon>
+              <div>
+                <h3 class="font-semibold text-gray-800">Reglas contratadas</h3>
+                <p class="text-xs text-gray-500">Parámetros SLA establecidos</p>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content class="p-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div *ngIf="hasRule('firstresponse_minutes')" class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <div class="flex items-center mb-2">
+                  <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                    <mat-icon class="text-blue-600 text-sm">timer</mat-icon>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Primera respuesta</span>
+                </div>
+                <p class="text-lg font-bold text-gray-800">
+                  {{ reportData.report_parameters.sla_rules.firstresponse_minutes }} min
+                </p>
+              </div>
+
+              <div *ngIf="hasRule('maxresolution_days')" class="bg-green-50 p-4 rounded-lg border border-green-100">
+                <div class="flex items-center mb-2">
+                  <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-2">
+                    <mat-icon class="text-green-600 text-sm">check_circle</mat-icon>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Resolución máxima</span>
+                </div>
+                <p class="text-lg font-bold text-gray-800">
+                  {{ reportData.report_parameters.sla_rules.maxresolution_days }} días
+                </p>
+              </div>
+
+              <div *ngIf="hasRule('effectivetime_hours')" class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                <div class="flex items-center mb-2">
+                  <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-2">
+                    <mat-icon class="text-purple-600 text-sm">access_time</mat-icon>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Tiempo efectivo</span>
+                </div>
+                <p class="text-lg font-bold text-gray-800">
+                  {{ reportData.report_parameters.sla_rules.effectivetime_hours }} hrs
+                </p>
+              </div>
+
+              <div *ngIf="hasRule('hoursbank_hours')" class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                <div class="flex items-center mb-2">
+                  <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-2">
+                    <mat-icon class="text-orange-600 text-sm">account_balance_wallet</mat-icon>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Bolsa de horas</span>
+                </div>
+                <p class="text-lg font-bold text-gray-800">
+                  {{ reportData.report_parameters.sla_rules.hoursbank_hours }} hrs
+                </p>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card class="mb-6 border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center">
+            <mat-icon class="mr-3 text-gray-600">summarize</mat-icon>
+            <div>
+              <h3 class="font-semibold text-gray-800">Resumen de tickets</h3>
+              <p class="text-xs text-gray-500">Distribución de tickets analizados</p>
+            </div>
+          </div>
         </mat-card-header>
-        <mat-card-content style="padding: 24px;">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-            <div *ngIf="hasRule('firstresponse_minutes')">
-              <h4 style="margin: 0 0 8px 0; color: #666;">Primera respuesta</h4>
-              <p style="margin: 0; font-size: 18px; font-weight: 500;">
-                {{ reportData.report_parameters.sla_rules.firstresponse_minutes }} min
+        <mat-card-content class="p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <mat-icon class="text-blue-600">receipt</mat-icon>
+              </div>
+              <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">
+                {{ reportData.tickets_summary?.total_tickets || 0 }}
+              </h3>
+              <p class="text-sm text-gray-600">Total tickets</p>
+            </div>
+
+            <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+              <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <mat-icon class="text-orange-600">check_circle</mat-icon>
+              </div>
+              <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">
+                {{ reportData.tickets_summary?.tickets_with_sla || 0 }}
+              </h3>
+              <p class="text-sm text-gray-600">Con SLA</p>
+            </div>
+
+            <div class="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <mat-icon class="text-gray-600">warning</mat-icon>
+              </div>
+              <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">
+                {{ reportData.tickets_summary?.tickets_without_sla || 0 }}
+              </h3>
+              <p class="text-sm text-gray-600">Sin SLA</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <mat-card *ngIf="hasMetric('first_response')" class="border border-gray-200 shadow-sm">
+          <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center">
+                <mat-icon class="mr-3 text-gray-600">timer</mat-icon>
+                <div>
+                  <h3 class="font-semibold text-gray-800">Primera respuesta</h3>
+                  <p class="text-xs text-gray-500">Tiempo hasta primera respuesta</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content class="p-5">
+            <div class="text-center">
+              <p class="text-4xl font-bold text-gray-800 mb-2">
+                {{ formatPercentage(reportData.sla_metrics.first_response.compliance_percentage) }}
+              </p>
+              <p class="text-sm text-gray-600 mb-4">
+                Cumplimiento: {{ reportData.sla_metrics.first_response.compliant || 0 }}/{{
+                reportData.sla_metrics.first_response.total_analyzed || 0 }}
+              </p>
+              <mat-progress-bar mode="determinate"
+                [value]="reportData.sla_metrics.first_response.compliance_percentage || 0"
+                [color]="(reportData.sla_metrics.first_response.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'"
+                style="height: 8px; border-radius: 4px;">
+              </mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="hasMetric('max_resolution')" class="border border-gray-200 shadow-sm">
+          <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center">
+                <mat-icon class="mr-3 text-gray-600">check_circle</mat-icon>
+                <div>
+                  <h3 class="font-semibold text-gray-800">Resolución máxima</h3>
+                  <p class="text-xs text-gray-500">Tiempo hasta resolución</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content class="p-5">
+            <div class="text-center">
+              <p class="text-4xl font-bold text-gray-800 mb-2">
+                {{ formatPercentage(reportData.sla_metrics.max_resolution.compliance_percentage) }}
+              </p>
+              <p class="text-sm text-gray-600 mb-4">
+                Cumplimiento: {{ reportData.sla_metrics.max_resolution.compliant || 0 }}/{{
+                reportData.sla_metrics.max_resolution.total_analyzed || 0 }}
+              </p>
+              <mat-progress-bar mode="determinate"
+                [value]="reportData.sla_metrics.max_resolution.compliance_percentage || 0"
+                [color]="(reportData.sla_metrics.max_resolution.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'"
+                style="height: 8px; border-radius: 4px;">
+              </mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card *ngIf="hasMetric('effective_time')" class="border border-gray-200 shadow-sm">
+          <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center">
+                <mat-icon class="mr-3 text-gray-600">access_time</mat-icon>
+                <div>
+                  <h3 class="font-semibold text-gray-800">Tiempo efectivo</h3>
+                  <p class="text-xs text-gray-500">Horas de trabajo efectivas</p>
+                </div>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content class="p-5">
+            <div class="text-center">
+              <p class="text-4xl font-bold text-gray-800 mb-2">
+                {{ formatPercentage(reportData.sla_metrics.effective_time.compliance_percentage) }}
+              </p>
+              <p class="text-sm text-gray-600 mb-4">
+                Cumplimiento: {{ reportData.sla_metrics.effective_time.compliant || 0 }}/{{
+                reportData.sla_metrics.effective_time.total_analyzed || 0 }}
+              </p>
+              <mat-progress-bar mode="determinate"
+                [value]="reportData.sla_metrics.effective_time.compliance_percentage || 0"
+                [color]="(reportData.sla_metrics.effective_time.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'"
+                style="height: 8px; border-radius: 4px;">
+              </mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <mat-card *ngIf="hasMetric('hours_bank') && reportData.sla_metrics.hours_bank.hours_contracted != null"
+        class="border border-gray-200 shadow-sm">
+        <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center">
+              <mat-icon class="mr-3 text-gray-600">account_balance_wallet</mat-icon>
+              <div>
+                <h3 class="font-semibold text-gray-800">Bolsa de horas</h3>
+                <p class="text-xs text-gray-500">Utilización de horas contratadas</p>
+              </div>
+            </div>
+            <span class="text-xs font-medium px-2 py-1 rounded-full" [ngClass]="{
+                    'bg-green-100 text-green-800': reportData.sla_metrics.hours_bank.status === 'available',
+                    'bg-yellow-100 text-yellow-800': reportData.sla_metrics.hours_bank.status === 'warning',
+                    'bg-red-100 text-red-800': reportData.sla_metrics.hours_bank.status === 'exceeded'
+                  }">
+              {{ getStatusText(reportData.sla_metrics.hours_bank.status) }}
+            </span>
+          </div>
+        </mat-card-header>
+        <mat-card-content class="p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Horas usadas</h4>
+              <p class="text-2xl font-bold text-gray-800">
+                {{ reportData.sla_metrics.hours_bank.total_hours_used || 0 }} hrs
               </p>
             </div>
-            <div *ngIf="hasRule('maxresolution_days')">
-              <h4 style="margin: 0 0 8px 0; color: #666;">Resolución máxima</h4>
-              <p style="margin: 0; font-size: 18px; font-weight: 500;">
-                {{ reportData.report_parameters.sla_rules.maxresolution_days }} días
+
+            <div class="text-center p-4 bg-green-50 rounded-lg border border-green-100">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Horas contratadas</h4>
+              <p class="text-2xl font-bold text-gray-800">
+                {{ reportData.sla_metrics.hours_bank.hours_contracted || 0 }} hrs
               </p>
             </div>
-            <div *ngIf="hasRule('effectivetime_hours')">
-              <h4 style="margin: 0 0 8px 0; color: #666;">Tiempo efectivo</h4>
-              <p style="margin: 0; font-size: 18px; font-weight: 500;">
-                {{ reportData.report_parameters.sla_rules.effectivetime_hours }} hrs
+
+            <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Horas restantes</h4>
+              <p class="text-2xl font-bold text-gray-800" [ngClass]="{
+                   'text-green-600': reportData.sla_metrics.hours_bank.status === 'available',
+                   'text-yellow-600': reportData.sla_metrics.hours_bank.status === 'warning',
+                   'text-red-600': reportData.sla_metrics.hours_bank.status === 'exceeded'
+                 }">
+                {{ reportData.sla_metrics.hours_bank.hours_remaining || 0 }} hrs
               </p>
             </div>
-            <div *ngIf="hasRule('hoursbank_hours')">
-              <h4 style="margin: 0 0 8px 0; color: #666;">Bolsa de horas</h4>
-              <p style="margin: 0; font-size: 18px; font-weight: 500;">
-                {{ reportData.report_parameters.sla_rules.hoursbank_hours }} hrs
+
+            <div class="text-center p-4 bg-purple-50 rounded-lg border border-purple-100">
+              <h4 class="text-sm font-medium text-gray-700 mb-2">Utilización</h4>
+              <p class="text-2xl font-bold text-gray-800">
+                {{ formatPercentage(reportData.sla_metrics.hours_bank.utilization_percentage) }}
               </p>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <span>0%</span>
+              <span>100%</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="reportData.sla_metrics.hours_bank.utilization_percentage || 0"
+              [color]="(reportData.sla_metrics.hours_bank.utilization_percentage || 0) <= 80 ? 'primary' : 'warn'"
+              style="height: 10px; border-radius: 5px;">
+            </mat-progress-bar>
+            <div class="flex justify-between mt-1 text-xs text-gray-500">
+              <span>Bajo uso</span>
+              <span>Uso moderado</span>
+              <span>Alto uso</span>
             </div>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
-
-    <mat-card style="margin-bottom: 24px;">
-      <mat-card-header>
-        <mat-card-title>Resumen de tickets</mat-card-title>
-      </mat-card-header>
-      <mat-card-content style="padding: 24px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
-          <div style="text-align: center;">
-            <h3 style="margin: 0 0 8px 0; color: #666;">Total tickets</h3>
-            <p style="margin: 0; font-size: 24px; font-weight: 500;">
-              {{ reportData.tickets_summary?.total_tickets || 0 }}
-            </p>
-          </div>
-          <div style="text-align: center;">
-            <h3 style="margin: 0 0 8px 0; color: #666;">Con SLA</h3>
-            <p style="margin: 0; font-size: 24px; font-weight: 500;">
-              {{ reportData.tickets_summary?.tickets_with_sla || 0 }}
-            </p>
-          </div>
-          <div style="text-align: center;">
-            <h3 style="margin: 0 0 8px 0; color: #666;">Sin SLA</h3>
-            <p style="margin: 0; font-size: 24px; font-weight: 500;">
-              {{ reportData.tickets_summary?.tickets_without_sla || 0 }}
-            </p>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 24px;">
-      <mat-card *ngIf="hasMetric('first_response')">
-        <mat-card-header>
-          <mat-card-title>Primera respuesta</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="padding: 24px;">
-          <div style="text-align: center;">
-            <p style="font-size: 32px; font-weight: 500; margin: 0 0 8px 0;">
-              {{ formatPercentage(reportData.sla_metrics.first_response.compliance_percentage) }}
-            </p>
-            <p style="color: #666; margin: 0 0 16px 0;">
-              Cumplimiento: {{ reportData.sla_metrics.first_response.compliant || 0 }}/{{ reportData.sla_metrics.first_response.total_analyzed || 0 }}
-            </p>
-            <mat-progress-bar mode="determinate" 
-              [value]="reportData.sla_metrics.first_response.compliance_percentage || 0"
-              [color]="(reportData.sla_metrics.first_response.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'">
-            </mat-progress-bar>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card *ngIf="hasMetric('max_resolution')">
-        <mat-card-header>
-          <mat-card-title>Resolución máxima</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="padding: 24px;">
-          <div style="text-align: center;">
-            <p style="font-size: 32px; font-weight: 500; margin: 0 0 8px 0;">
-              {{ formatPercentage(reportData.sla_metrics.max_resolution.compliance_percentage) }}
-            </p>
-            <p style="color: #666; margin: 0 0 16px 0;">
-              Cumplimiento: {{ reportData.sla_metrics.max_resolution.compliant || 0 }}/{{ reportData.sla_metrics.max_resolution.total_analyzed || 0 }}
-            </p>
-            <mat-progress-bar mode="determinate" 
-              [value]="reportData.sla_metrics.max_resolution.compliance_percentage || 0"
-              [color]="(reportData.sla_metrics.max_resolution.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'">
-            </mat-progress-bar>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card *ngIf="hasMetric('effective_time')">
-        <mat-card-header>
-          <mat-card-title>Tiempo efectivo</mat-card-title>
-        </mat-card-header>
-        <mat-card-content style="padding: 24px;">
-          <div style="text-align: center;">
-            <p style="font-size: 32px; font-weight: 500; margin: 0 0 8px 0;">
-              {{ formatPercentage(reportData.sla_metrics.effective_time.compliance_percentage) }}
-            </p>
-            <p style="color: #666; margin: 0 0 16px 0;">
-              Cumplimiento: {{ reportData.sla_metrics.effective_time.compliant || 0 }}/{{ reportData.sla_metrics.effective_time.total_analyzed || 0 }}
-            </p>
-            <mat-progress-bar mode="determinate" 
-              [value]="reportData.sla_metrics.effective_time.compliance_percentage || 0"
-              [color]="(reportData.sla_metrics.effective_time.compliance_percentage || 0) >= 80 ? 'primary' : 'warn'">
-            </mat-progress-bar>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <mat-card *ngIf="hasMetric('hours_bank') && reportData.sla_metrics.hours_bank.hours_contracted != null">
-      <mat-card-header>
-        <mat-card-title>Bolsa de horas</mat-card-title>
-      </mat-card-header>
-      <mat-card-content style="padding: 24px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-          <div>
-            <h4 style="margin: 0 0 8px 0; color: #666;">Horas usadas</h4>
-            <p style="margin: 0; font-size: 20px; font-weight: 500;">
-              {{ reportData.sla_metrics.hours_bank.total_hours_used || 0 }} hrs
-            </p>
-          </div>
-          <div>
-            <h4 style="margin: 0 0 8px 0; color: #666;">Horas contratadas</h4>
-            <p style="margin: 0; font-size: 20px; font-weight: 500;">
-              {{ reportData.sla_metrics.hours_bank.hours_contracted || 0 }} hrs
-            </p>
-          </div>
-          <div>
-            <h4 style="margin: 0 0 8px 0; color: #666;">Horas restantes</h4>
-            <p style="margin: 0; font-size: 20px; font-weight: 500;"
-               [style.color]="getStatusColor(reportData.sla_metrics.hours_bank.status)">
-              {{ reportData.sla_metrics.hours_bank.hours_remaining || 0 }} hrs
-            </p>
-          </div>
-          <div>
-            <h4 style="margin: 0 0 8px 0; color: #666;">Utilización</h4>
-            <p style="margin: 0; font-size: 20px; font-weight: 500;">
-              {{ formatPercentage(reportData.sla_metrics.hours_bank.utilization_percentage) }}
-            </p>
-          </div>
-        </div>
-        <mat-progress-bar mode="determinate" 
-          [value]="reportData.sla_metrics.hours_bank.utilization_percentage || 0"
-          [color]="(reportData.sla_metrics.hours_bank.utilization_percentage || 0) <= 80 ? 'primary' : 'warn'"
-          style="margin-top: 16px;">
-        </mat-progress-bar>
-      </mat-card-content>
-    </mat-card>
   </div>
 </div>

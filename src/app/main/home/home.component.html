@@ -1,194 +1,295 @@
 <app-loading [loading]="isLoading"></app-loading>
 
-<div *ngIf="!isLoading && homeData" style="padding: 24px;">
-    <mat-card style="margin-bottom: 24px;">
-        <mat-card-header>
-            <div mat-card-avatar style="
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: #3f51b5;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            ">
-                {{ userInitial }}
-            </div>
-            <mat-card-title style="font-size: 20px;">{{ homeData.user.nombre_completo }}</mat-card-title>
-            <mat-card-subtitle style="display: flex; align-items: center; gap: 8px;">
-                <mat-icon style="font-size: 16px;">email</mat-icon>
-                {{ homeData.user.correo }}
-            </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <mat-icon style="color: #666;">work</mat-icon>
-                    <span style="color: #666;">{{ homeData.user.puesto }}</span>
+<div *ngIf="!isLoading && homeData" class="min-h-screen bg-gray-50 p-4">
+    <div class="mb-6">
+        <div class="flex items-center p-3 bg-white rounded-lg border border-gray-200">
+            <button mat-button disabled class="rounded-full px-3 py-1 text-gray-600 font-medium bg-gray-100">
+                <mat-icon class="mr-1">home</mat-icon>
+                Inicio
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="mb-6 border border-gray-200 shadow-sm">
+        <mat-card-content class="p-5">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="flex-shrink-0 flex justify-center md:justify-start">
+                    <div
+                        class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-lg md:text-xl shadow">
+                        {{ userInitial }}
+                    </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <mat-icon style="color: #666;">badge</mat-icon>
-                    <span style="color: #666;">{{ homeData.user.role_name }}</span>
+
+                <div class="flex-1 text-center md:text-left">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">{{ homeData.user.nombre_completo }}
+                    </h2>
+
+                    <div class="flex items-center justify-center md:justify-start text-gray-600 mb-3">
+                        <mat-icon class="mr-2 text-gray-500">email</mat-icon>
+                        <span class="text-sm md:text-base">{{ homeData.user.correo }}</span>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                        <div class="flex items-center text-gray-600">
+                            <mat-icon class="mr-2 text-gray-500 text-sm">work</mat-icon>
+                            <span class="text-sm">{{ homeData.user.puesto }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <mat-icon class="mr-2 text-gray-500 text-sm">badge</mat-icon>
+                            <span class="text-sm">{{ homeData.user.role_name }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </mat-card-content>
     </mat-card>
 
-    <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title
-                        style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <span>Mi Bandeja</span>
-                        <button mat-button color="primary" (click)="irAMiBandeja()">
-                            Ver todos
-                        </button>
-                    </mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div style="overflow-x: auto;">
-                        <table mat-table [dataSource]="homeData.bandeja" style="width: 100%;">
-                            <ng-container matColumnDef="ticket_number">
-                                <th mat-header-cell *matHeaderCellDef># Ticket</th>
-                                <td mat-cell *matCellDef="let ticket">
-                                    <a href="javascript:void(0)" (click)="openTicket(ticket.id)"
-                                        style="color: #3f51b5; text-decoration: none; cursor: pointer;"
-                                        onmouseover="this.style.textDecoration='underline'"
-                                        onmouseout="this.style.textDecoration='none'">
-                                        {{ ticket.ticket_number }}
-                                    </a>
-                                </td>
-                            </ng-container>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-content class="p-4 text-center">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <mat-icon class="text-blue-600 text-lg md:text-xl">add_task</mat-icon>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ homeData.kpis.tickets_creados }}</h3>
+                <p class="text-sm text-gray-600">Tickets Creados</p>
+            </mat-card-content>
+        </mat-card>
 
-                            <ng-container matColumnDef="titulo">
-                                <th mat-header-cell *matHeaderCellDef>Título</th>
-                                <td mat-cell *matCellDef="let ticket">{{ ticket.titulo }}</td>
-                            </ng-container>
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-content class="p-4 text-center">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <mat-icon class="text-green-600 text-lg md:text-xl">assignment_ind</mat-icon>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ homeData.kpis.tickets_asignados }}</h3>
+                <p class="text-sm text-gray-600">Tickets Asignados</p>
+            </mat-card-content>
+        </mat-card>
 
-                            <ng-container matColumnDef="status">
-                                <th mat-header-cell *matHeaderCellDef>Estado</th>
-                                <td mat-cell *matCellDef="let ticket">{{ ticket.status }}</td>
-                            </ng-container>
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-content class="p-4 text-center">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <mat-icon class="text-red-600 text-lg md:text-xl">priority_high</mat-icon>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ homeData.kpis.tickets_alta_prioridad }}
+                </h3>
+                <p class="text-sm text-gray-600">Alta Prioridad</p>
+            </mat-card-content>
+        </mat-card>
 
-                            <ng-container matColumnDef="priority">
-                                <th mat-header-cell *matHeaderCellDef>Prioridad</th>
-                                <td mat-cell *matCellDef="let ticket">
-                                    <span style="padding: 4px 8px; border-radius: 4px; color: white;"
-                                        [style.background-color]="getPriorityColor(ticket.priority)">
-                                        {{ ticket.priority }}
-                                    </span>
-                                </td>
-                            </ng-container>
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-content class="p-4 text-center">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <mat-icon class="text-purple-600 text-lg md:text-xl">update</mat-icon>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ homeData.kpis.actualizaciones_realizadas
+                    }}</h3>
+                <p class="text-sm text-gray-600">Actualizaciones</p>
+            </mat-card-content>
+        </mat-card>
 
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-content class="p-4 text-center">
+                <div
+                    class="w-10 h-10 md:w-12 md:h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <mat-icon class="text-orange-600 text-lg md:text-xl">schedule</mat-icon>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-1">{{ homeData.kpis.tiempo_total_minutos }}
+                    min</h3>
+                <p class="text-sm text-gray-600">Tiempo Total</p>
+                <p class="text-xs text-gray-500 mt-1">{{ formatTime(homeData.kpis.tiempo_total_minutos) }}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <mat-card class="border border-gray-200 shadow-sm flex flex-col h-full">
+            <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4 flex-shrink-0">
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center">
+                        <mat-icon class="mr-3 text-gray-600">inbox</mat-icon>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Mi Bandeja</h3>
+                            <p class="text-xs text-gray-500">Tickets asignados a ti</p>
+                        </div>
+                    </div>
+                    <button mat-button color="primary" (click)="irAMiBandeja()" class="text-sm">
+                        Ver todos
+                    </button>
+                </div>
+            </mat-card-header>
+
+            <mat-card-content class="p-0 flex-1 min-h-0">
+                <div class="h-64 overflow-y-auto overflow-x-hidden">
+                    <div class="min-w-full">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase"># Ticket
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Título
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Estado
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">
+                                        Prioridad</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr *ngFor="let ticket of homeData.bandeja" class="hover:bg-gray-50">
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <a (click)="openTicket(ticket.id)"
+                                            class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer text-sm">
+                                            {{ ticket.ticket_number }}
+                                        </a>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900 max-w-[150px]">
+                                        <div class="truncate" [title]="ticket.titulo">
+                                            {{ ticket.titulo }}
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-2 h-2 rounded-full mr-2 flex-shrink-0" [ngClass]="{
+                           'bg-green-500': ticket.status === 'Abierto' || ticket.status === 'En Proceso',
+                           'bg-blue-500': ticket.status === 'Pendiente',
+                           'bg-gray-500': ticket.status === 'Cerrado' || ticket.status === 'Resuelto'
+                         }"></div>
+                                            <span class="text-sm text-gray-700">{{ ticket.status }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
+                                            [ngClass]="{
+                          'bg-red-100 text-red-800': ticket.priority === 'Alta',
+                          'bg-yellow-100 text-yellow-800': ticket.priority === 'Media',
+                          'bg-green-100 text-green-800': ticket.priority === 'Baja',
+                          'bg-gray-100 text-gray-800': !ticket.priority
+                        }">
+                                            {{ ticket.priority || 'Sin prioridad' }}
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr *ngIf="!homeData.bandeja?.length">
+                                    <td colspan="4" class="px-4 py-8 text-center text-gray-500">
+                                        <div class="flex flex-col items-center">
+                                            <mat-icon class="text-3xl text-gray-300 mb-2">inbox</mat-icon>
+                                            <p class="text-gray-600 text-sm">No hay tickets en tu bandeja</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
-                </mat-card-content>
-            </mat-card>
+                </div>
+            </mat-card-content>
+        </mat-card>
 
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Mis Proyectos</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <mat-list>
-                        <mat-list-item *ngFor="let project of homeData.proyectos" (click)="goToTickets(project)"
-                            style="cursor: pointer;" (mouseenter)="onMouseEnter($event)"
-                            (mouseleave)="onMouseLeave($event)">
-                            <mat-icon matListItemIcon>folder</mat-icon>
-                            <div matListItemTitle>
-                                <a style="color: #3f51b5; cursor: pointer; text-decoration: none;"
-                                    (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
-                                    {{ project.nombre }}
-                                </a>
+        <mat-card class="border border-gray-200 shadow-sm flex flex-col h-full">
+            <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4 flex-shrink-0">
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center">
+                        <mat-icon class="mr-3 text-gray-600">folder</mat-icon>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Mis Proyectos</h3>
+                            <p class="text-xs text-gray-500">Proyectos en los que participas</p>
+                        </div>
+                    </div>
+                    <span *ngIf="homeData.proyectos?.length > 0" class="text-xs text-gray-500">
+                        {{ homeData.proyectos.length }} proyecto(s)
+                    </span>
+                </div>
+            </mat-card-header>
+
+            <mat-card-content class="p-0 flex-1 min-h-0">
+                <div class="h-64 overflow-y-auto overflow-x-hidden">
+                    <div *ngIf="homeData.proyectos?.length > 0" class="divide-y divide-gray-200">
+                        <div *ngFor="let project of homeData.proyectos" (click)="goToTickets(project)"
+                            class="flex items-center p-4 hover:bg-gray-50 cursor-pointer transition-colors">
+                            <div
+                                class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                <mat-icon class="text-blue-600 text-sm">folder</mat-icon>
                             </div>
-                        </mat-list-item>
-                        <mat-list-item *ngIf="homeData.proyectos.length === 0">
-                            <div matListItemTitle style="color: #666;">No tienes proyectos asignados</div>
-                        </mat-list-item>
-                    </mat-list>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </div>
+                            <div class="flex-1 min-w-0 overflow-hidden">
+                                <h4 class="text-sm font-medium text-gray-800 truncate" [title]="project.nombre">
+                                    {{ project.nombre }}
+                                </h4>
+                                <p *ngIf="project.descripcion" class="text-xs text-gray-500 mt-1 truncate"
+                                    [title]="project.descripcion">
+                                    {{ project.descripcion }}
+                                </p>
+                            </div>
+                            <mat-icon class="text-gray-400 text-sm ml-2 flex-shrink-0">chevron_right</mat-icon>
+                        </div>
+                    </div>
 
-    <div
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-        <mat-card>
-            <mat-card-content style="text-align: center; padding: 16px;">
-                <mat-icon style="font-size: 32px; color: #3f51b5; margin-bottom: 8px;">add_task</mat-icon>
-                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_creados }}</h3>
-                <p style="color: #666;">Tickets Creados</p>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-content style="text-align: center; padding: 16px;">
-                <mat-icon style="font-size: 32px; color: #4caf50; margin-bottom: 8px;">assignment_ind</mat-icon>
-                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_asignados }}
-                </h3>
-                <p style="color: #666;">Tickets Asignados</p>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-content style="text-align: center; padding: 16px;">
-                <mat-icon style="font-size: 32px; color: #f44336; margin-bottom: 8px;">priority_high</mat-icon>
-                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tickets_alta_prioridad
-                    }}</h3>
-                <p style="color: #666;">Alta Prioridad</p>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-content style="text-align: center; padding: 16px;">
-                <mat-icon style="font-size: 32px; color: #9c27b0; margin-bottom: 8px;">update</mat-icon>
-                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{
-                    homeData.kpis.actualizaciones_realizadas }}</h3>
-                <p style="color: #666;">Actualizaciones</p>
-            </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-            <mat-card-content style="text-align: center; padding: 16px;">
-                <mat-icon style="font-size: 32px; color: #ff9800; margin-bottom: 8px;">schedule</mat-icon>
-                <h3 style="font-size: 24px; font-weight: bold; margin: 8px 0;">{{ homeData.kpis.tiempo_total_minutos }}
-                    min</h3>
-                <p style="color: #666;">{{ formatTime(homeData.kpis.tiempo_total_minutos) }}</p>
+                    <div *ngIf="!homeData.proyectos?.length" class="h-full flex items-center justify-center">
+                        <div class="text-center p-6">
+                            <mat-icon class="text-4xl text-gray-300 mb-3">folder_off</mat-icon>
+                            <p class="text-gray-600 text-sm">No tienes proyectos asignados</p>
+                        </div>
+                    </div>
+                </div>
             </mat-card-content>
         </mat-card>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Top Proyectos por Tiempo</mat-card-title>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+                <div class="flex items-center">
+                    <mat-icon class="mr-3 text-gray-600">pie_chart</mat-icon>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Top Proyectos por Tiempo</h3>
+                        <p class="text-xs text-gray-500">Distribución de tiempo por proyecto</p>
+                    </div>
+                </div>
             </mat-card-header>
-            <mat-card-content style="display: flex; justify-content: center;">
-                <ngx-charts-pie-chart *ngIf="topProjectsData.length > 0" [view]="[400, 300]" [results]="topProjectsData"
-                    [legend]="false" [labels]="true" [doughnut]="true" [maxLabelLength]="50">
-                </ngx-charts-pie-chart>
-                <p *ngIf="topProjectsData.length === 0" style="color: #666; padding: 80px 0; text-align: center;">No hay
-                    datos de proyectos</p>
+
+            <mat-card-content class="p-4">
+                <div class="h-64 flex items-center justify-center">
+                    <ngx-charts-pie-chart *ngIf="topProjectsData.length > 0" [view]="getChartView()"
+                        [results]="topProjectsData" [legend]="false" [labels]="true" [doughnut]="true"
+                        [maxLabelLength]="20" [animations]="false" [scheme]="chartColors">
+                    </ngx-charts-pie-chart>
+
+                    <div *ngIf="topProjectsData.length === 0" class="text-center">
+                        <mat-icon class="text-4xl text-gray-300 mb-3">insert_chart</mat-icon>
+                        <p class="text-gray-600 text-sm">No hay datos de proyectos</p>
+                    </div>
+                </div>
             </mat-card-content>
         </mat-card>
 
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>Top Tickets por Tiempo</mat-card-title>
+        <mat-card class="border border-gray-200 shadow-sm">
+            <mat-card-header class="border-b border-gray-200 bg-gray-50 p-4">
+                <div class="flex items-center">
+                    <mat-icon class="mr-3 text-gray-600">donut_large</mat-icon>
+                    <div>
+                        <h3 class="font-semibold text-gray-800">Top Tickets por Tiempo</h3>
+                        <p class="text-xs text-gray-500">Distribución de tiempo por ticket</p>
+                    </div>
+                </div>
             </mat-card-header>
-            <mat-card-content style="display: flex; justify-content: center;">
-                <ngx-charts-pie-chart *ngIf="topTicketsData.length > 0" [view]="[400, 300]" [results]="topTicketsData"
-                    [legend]="false" [labels]="true" [doughnut]="true" [maxLabelLength]="50">
-                </ngx-charts-pie-chart>
-                <p *ngIf="topTicketsData.length === 0" style="color: #666; padding: 80px 0; text-align: center;">No hay
-                    datos de tickets</p>
+
+            <mat-card-content class="p-4">
+                <div class="h-64 flex items-center justify-center">
+                    <ngx-charts-pie-chart *ngIf="topTicketsData.length > 0" [view]="getChartView()"
+                        [results]="topTicketsData" [legend]="false" [labels]="true" [doughnut]="true"
+                        [maxLabelLength]="20" [animations]="false" [scheme]="chartColors">
+                    </ngx-charts-pie-chart>
+
+                    <div *ngIf="topTicketsData.length === 0" class="text-center">
+                        <mat-icon class="text-4xl text-gray-300 mb-3">insert_chart_outlined</mat-icon>
+                        <p class="text-gray-600 text-sm">No hay datos de tickets</p>
+                    </div>
+                </div>
             </mat-card-content>
         </mat-card>
     </div>

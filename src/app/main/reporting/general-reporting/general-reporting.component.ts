@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
@@ -15,6 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-general-reporting',
@@ -32,14 +34,16 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatFormFieldModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule,
+    RouterModule
   ],
   templateUrl: './general-reporting.component.html'
 })
 export class GeneralReportingComponent implements OnInit {
-
   isLoading = true;
   areFiltersReady = false;
+  chartColors = 'ocean';
 
   reportData: any = null;
   projects: any[] = [];
@@ -51,18 +55,37 @@ export class GeneralReportingComponent implements OnInit {
   };
 
   kpis: any[] = [];
-
+  chartView: [number, number] = [400, 250]; 
   constructor(
     private apiService: ApiService,
     private dialog: MatDialog
   ) { }
 
-  ngOnInit(): void {
-    this.loadReport();
-
-    this.loadProjects();
-
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.updateChartView();
   }
+
+  ngOnInit(): void {
+    this.updateChartView();
+    this.loadReport();
+    this.loadProjects();
+  }
+
+  updateChartView(): void {
+    const width = window.innerWidth;
+
+    if (width < 640) { 
+      this.chartView = [width - 48, 250]; 
+    } else if (width < 768) { 
+      this.chartView = [width * 0.9, 250];
+    } else if (width < 1024) { 
+      this.chartView = [350, 250];
+    } else { 
+      this.chartView = [400, 250];
+    }
+  }
+
   loadReport(payload: any = {}): void {
     this.isLoading = true;
 
@@ -71,7 +94,6 @@ export class GeneralReportingComponent implements OnInit {
         this.reportData = res.data;
         this.buildKpis();
         this.isLoading = false;
-
       },
       error: () => this.dialog.open(AlertDialogComponent, {
         data: {
@@ -89,7 +111,6 @@ export class GeneralReportingComponent implements OnInit {
       next: res => {
         this.projects = res;
         this.areFiltersReady = true;
-
       },
       error: () => this.dialog.open(AlertDialogComponent, {
         data: {
@@ -111,12 +132,60 @@ export class GeneralReportingComponent implements OnInit {
       { label: 'Cerrados', value: d.tickets_summary.tickets_resolved },
       { label: 'Con SLA', value: d.tickets_summary.tickets_with_sla },
       { label: 'Tiempo promedio de resolución', value: d.resolution_metrics.average_resolution_formatted },
-      { label: 'Promedio (min)', value: `${d.resolution_metrics.average_time_minutes} min` },
+      { label: 'Tiempo registrado promedio', value: `${Math.round(d.resolution_metrics.average_time_minutes)} min` },
       { label: 'Actualizaciones', value: d.updates_summary.total_updates },
       { label: 'Públicas', value: d.updates_summary.public_updates },
       { label: 'Privadas', value: d.updates_summary.private_updates },
       { label: 'Tiempo total', value: this.formatMinutes(d.time_metrics.total_history_time) }
     ];
+  }
+
+  getKpiIcon(label: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Total tickets': 'receipt',
+      'Abiertos': 'folder_open',
+      'Cerrados': 'check_circle',
+      'Con SLA': 'verified',
+      'Tiempo promedio de resolución': 'schedule',
+      'Promedio (min)': 'timer',
+      'Actualizaciones': 'update',
+      'Públicas': 'public',
+      'Privadas': 'lock',
+      'Tiempo total': 'access_time'
+    };
+    return iconMap[label] || 'assessment';
+  }
+
+  getKpiColorClass(label: string): string {
+    const colorMap: { [key: string]: string } = {
+      'Total tickets': 'bg-blue-100',
+      'Abiertos': 'bg-yellow-100',
+      'Cerrados': 'bg-green-100',
+      'Con SLA': 'bg-purple-100',
+      'Tiempo promedio de resolución': 'bg-orange-100',
+      'Promedio (min)': 'bg-red-100',
+      'Actualizaciones': 'bg-indigo-100',
+      'Públicas': 'bg-teal-100',
+      'Privadas': 'bg-gray-100',
+      'Tiempo total': 'bg-cyan-100'
+    };
+    return colorMap[label] || 'bg-blue-100';
+  }
+
+  getKpiIconColorClass(label: string): string {
+    const colorMap: { [key: string]: string } = {
+      'Total tickets': 'text-blue-600',
+      'Abiertos': 'text-yellow-600',
+      'Cerrados': 'text-green-600',
+      'Con SLA': 'text-purple-600',
+      'Tiempo promedio de resolución': 'text-orange-600',
+      'Promedio (min)': 'text-red-600',
+      'Actualizaciones': 'text-indigo-600',
+      'Públicas': 'text-teal-600',
+      'Privadas': 'text-gray-600',
+      'Tiempo total': 'text-cyan-600'
+    };
+    return colorMap[label] || 'text-blue-600';
   }
 
   applyFilters(): void {

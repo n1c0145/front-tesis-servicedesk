@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
   topTicketsData: any[] = [];
   userInitial: string = '';
   displayedColumns: string[] = ['ticket_number', 'titulo', 'status', 'priority'];
+  chartColors = 'ocean';
 
   constructor(
     private apiService: ApiService,
@@ -121,11 +122,12 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-  onMouseEnter(event: any) {
-    event.currentTarget.style.backgroundColor = '#f5f5f5';
-  }
-
-  onMouseLeave(event: any) {
-    event.currentTarget.style.backgroundColor = '';
+  getChartView(): [number, number] {
+    if (window.innerWidth < 768) {
+      return [300, 250]; 
+    } else if (window.innerWidth < 1024) {
+      return [350, 250]; 
+    }
+    return [400, 250]; 
   }
 }
