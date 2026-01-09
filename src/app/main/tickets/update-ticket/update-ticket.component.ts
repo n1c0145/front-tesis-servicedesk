@@ -83,7 +83,7 @@ export class UpdateTicketComponent implements OnInit {
       time: [null],
       priority_id: [this.ticket?.priority_id ?? null],
       status_id: [this.ticket?.status_id ?? null],
-      assigned_to: [this.ticket?.assigned_to ?? 0],
+      assigned_to: [this.ticket?.assigned_to ?? null],
     });
   }
 
@@ -173,7 +173,6 @@ export class UpdateTicketComponent implements OnInit {
   }
 
   onSave(): void {
-
     this.isLoading = true;
     const user_id = localStorage.getItem('id') || '';
 
@@ -183,21 +182,32 @@ export class UpdateTicketComponent implements OnInit {
     formData.append('mensaje', this.form.value.mensaje);
     formData.append('private', this.form.value.private ? '1' : '0');
 
-    const fieldsToCheck = ['status_id', 'priority_id', 'assigned_to'];
-    fieldsToCheck.forEach((key) => {
+    ['status_id', 'priority_id'].forEach((key) => {
       const newVal = this.form.value[key];
       const oldVal = this.ticket?.[key] ?? null;
-      if (String(newVal) !== String(oldVal) && newVal !== null) {
+
+      if (newVal !== null && String(newVal) !== String(oldVal)) {
         formData.append(key, String(newVal));
       }
     });
 
+    const newAssigned = this.form.value.assigned_to;
+    const oldAssigned = this.ticket?.assigned_to ?? null;
+
+    if (newAssigned !== null && newAssigned !== oldAssigned) {
+      formData.append('assigned_to', String(newAssigned));
+    }
+
+    // tiempo
     const timeVal = this.form.value.time;
     if (timeVal !== null && timeVal !== '' && !isNaN(Number(timeVal))) {
       formData.append('tiempo', String(Math.floor(Number(timeVal))));
     }
 
-    this.archivos.forEach((file) => formData.append('archivos[]', file, file.name));
+    // archivos
+    this.archivos.forEach((file) =>
+      formData.append('archivos[]', file, file.name)
+    );
 
     this.apiService.post<any>('new-thread', formData).subscribe({
       next: (res) => {
@@ -210,12 +220,13 @@ export class UpdateTicketComponent implements OnInit {
             acceptText: 'Aceptar',
           },
         });
+
         dialogRef.afterClosed().subscribe(() => {
           this.dialogRef.close({ saved: true, response: res });
           location.reload();
         });
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
         this.dialog.open(AlertDialogComponent, {
           data: {
@@ -228,6 +239,7 @@ export class UpdateTicketComponent implements OnInit {
       },
     });
   }
+
 
   onCancel(): void {
     this.dialogRef.close();
