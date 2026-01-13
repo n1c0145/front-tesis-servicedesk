@@ -67,14 +67,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.unreadCount = res.unread_count || 0;
         this.unreadNotifications = res.unread_notifications || [];
       },
-      error: (err) => this.dialog.open(AlertDialogComponent, {
-        data: {
-          icon: 'error',
-          message: 'Ha ocurrido un error. Inténtalo más tarde.',
-          showCancel: false,
-          acceptText: 'Aceptar'
-        }
-      })
     });
   }
 
